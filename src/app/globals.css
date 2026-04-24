@@ -33,10 +33,9 @@
 
 @utility glass-card {
   background: var(--surface);
-  backdrop-filter: blur(8px);
   border: 1px solid var(--glass-border);
   box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.05);
-  @apply rounded-2xl transition-all duration-300;
+  @apply rounded-2xl transition-all duration-300 lg:backdrop-blur-md;
 }
 
 @layer components {

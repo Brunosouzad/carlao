@@ -25,7 +25,7 @@ export default function PropertyCard({ id, code, title, location, price, beds, b
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      className="group glass-card overflow-hidden border-white/5 hover:border-amber-500/30 transition-all duration-500"
+      className="group bg-white rounded-2xl overflow-hidden border border-slate-200 lg:backdrop-blur-md lg:bg-white/70 hover:border-amber-500/30 transition-all duration-500 shadow-sm"
     >
       {/* Image Container */}
       <div className="relative h-64 overflow-hidden">

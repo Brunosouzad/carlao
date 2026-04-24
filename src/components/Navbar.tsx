@@ -9,9 +9,9 @@ export default function Navbar() {
     <motion.nav 
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      className="fixed top-0 left-0 right-0 z-50 px-6 py-4 flex justify-center"
+      className="fixed top-6 left-1/2 -translate-x-1/2 w-[95%] max-w-7xl z-50 flex justify-center"
     >
-      <div className="max-w-7xl w-full bg-white/90 backdrop-blur-md rounded-2xl shadow-xl px-8 py-3 flex items-center justify-between border border-black/5">
+      <div className="max-w-7xl w-full bg-white lg:bg-white/90 lg:backdrop-blur-md rounded-2xl shadow-xl px-4 lg:px-8 py-3 flex items-center justify-between border border-black/5">
         <Link href="/" className="flex items-center group shrink-0">
           <div className="bg-[#5F5F5F] px-4 lg:px-8 py-2 rounded-xl shadow-lg group-hover:scale-105 transition-transform">
             <img 

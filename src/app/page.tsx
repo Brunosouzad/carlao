@@ -7,7 +7,22 @@ import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 
-const PROPERTIES_GROUP_1 = [
+interface Property {
+  id: string;
+  code: string;
+  title: string;
+  location: string;
+  price: string;
+  beds: number;
+  baths: number;
+  garages: number;
+  area: number;
+  type: "Venda" | "Aluguel";
+  image: string;
+  tag?: string;
+}
+
+const PROPERTIES_GROUP_1: Property[] = [
   {
     id: "1",
     code: "CV-001",
@@ -66,7 +81,7 @@ const PROPERTIES_GROUP_1 = [
   }
 ];
 
-const PROPERTIES_GROUP_2 = [
+const PROPERTIES_GROUP_2: Property[] = [
   {
     id: "3",
     code: "AL-001",

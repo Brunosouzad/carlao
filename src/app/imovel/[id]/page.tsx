@@ -234,18 +234,18 @@ export default function PropertyDetailsPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       
-      <div className="pt-36 pb-24 bg-slate-50 min-h-screen">
+      <div className="pt-24 md:pt-36 pb-24 bg-slate-50 min-h-screen">
         <div className="container mx-auto px-6">
           
           <button onClick={() => router.back()} className="flex items-center gap-2 text-slate-500 font-bold mb-6 hover:text-primary transition-colors cursor-pointer">
             <ArrowLeft size={20} /> Voltar
           </button>
-
+ 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Left Column (Images & Details) */}
             <div className="lg:col-span-2 space-y-8">
               
-              <div className="w-full h-[500px] rounded-3xl overflow-hidden shadow-lg relative group bg-slate-900">
+              <div className="w-full h-[300px] md:h-[500px] lg:h-[600px] rounded-3xl overflow-hidden shadow-lg relative group bg-slate-900">
                 {currentMedia.type === 'video' ? (
                   !isVideoPlaying ? (
                     <div 
@@ -254,12 +254,12 @@ export default function PropertyDetailsPage() {
                     >
                       <img src={currentMedia.thumb} alt="Video Preview" className="w-full h-full object-cover opacity-60 transition-transform duration-700 group-hover/video:scale-110" />
                       <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
-                        <div className="w-20 h-20 bg-red-600 rounded-full flex items-center justify-center text-white shadow-2xl transition-transform duration-300 group-hover/video:scale-110 ring-8 ring-white/10">
-                          <div className="w-0 h-0 border-t-[12px] border-t-transparent border-l-[20px] border-l-white border-b-[12px] border-b-transparent ml-2"></div>
+                        <div className="w-16 h-16 md:w-20 md:h-20 bg-red-600 rounded-full flex items-center justify-center text-white shadow-2xl transition-transform duration-300 group-hover/video:scale-110 ring-8 ring-white/10">
+                          <div className="w-0 h-0 border-t-[10px] md:border-t-[12px] border-t-transparent border-l-[16px] md:border-l-[20px] border-l-white border-b-[10px] md:border-b-[12px] border-b-transparent ml-2"></div>
                         </div>
-                        <div className="text-center">
-                          <p className="text-white font-bold text-xl drop-shadow-lg">Assista o vídeo deste imóvel</p>
-                          <p className="text-white/70 text-sm font-medium">{property.title}</p>
+                        <div className="text-center px-4">
+                          <p className="text-white font-bold text-lg md:text-xl drop-shadow-lg">Assista o vídeo deste imóvel</p>
+                          <p className="text-white/70 text-xs md:text-sm font-medium">{property.title}</p>
                         </div>
                       </div>
                     </div>
@@ -273,28 +273,28 @@ export default function PropertyDetailsPage() {
                     />
                   )
                 ) : (
-                  <img src={currentMedia.url} alt={property.title} className="w-full h-full object-contain bg-slate-950 transition-all duration-500" />
+                  <img src={currentMedia.url} alt={property.title} className="w-full h-full object-cover transition-all duration-500" />
                 )}
                 
                 <button 
                   onClick={prevMedia} 
-                  className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/40 backdrop-blur-sm text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/60 z-10 focus:outline-none cursor-pointer"
+                  className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 rounded-full bg-black/40 backdrop-blur-sm text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/60 z-10 focus:outline-none cursor-pointer"
                 >
-                  <ChevronLeft size={32} />
+                  <ChevronLeft size={24} className="md:w-8 md:h-8" />
                 </button>
                 <button 
                   onClick={nextMedia} 
-                  className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/40 backdrop-blur-sm text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/60 z-10 focus:outline-none cursor-pointer"
+                  className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 rounded-full bg-black/40 backdrop-blur-sm text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/60 z-10 focus:outline-none cursor-pointer"
                 >
-                  <ChevronRight size={32} />
+                  <ChevronRight size={24} className="md:w-8 md:h-8" />
                 </button>
-
-                <div className="absolute top-6 left-6 flex gap-2">
-                  <span className="px-4 py-2 bg-amber-500 text-slate-950 font-bold uppercase rounded-xl shadow-lg">
+ 
+                <div className="absolute top-4 left-4 md:top-6 md:left-6 flex gap-2">
+                  <span className="px-3 py-1.5 md:px-4 md:py-2 bg-amber-500 text-slate-950 text-xs md:text-sm font-bold uppercase rounded-xl shadow-lg">
                     {property.type}
                   </span>
                   {property.tag && (
-                    <span className="px-4 py-2 bg-slate-950/70 backdrop-blur-md text-white font-bold uppercase rounded-xl shadow-lg">
+                    <span className="px-3 py-1.5 md:px-4 md:py-2 bg-slate-950/70 backdrop-blur-md text-white text-xs md:text-sm font-bold uppercase rounded-xl shadow-lg">
                       {property.tag}
                     </span>
                   )}
@@ -375,21 +375,21 @@ export default function PropertyDetailsPage() {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 text-slate-500 mb-4 font-medium">
-                  <MapPin size={20} className="text-secondary" />
+                <div className="flex items-center gap-2 text-slate-500 mb-2 md:mb-4 font-medium text-sm md:text-base">
+                  <MapPin size={18} className="text-secondary" />
                   {property.location}
                 </div>
                 
-                <h1 className="text-3xl md:text-4xl font-bold text-primary mb-6">{property.title}</h1>
+                <h1 className="text-2xl md:text-4xl font-bold text-primary mb-6">{property.title}</h1>
                 
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 py-6 border-y border-slate-100 mb-8">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 py-6 border-y border-slate-100 mb-8">
                   {features.map((feature, idx) => {
                     const Icon = feature.icon;
                     return (
-                      <div key={idx} className="flex flex-col items-center justify-center p-4 bg-slate-50 rounded-2xl">
-                        <Icon size={28} className="text-slate-400 mb-2" />
-                        <span className="text-xl font-bold text-slate-800">{feature.value}</span>
-                        <span className="text-xs uppercase font-bold text-slate-400 tracking-wider">{feature.label}</span>
+                      <div key={idx} className="flex flex-col items-center justify-center p-3 md:p-4 bg-slate-50 rounded-2xl">
+                        <Icon size={24} className="text-slate-400 mb-2 md:w-7 md:h-7" />
+                        <span className="text-lg md:text-xl font-bold text-slate-800">{feature.value}</span>
+                        <span className="text-[10px] md:text-xs uppercase font-bold text-slate-400 tracking-wider">{feature.label}</span>
                       </div>
                     )
                   })}
@@ -445,11 +445,11 @@ export default function PropertyDetailsPage() {
 
             {/* Right Column (Sidebar) */}
             <div className="space-y-8">
-              <div className="bg-white p-8 rounded-3xl shadow-lg shadow-black/5 border border-slate-100 sticky top-32">
-                <p className="text-slate-400 text-sm font-bold uppercase tracking-widest mb-2">Valor do Imóvel</p>
-                <h2 className="text-4xl font-bold text-accent-blue mb-6">
+              <div className="bg-white p-6 md:p-8 rounded-3xl shadow-lg shadow-black/5 border border-slate-100 sticky top-32">
+                <p className="text-slate-400 text-xs md:text-sm font-bold uppercase tracking-widest mb-2">Valor do Imóvel</p>
+                <h2 className="text-3xl md:text-4xl font-bold text-accent-blue mb-6">
                   {formatPrice(property.price)}
-                  {property.type === "Aluguel" && <span className="text-2xl font-normal text-slate-500">/mês</span>}
+                  {property.type === "Aluguel" && <span className="text-xl md:text-2xl font-normal text-slate-500">/mês</span>}
                 </h2>
                 
                 <p className="text-sm text-slate-500 mb-6 pb-6 border-b border-slate-100 font-medium">

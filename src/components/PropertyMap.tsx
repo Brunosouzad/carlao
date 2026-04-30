@@ -37,7 +37,12 @@ export default function PropertyMap({ location, title, className = "h-[350px]" }
       try {
         const res = await fetch(
           `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(location)}&format=json&limit=1`,
-          { headers: { "Accept-Language": "pt-BR" } }
+          { 
+            headers: { 
+              "Accept-Language": "pt-BR",
+              "User-Agent": "CarlaoImoveis/1.0"
+            } 
+          }
         );
         const data = await res.json();
         if (data.length > 0) {

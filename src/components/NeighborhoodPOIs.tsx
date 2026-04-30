@@ -24,7 +24,12 @@ export default function NeighborhoodPOIs({ location }: { location: string }) {
       try {
         // 1. Geocode the address
         const geoRes = await fetch(
-          `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(location)}&format=json&limit=1`
+          `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(location)}&format=json&limit=1`,
+          {
+            headers: {
+              "User-Agent": "CarlaoImoveis/1.0"
+            }
+          }
         );
         const geoData = await geoRes.json();
         

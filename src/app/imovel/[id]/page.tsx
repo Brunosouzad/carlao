@@ -73,7 +73,7 @@ export default function PropertyDetailsPage() {
 
   useEffect(() => {
     if (id) {
-      const found = properties.find((p) => p.id === id);
+      const found = properties.find((p) => String(p.id) === String(id));
       if (found) {
         setProperty(found);
         setFormData(prev => ({

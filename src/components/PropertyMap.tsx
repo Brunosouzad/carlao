@@ -30,8 +30,11 @@ interface PropertyMapProps {
 export default function PropertyMap({ location, title, className = "h-[350px]" }: PropertyMapProps) {
   const [coords, setCoords] = useState<[number, number] | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
+    setIsMobile(window.innerWidth < 768);
+    
     // Geocode the address using Nominatim (OpenStreetMap free geocoder)
     const geocode = async () => {
       try {
@@ -82,6 +85,9 @@ export default function PropertyMap({ location, title, className = "h-[350px]" }
         center={coords}
         zoom={15}
         scrollWheelZoom={false}
+        dragging={!isMobile}
+        touchZoom={!isMobile}
+        doubleClickZoom={!isMobile}
         style={{ height: "100%", width: "100%" }}
       >
         <TileLayer

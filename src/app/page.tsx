@@ -35,7 +35,7 @@ function HomeContent() {
       <>
         <Navbar />
         <div className="pt-36 pb-24 min-h-screen bg-slate-50">
-          <div className="container mx-auto px-8">
+          <div className="container mx-auto px-4 md:px-8">
             <div className="flex items-center justify-between mb-8">
               <div>
                 <h1 className="text-3xl font-bold text-primary mb-2">Resultados da Busca</h1>
@@ -72,7 +72,7 @@ function HomeContent() {
       <Hero />
       
       <section id="imoveis" className="py-24 bg-white">
-        <div className="container mx-auto px-8">
+        <div className="container mx-auto px-4 md:px-8">
           <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
             <div>
               <span className="text-secondary font-bold tracking-widest text-xs uppercase mb-2 block">{settings.homeVendaSubtitle || "Imóveis para Venda"}</span>
@@ -185,7 +185,7 @@ function HomeContent() {
           <h2 className="text-4xl font-bold text-primary">Soluções Imobiliárias <span className="text-secondary">Completas</span></h2>
         </div>
         
-        <div className="container mx-auto px-8">
+        <div className="container mx-auto px-4 md:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="p-8 border border-slate-200 rounded-3xl hover:border-secondary/30 hover:shadow-xl transition-all group shadow-sm bg-white">
               <div className="w-14 h-14 bg-primary/5 rounded-2xl flex items-center justify-center text-primary mb-6 group-hover:bg-secondary group-hover:text-white transition-all">
@@ -221,7 +221,7 @@ function HomeContent() {
       </section>
 
       <section id="localizacao" className="py-24">
-        <div className="container mx-auto px-8">
+        <div className="container mx-auto px-4 md:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-12 gap-6 text-center md:text-left">
             <div>
               <span className="text-secondary font-bold tracking-widest text-xs uppercase mb-2 block">Onde estamos</span>
@@ -320,7 +320,7 @@ function HomeContent() {
       </section>
 
       <section className="py-20 bg-slate-100 border-y border-slate-200">
-        <div className="container mx-auto px-8">
+        <div className="container mx-auto px-4 md:px-8">
           <div className="bg-white border-l-8 border-secondary p-12 md:p-16 shadow-2xl flex flex-col lg:flex-row items-center justify-between gap-12">
             <div className="max-w-3xl">
               <span className="text-secondary font-bold tracking-[0.3em] text-xs uppercase mb-4 block">Atendimento Exclusivo</span>

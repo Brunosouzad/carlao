@@ -3,7 +3,7 @@
 import { useProperties } from "@/store/PropertiesContext";
 import Navbar from "@/components/Navbar";
 import PropertyCard from "@/components/PropertyCard";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { BedDouble, Bath, Square, MapPin, CheckCircle, ArrowLeft, ChevronLeft, ChevronRight, Share2, Heart, Printer, ArrowLeftRight, Check, Phone, Mail } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
@@ -12,16 +12,14 @@ import { formatPrice } from "@/utils/format";
 import dynamic from "next/dynamic";
 
 const PropertyMap = dynamic(() => import("@/components/PropertyMap"), { ssr: false });
-const NeighborhoodPOIs = dynamic(() => import("@/components/NeighborhoodPOIs"), { ssr: false });
+import NeighborhoodPOIs from "@/components/NeighborhoodPOIs";
 
 import { supabase } from "@/lib/supabase";
 import { useCompare } from "@/store/CompareContext";
 import { useFavorites } from "@/store/FavoritesContext";
 
-import React from "react";
-
-export default function PropertyDetailsPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = React.use(params);
+export default function PropertyDetailsPage() {
+  const { id } = useParams();
   const router = useRouter();
   const { properties } = useProperties();
   
@@ -74,8 +72,8 @@ export default function PropertyDetailsPage({ params }: { params: Promise<{ id: 
   };
 
   useEffect(() => {
-    if (id && properties.length > 0) {
-      const found = properties.find((p) => String(p.id) === String(id));
+    if (id) {
+      const found = properties.find((p) => p.id === id);
       if (found) {
         setProperty(found);
         setFormData(prev => ({
@@ -94,25 +92,14 @@ export default function PropertyDetailsPage({ params }: { params: Promise<{ id: 
   }, [currentImageIndex]);
 
   if (!property) {
-    const isActuallyNotFound = properties.length > 0 && !properties.find(p => String(p.id) === String(id));
-    
     return (
       <>
         <Navbar />
         <div className="pt-32 pb-24 text-center min-h-[60vh] flex flex-col justify-center items-center">
-          {isActuallyNotFound ? (
-            <>
-              <h2 className="text-2xl font-bold text-primary mb-4">Imóvel não encontrado.</h2>
-              <button onClick={() => router.back()} className="text-secondary font-bold hover:underline">
-                Voltar para a página anterior
-              </button>
-            </>
-          ) : (
-            <div className="flex flex-col items-center gap-4">
-              <div className="w-12 h-12 border-4 border-secondary border-t-transparent rounded-full animate-spin" />
-              <p className="text-slate-500 font-medium">Carregando detalhes do imóvel...</p>
-            </div>
-          )}
+          <h2 className="text-2xl font-bold text-primary mb-4">Imóvel não encontrado.</h2>
+          <button onClick={() => router.back()} className="text-secondary font-bold hover:underline">
+            Voltar
+          </button>
         </div>
       </>
     );
@@ -247,8 +234,8 @@ export default function PropertyDetailsPage({ params }: { params: Promise<{ id: 
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       
-      <div className="pt-24 md:pt-36 pb-24 bg-slate-50 min-h-screen">
-        <div className="container mx-auto px-4 md:px-6">
+      <div className="pt-36 pb-24 bg-slate-50 min-h-screen">
+        <div className="container mx-auto px-6">
           
           <button onClick={() => router.back()} className="flex items-center gap-2 text-slate-500 font-bold mb-6 hover:text-primary transition-colors cursor-pointer">
             <ArrowLeft size={20} /> Voltar
@@ -258,7 +245,7 @@ export default function PropertyDetailsPage({ params }: { params: Promise<{ id: 
             {/* Left Column (Images & Details) */}
             <div className="lg:col-span-2 space-y-8">
               
-              <div className="w-full h-[350px] md:h-[500px] rounded-3xl overflow-hidden shadow-lg relative group bg-slate-900">
+              <div className="w-full h-[500px] rounded-3xl overflow-hidden shadow-lg relative group bg-slate-900">
                 {currentMedia.type === 'video' ? (
                   !isVideoPlaying ? (
                     <div 
@@ -291,13 +278,13 @@ export default function PropertyDetailsPage({ params }: { params: Promise<{ id: 
                 
                 <button 
                   onClick={prevMedia} 
-                  className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/40 backdrop-blur-sm text-white flex items-center justify-center md:opacity-0 md:group-hover:opacity-100 transition-opacity hover:bg-black/60 z-10 focus:outline-none cursor-pointer"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/40 backdrop-blur-sm text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/60 z-10 focus:outline-none cursor-pointer"
                 >
                   <ChevronLeft size={32} />
                 </button>
                 <button 
                   onClick={nextMedia} 
-                  className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/40 backdrop-blur-sm text-white flex items-center justify-center md:opacity-0 md:group-hover:opacity-100 transition-opacity hover:bg-black/60 z-10 focus:outline-none cursor-pointer"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/40 backdrop-blur-sm text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/60 z-10 focus:outline-none cursor-pointer"
                 >
                   <ChevronRight size={32} />
                 </button>
@@ -318,7 +305,7 @@ export default function PropertyDetailsPage({ params }: { params: Promise<{ id: 
               <div className="relative group">
                 <button 
                   onClick={() => scrollThumbnails('left')}
-                  className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white shadow-lg text-slate-700 flex items-center justify-center md:opacity-0 md:group-hover:opacity-100 transition-opacity hover:bg-slate-50 hover:text-primary z-10 cursor-pointer -ml-5"
+                  className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white shadow-lg text-slate-700 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-slate-50 hover:text-primary z-10 cursor-pointer -ml-5"
                 >
                   <ChevronLeft size={24} />
                 </button>
@@ -347,13 +334,13 @@ export default function PropertyDetailsPage({ params }: { params: Promise<{ id: 
 
                 <button 
                   onClick={() => scrollThumbnails('right')}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white shadow-lg text-slate-700 flex items-center justify-center md:opacity-0 md:group-hover:opacity-100 transition-opacity hover:bg-slate-50 hover:text-primary z-10 cursor-pointer -mr-5"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white shadow-lg text-slate-700 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-slate-50 hover:text-primary z-10 cursor-pointer -mr-5"
                 >
                   <ChevronRight size={24} />
                 </button>
               </div>
 
-              <div className="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-slate-100 relative">
+              <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 relative">
                 {showCopyToast && (
                   <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-3 py-2 rounded-lg z-20">
                     Link copiado!
@@ -458,7 +445,7 @@ export default function PropertyDetailsPage({ params }: { params: Promise<{ id: 
 
             {/* Right Column (Sidebar) */}
             <div className="space-y-8">
-              <div className="bg-white p-6 md:p-8 rounded-3xl shadow-lg shadow-black/5 border border-slate-100 lg:sticky lg:top-32">
+              <div className="bg-white p-8 rounded-3xl shadow-lg shadow-black/5 border border-slate-100 sticky top-32">
                 <p className="text-slate-400 text-sm font-bold uppercase tracking-widest mb-2">Valor do Imóvel</p>
                 <h2 className="text-4xl font-bold text-primary mb-6">
                   {formatPrice(property.price)}
@@ -562,7 +549,7 @@ export default function PropertyDetailsPage({ params }: { params: Promise<{ id: 
                 <h2 className="text-4xl font-bold text-primary">Propriedades semelhantes</h2>
               </div>
               
-              <div className="flex gap-1.5 p-1.5 bg-white border border-slate-200 rounded-2xl w-full md:w-fit shadow-sm overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+              <div className="flex gap-1.5 p-1.5 bg-white border border-slate-200 rounded-2xl w-fit shadow-sm">
                 {[
                   { id: 'recomendado', label: 'Recomendado' },
                   { id: 'tipo', label: 'Tipo De Imóvel' },

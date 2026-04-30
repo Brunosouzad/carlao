@@ -234,7 +234,7 @@ export default function PropertyDetailsPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       
-      <div className="pt-24 md:pt-36 pb-24 bg-slate-50 min-h-screen">
+      <div className="pt-24 md:pt-36 pb-24 bg-slate-50 min-h-screen overflow-x-hidden">
         <div className="container mx-auto px-8">
           
           <button onClick={() => router.back()} className="flex items-center gap-2 text-slate-500 font-bold mb-6 hover:text-primary transition-colors cursor-pointer">
@@ -549,24 +549,26 @@ export default function PropertyDetailsPage() {
                 <h2 className="text-4xl font-bold text-primary">Propriedades semelhantes</h2>
               </div>
               
-              <div className="flex gap-1.5 p-1.5 bg-white border border-slate-200 rounded-2xl w-fit shadow-sm">
-                {[
-                  { id: 'recomendado', label: 'Recomendado' },
-                  { id: 'tipo', label: 'Tipo De Imóvel' },
-                  { id: 'localizacao', label: 'Localização' }
-                ].map((tab) => (
-                  <button
-                    key={tab.id}
-                    onClick={() => setRecommendTab(tab.id as any)}
-                    className={`px-6 py-3 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
-                      recommendTab === tab.id 
-                        ? 'bg-primary text-white shadow-lg shadow-primary/20' 
-                        : 'text-slate-400 hover:text-primary hover:bg-slate-50'
-                    }`}
-                  >
-                    {tab.label}
-                  </button>
-                ))}
+              <div className="w-full md:w-fit overflow-x-auto no-scrollbar pb-2 md:pb-0">
+                <div className="flex gap-1.5 p-1.5 bg-white border border-slate-200 rounded-2xl w-fit shadow-sm">
+                  {[
+                    { id: 'recomendado', label: 'Recomendado' },
+                    { id: 'tipo', label: 'Tipo De Imóvel' },
+                    { id: 'localizacao', label: 'Localização' }
+                  ].map((tab) => (
+                    <button
+                      key={tab.id}
+                      onClick={() => setRecommendTab(tab.id as any)}
+                      className={`px-6 py-3 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+                        recommendTab === tab.id 
+                          ? 'bg-primary text-white shadow-lg shadow-primary/20' 
+                          : 'text-slate-400 hover:text-primary hover:bg-slate-50'
+                      }`}
+                    >
+                      {tab.label}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
 

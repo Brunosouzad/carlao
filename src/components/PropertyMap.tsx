@@ -71,12 +71,28 @@ export default function PropertyMap({ location, title, className = "h-[350px]" }
     );
   }
 
+  const [mapEnabled, setMapEnabled] = useState(false);
+
   return (
     <div className={`${className} rounded-2xl overflow-hidden border border-slate-200 shadow-sm relative z-0`}>
+      {/* Interaction Lock for Mobile */}
+      {!mapEnabled && (
+        <div 
+          onClick={() => setMapEnabled(true)}
+          className="absolute inset-0 z-10 bg-black/5 flex items-center justify-center cursor-pointer group md:hidden"
+        >
+          <div className="bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg border border-slate-200 flex items-center gap-2 transition-transform group-active:scale-95">
+            <span className="text-xs font-bold text-primary">Toque para interagir com o mapa</span>
+          </div>
+        </div>
+      )}
+
       <MapContainer
         center={coords}
         zoom={15}
         scrollWheelZoom={false}
+        dragging={typeof window !== 'undefined' && window.innerWidth < 768 ? mapEnabled : true}
+        touchZoom={typeof window !== 'undefined' && window.innerWidth < 768 ? mapEnabled : true}
         style={{ height: "100%", width: "100%" }}
       >
         <TileLayer

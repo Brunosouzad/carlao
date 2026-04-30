@@ -39,7 +39,7 @@ export default function PropertyMap({ location, title, className = "h-[350px]" }
     const geocode = async () => {
       try {
         const res = await fetch(
-          `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(location)}&format=json&limit=1`,
+          `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(location + ", Brasil")}&format=json&limit=1`,
           { 
             headers: { 
               "Accept-Language": "pt-BR",

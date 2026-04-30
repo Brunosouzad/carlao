@@ -115,13 +115,15 @@ export default function PropertyDetailsPage() {
   const match = property.videoUrl?.match(/(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/\s]{11})/);
   const embedId = match ? match[1] : null;
 
-  const initialImages = property.images && property.images.length > 0 
-    ? property.images 
-    : [property.image];
+  // Combine cover image with gallery images, removing duplicates
+  const allImages = Array.from(new Set([
+    property.image,
+    ...(property.images || [])
+  ])).filter(Boolean);
 
   const mediaItems = [
     ...(embedId ? [{ type: 'video' as const, url: `https://www.youtube.com/embed/${embedId}`, thumb: `https://img.youtube.com/vi/${embedId}/0.jpg` }] : []),
-    ...initialImages.map(url => ({ type: 'image' as const, url, thumb: url }))
+    ...allImages.map(url => ({ type: 'image' as const, url, thumb: url }))
   ];
 
   const nextMedia = () => setCurrentImageIndex((prev) => (prev + 1) % mediaItems.length);
@@ -234,7 +236,7 @@ export default function PropertyDetailsPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       
-      <div className="pt-24 md:pt-36 pb-24 bg-slate-50 min-h-screen overflow-x-hidden">
+      <div className="pt-44 md:pt-48 pb-24 bg-slate-50 min-h-screen overflow-x-hidden">
         <div className="container mx-auto px-4 md:px-8">
           
           <button onClick={() => router.back()} className="flex items-center gap-2 text-slate-500 font-bold mb-6 hover:text-primary transition-colors cursor-pointer">
@@ -245,7 +247,7 @@ export default function PropertyDetailsPage() {
             {/* Left Column (Images & Details) */}
             <div className="lg:col-span-2 space-y-8">
               
-              <div className="w-full h-[300px] md:h-[500px] lg:h-[600px] rounded-3xl overflow-hidden shadow-lg relative group bg-slate-900">
+              <div className="w-full aspect-[4/3] md:aspect-[16/9] max-h-[70vh] rounded-3xl overflow-hidden shadow-lg relative group bg-slate-900 border border-slate-200">
                 {currentMedia.type === 'video' ? (
                   !isVideoPlaying ? (
                     <div 
@@ -273,7 +275,17 @@ export default function PropertyDetailsPage() {
                     />
                   )
                 ) : (
-                  <img src={currentMedia.url} alt={property.title} className="w-full h-full object-cover transition-all duration-500" />
+                  <>
+                    <img 
+                      src={currentMedia.url} 
+                      alt={property.title} 
+                      className="w-full h-full object-contain transition-all duration-500" 
+                    />
+                    <div 
+                      className="absolute inset-0 -z-10 blur-2xl opacity-30 scale-110"
+                      style={{ backgroundImage: `url(${currentMedia.url})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+                    />
+                  </>
                 )}
                 
                 <button 
@@ -305,7 +317,7 @@ export default function PropertyDetailsPage() {
               <div className="relative group">
                 <button 
                   onClick={() => scrollThumbnails('left')}
-                  className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white shadow-lg text-slate-700 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-slate-50 hover:text-primary z-10 cursor-pointer -ml-5"
+                  className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white shadow-lg text-slate-700 flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity hover:bg-slate-50 hover:text-primary z-10 cursor-pointer -ml-5"
                 >
                   <ChevronLeft size={24} />
                 </button>
@@ -334,7 +346,7 @@ export default function PropertyDetailsPage() {
 
                 <button 
                   onClick={() => scrollThumbnails('right')}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white shadow-lg text-slate-700 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-slate-50 hover:text-primary z-10 cursor-pointer -mr-5"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white shadow-lg text-slate-700 flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity hover:bg-slate-50 hover:text-primary z-10 cursor-pointer -mr-5"
                 >
                   <ChevronRight size={24} />
                 </button>

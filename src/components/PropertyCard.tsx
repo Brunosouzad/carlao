@@ -120,9 +120,7 @@ export default function PropertyCard({ id, code, title, location, price, beds, b
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  const cardImages = images && images.length > 0 
-    ? images 
-    : [image, "https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=800&auto=format&fit=crop", "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=800&auto=format&fit=crop", "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?q=80&w=800&auto=format&fit=crop"];
+  const cardImages = [image, ...(images || [])];
 
   const nextImage = (e: React.MouseEvent) => {
     e.preventDefault();

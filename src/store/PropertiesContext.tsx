@@ -46,8 +46,14 @@ export function PropertiesProvider({ children }: { children: React.ReactNode }) 
           loadLocalData();
         } else if (data) {
           const mappedData = data.map((p: any) => {
-            const { video_url, zip_code, ...rest } = p;
-            return { ...rest, videoUrl: video_url, zipCode: zip_code };
+            const { video_url, zip_code, images, ...rest } = p;
+            // Garantir que images seja um array e videoUrl/zipCode sejam camelCase
+            return { 
+              ...rest, 
+              videoUrl: video_url, 
+              zipCode: zip_code,
+              images: Array.isArray(images) ? images : (typeof images === 'string' ? JSON.parse(images) : [])
+            };
           });
           setProperties(mappedData as Property[]);
         }

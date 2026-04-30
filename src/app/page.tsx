@@ -34,7 +34,7 @@ function HomeContent() {
     return (
       <>
         <Navbar />
-        <div className="pt-36 pb-24 min-h-screen bg-slate-50">
+        <div className="pt-48 pb-24 min-h-screen bg-slate-50">
           <div className="container mx-auto px-4 md:px-8">
             <div className="flex items-center justify-between mb-8">
               <div>
@@ -125,7 +125,7 @@ function HomeContent() {
               >
                 <div className="relative rounded-[2rem] overflow-hidden shadow-2xl aspect-square ring-1 ring-black/5">
                   <img 
-                    src="/fachada-carlao.jpg" 
+                    src="/fachada-carlao.png" 
                     alt="Carlão Imóveis - Fachada" 
                     className="w-full h-full object-cover"
                   />

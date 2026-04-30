@@ -32,12 +32,12 @@ export default function Hero() {
   };
 
   return (
-    <section className="relative min-h-[85vh] lg:h-[85vh] flex flex-col justify-end pt-32 lg:pt-24 overflow-hidden">
+    <section className="relative min-h-[85vh] lg:h-[85vh] flex flex-col justify-end pt-44 lg:pt-36 overflow-hidden">
       {/* Background Slider */}
       <div className="absolute inset-0 z-0">
         <AnimatePresence mode="wait">
           <motion.img
-            key={currentSlide}
+            key={`${currentSlide}-${slides[currentSlide]}`}
             src={slides[currentSlide]}
             initial={{ opacity: 0, scale: 1.1 }}
             animate={{ opacity: 1, scale: 1 }}

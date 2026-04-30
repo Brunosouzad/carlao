@@ -118,7 +118,10 @@ export default function PropertyForm({ property, mode }: PropertyFormProps) {
 
   const addImage = () => {
     if (!newImageUrl.trim()) return;
-    set("images", [...(form.images || []), newImageUrl.trim()]);
+    setForm(prev => ({
+      ...prev,
+      images: [...(prev.images || []), newImageUrl.trim()]
+    }));
     setNewImageUrl("");
   };
 

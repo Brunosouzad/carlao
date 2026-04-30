@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSiteSettings, SiteSettings } from "@/store/SiteSettingsContext";
 import { Save, Plus, Trash2, RotateCcw, Image as ImageIcon, Layout, Type } from "lucide-react";
 import { supabase } from "@/lib/supabase";
@@ -13,12 +13,20 @@ export default function AdminConfiguracoes() {
   const [uploading, setUploading] = useState(false);
   const [activeTab, setActiveTab] = useState<"banner" | "layout">("banner");
 
+  // Sincroniza o form quando os settings carregam (ou mudam)
+  useEffect(() => {
+    setForm({ ...settings });
+  }, [settings]);
+
   const set = <K extends keyof SiteSettings>(key: K, value: SiteSettings[K]) =>
     setForm((prev) => ({ ...prev, [key]: value }));
 
   const addHeroImage = () => {
     if (!newImageUrl.trim()) return;
-    set("heroImages", [...form.heroImages, newImageUrl.trim()]);
+    setForm(prev => ({
+      ...prev,
+      heroImages: [...prev.heroImages, newImageUrl.trim()]
+    }));
     setNewImageUrl("");
   };
 
@@ -48,7 +56,10 @@ export default function AdminConfiguracoes() {
           .getPublicUrl(filePath);
 
         if (publicUrl) {
-          set("heroImages", [...form.heroImages, publicUrl]);
+          setForm(prev => ({
+            ...prev,
+            heroImages: [...prev.heroImages, publicUrl]
+          }));
         }
       }
     } catch (error: any) {

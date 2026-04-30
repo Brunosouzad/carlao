@@ -1,13 +1,13 @@
 "use client";
 
-import { useParams } from "next/navigation";
+import React from "react";
 import { useProperties } from "@/store/PropertiesContext";
 import PropertyForm from "@/components/admin/PropertyForm";
 
-export default function EditarImovel() {
-  const { id } = useParams();
+export default function EditarImovel({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = React.use(params);
   const { properties } = useProperties();
-  const property = properties.find(p => p.id === id);
+  const property = properties.find(p => String(p.id) === String(id));
 
   if (!property) {
     return (

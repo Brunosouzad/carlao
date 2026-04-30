@@ -64,7 +64,7 @@ export default function CompararPage() {
                           <Link href={`/imovel/${p.id}`} className="block">
                             <img src={p.image} alt={p.title} className="w-full h-48 object-cover rounded-2xl mb-4 group-hover:scale-[1.02] transition-transform" />
                             <h3 className="font-bold text-primary line-clamp-1 mb-2 font-oswald uppercase tracking-tight">{p.title}</h3>
-                            <p className="text-secondary font-bold text-xl font-oswald tracking-tighter">{formatPrice(p.price)}</p>
+                            <p className="text-accent-blue font-bold text-xl font-oswald tracking-tighter">{formatPrice(p.price)}</p>
                           </Link>
                         </th>
                       ))}

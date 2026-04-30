@@ -216,7 +216,7 @@ export default function PropertyCard({ id, code, title, location, price, beds, b
         <h3 className="text-lg font-bold text-primary mb-1 group-hover:text-secondary transition-colors line-clamp-1 leading-tight">
           {title}
         </h3>
-        <p className="text-primary font-bold text-2xl tracking-tighter mb-4">
+        <p className="text-accent-blue font-bold text-2xl tracking-tighter mb-4">
           {formatPrice(price)}
           {type === 'Aluguel' && <span className="text-sm font-normal text-slate-500">/mês</span>}
         </p>

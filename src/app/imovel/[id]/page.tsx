@@ -447,7 +447,7 @@ export default function PropertyDetailsPage() {
             <div className="space-y-8">
               <div className="bg-white p-8 rounded-3xl shadow-lg shadow-black/5 border border-slate-100 sticky top-32">
                 <p className="text-slate-400 text-sm font-bold uppercase tracking-widest mb-2">Valor do Imóvel</p>
-                <h2 className="text-4xl font-bold text-primary mb-6">
+                <h2 className="text-4xl font-bold text-accent-blue mb-6">
                   {formatPrice(property.price)}
                   {property.type === "Aluguel" && <span className="text-2xl font-normal text-slate-500">/mês</span>}
                 </h2>

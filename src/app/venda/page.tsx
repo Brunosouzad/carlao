@@ -1,5 +1,4 @@
-"use client";
-
+import { Suspense } from "react";
 import Navbar from "@/components/Navbar";
 import PropertyCard from "@/components/PropertyCard";
 import SearchFilter from "@/components/SearchFilter";
@@ -21,7 +20,9 @@ export default function VendaPage() {
           </div>
           
           <div className="mb-12">
-            <SearchFilter compact />
+            <Suspense fallback={<div className="h-20 bg-slate-100 animate-pulse rounded-xl" />}>
+              <SearchFilter compact />
+            </Suspense>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">

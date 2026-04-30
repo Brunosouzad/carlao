@@ -3,7 +3,7 @@
 import { useProperties } from "@/store/PropertiesContext";
 import Navbar from "@/components/Navbar";
 import PropertyCard from "@/components/PropertyCard";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { BedDouble, Bath, Square, MapPin, CheckCircle, ArrowLeft, ChevronLeft, ChevronRight, Share2, Heart, Printer, ArrowLeftRight, Check, Phone, Mail } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
@@ -18,8 +18,10 @@ import { supabase } from "@/lib/supabase";
 import { useCompare } from "@/store/CompareContext";
 import { useFavorites } from "@/store/FavoritesContext";
 
-export default function PropertyDetailsPage() {
-  const { id } = useParams();
+import React from "react";
+
+export default function PropertyDetailsPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = React.use(params);
   const router = useRouter();
   const { properties } = useProperties();
   
@@ -72,8 +74,8 @@ export default function PropertyDetailsPage() {
   };
 
   useEffect(() => {
-    if (id) {
-      const found = properties.find((p) => p.id === id);
+    if (id && properties.length > 0) {
+      const found = properties.find((p) => String(p.id) === String(id));
       if (found) {
         setProperty(found);
         setFormData(prev => ({
@@ -92,14 +94,25 @@ export default function PropertyDetailsPage() {
   }, [currentImageIndex]);
 
   if (!property) {
+    const isActuallyNotFound = properties.length > 0 && !properties.find(p => String(p.id) === String(id));
+    
     return (
       <>
         <Navbar />
         <div className="pt-32 pb-24 text-center min-h-[60vh] flex flex-col justify-center items-center">
-          <h2 className="text-2xl font-bold text-primary mb-4">Imóvel não encontrado.</h2>
-          <button onClick={() => router.back()} className="text-secondary font-bold hover:underline">
-            Voltar
-          </button>
+          {isActuallyNotFound ? (
+            <>
+              <h2 className="text-2xl font-bold text-primary mb-4">Imóvel não encontrado.</h2>
+              <button onClick={() => router.back()} className="text-secondary font-bold hover:underline">
+                Voltar para a página anterior
+              </button>
+            </>
+          ) : (
+            <div className="flex flex-col items-center gap-4">
+              <div className="w-12 h-12 border-4 border-secondary border-t-transparent rounded-full animate-spin" />
+              <p className="text-slate-500 font-medium">Carregando detalhes do imóvel...</p>
+            </div>
+          )}
         </div>
       </>
     );

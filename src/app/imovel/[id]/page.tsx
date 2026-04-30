@@ -234,8 +234,8 @@ export default function PropertyDetailsPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       
-      <div className="pt-36 pb-24 bg-slate-50 min-h-screen">
-        <div className="container mx-auto px-6">
+      <div className="pt-24 md:pt-36 pb-24 bg-slate-50 min-h-screen">
+        <div className="container mx-auto px-4 md:px-6">
           
           <button onClick={() => router.back()} className="flex items-center gap-2 text-slate-500 font-bold mb-6 hover:text-primary transition-colors cursor-pointer">
             <ArrowLeft size={20} /> Voltar
@@ -245,7 +245,7 @@ export default function PropertyDetailsPage() {
             {/* Left Column (Images & Details) */}
             <div className="lg:col-span-2 space-y-8">
               
-              <div className="w-full h-[500px] rounded-3xl overflow-hidden shadow-lg relative group bg-slate-900">
+              <div className="w-full h-[350px] md:h-[500px] rounded-3xl overflow-hidden shadow-lg relative group bg-slate-900">
                 {currentMedia.type === 'video' ? (
                   !isVideoPlaying ? (
                     <div 
@@ -340,7 +340,7 @@ export default function PropertyDetailsPage() {
                 </button>
               </div>
 
-              <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 relative">
+              <div className="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-slate-100 relative">
                 {showCopyToast && (
                   <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-3 py-2 rounded-lg z-20">
                     Link copiado!
@@ -445,7 +445,7 @@ export default function PropertyDetailsPage() {
 
             {/* Right Column (Sidebar) */}
             <div className="space-y-8">
-              <div className="bg-white p-8 rounded-3xl shadow-lg shadow-black/5 border border-slate-100 sticky top-32">
+              <div className="bg-white p-6 md:p-8 rounded-3xl shadow-lg shadow-black/5 border border-slate-100 lg:sticky lg:top-32">
                 <p className="text-slate-400 text-sm font-bold uppercase tracking-widest mb-2">Valor do Imóvel</p>
                 <h2 className="text-4xl font-bold text-primary mb-6">
                   {formatPrice(property.price)}

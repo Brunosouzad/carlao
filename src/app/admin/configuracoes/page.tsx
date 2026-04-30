@@ -59,15 +59,15 @@ export default function AdminConfiguracoes() {
     }
   };
 
-  const handleSave = () => {
-    updateSettings(form);
+  const handleSave = async () => {
+    await updateSettings(form);
     setSaved(true);
     setTimeout(() => setSaved(false), 3000);
   };
 
-  const handleReset = () => {
+  const handleReset = async () => {
     if (confirm("Resetar todas as configurações para o padrão?")) {
-      resetSettings();
+      await resetSettings();
       window.location.reload();
     }
   };

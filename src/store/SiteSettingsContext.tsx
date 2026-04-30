@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { supabase } from "@/lib/supabase";
 
 export interface SiteSettings {
   // Hero / Banner
@@ -36,43 +37,72 @@ const DEFAULT_SETTINGS: SiteSettings = {
   homeMaxAluguel: 4,
 };
 
-const STORAGE_KEY = "@carlao-imoveis:site-settings";
-
 interface SiteSettingsContextType {
   settings: SiteSettings;
-  updateSettings: (patch: Partial<SiteSettings>) => void;
-  resetSettings: () => void;
+  updateSettings: (patch: Partial<SiteSettings>) => Promise<void>;
+  resetSettings: () => Promise<void>;
 }
 
 const SiteSettingsContext = createContext<SiteSettingsContextType>({
   settings: DEFAULT_SETTINGS,
-  updateSettings: () => {},
-  resetSettings: () => {},
+  updateSettings: async () => {},
+  resetSettings: async () => {},
 });
 
 export function SiteSettingsProvider({ children }: { children: React.ReactNode }) {
   const [settings, setSettings] = useState<SiteSettings>(DEFAULT_SETTINGS);
 
-  useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-      try {
-        setSettings({ ...DEFAULT_SETTINGS, ...JSON.parse(stored) });
-      } catch {
-        setSettings(DEFAULT_SETTINGS);
+  const fetchSettings = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('site_settings')
+        .select('settings')
+        .single();
+      
+      if (data && data.settings) {
+        setSettings({ ...DEFAULT_SETTINGS, ...data.settings });
+      } else if (error && error.code === 'PGRST116') {
+        // Table exists but no row, create the first one
+        await supabase.from('site_settings').insert([{ settings: DEFAULT_SETTINGS }]);
       }
+    } catch (err) {
+      console.error("Error fetching settings from Supabase:", err);
     }
-  }, []);
-
-  const updateSettings = (patch: Partial<SiteSettings>) => {
-    const updated = { ...settings, ...patch };
-    setSettings(updated);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
   };
 
-  const resetSettings = () => {
+  useEffect(() => {
+    fetchSettings();
+  }, []);
+
+  const updateSettings = async (patch: Partial<SiteSettings>) => {
+    const updated = { ...settings, ...patch };
+    setSettings(updated);
+    
+    try {
+      const { error } = await supabase
+        .from('site_settings')
+        .update({ settings: updated })
+        .eq('id', 1); // Assuming we only have one row with id 1 or we use a better logic
+      
+      // If update fails because id 1 doesn't exist, try upsert
+      if (error) {
+        await supabase.from('site_settings').upsert([{ id: 1, settings: updated }]);
+      }
+    } catch (err) {
+      console.error("Error saving settings to Supabase:", err);
+    }
+  };
+
+  const resetSettings = async () => {
     setSettings(DEFAULT_SETTINGS);
-    localStorage.removeItem(STORAGE_KEY);
+    try {
+      await supabase
+        .from('site_settings')
+        .update({ settings: DEFAULT_SETTINGS })
+        .eq('id', 1);
+    } catch (err) {
+      console.error("Error resetting settings in Supabase:", err);
+    }
   };
 
   return (

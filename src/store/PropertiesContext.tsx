@@ -1,0 +1,164 @@
+"use client";
+
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { Property, INITIAL_PROPERTIES } from "../data/properties";
+import { supabase } from "../lib/supabase";
+
+interface PropertiesContextType {
+  properties: Property[];
+  loading: boolean;
+  addProperty: (property: Omit<Property, "id">) => Promise<void>;
+  updateProperty: (property: Property) => Promise<void>;
+  deleteProperty: (id: string) => Promise<void>;
+  refreshProperties: () => Promise<void>;
+}
+
+const PropertiesContext = createContext<PropertiesContextType | undefined>(undefined);
+
+export function PropertiesProvider({ children }: { children: React.ReactNode }) {
+  const [properties, setProperties] = useState<Property[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Consideramos configurado se não for o placeholder padrão
+  const isSupabaseConfigured = 
+    process.env.NEXT_PUBLIC_SUPABASE_URL && 
+    process.env.NEXT_PUBLIC_SUPABASE_URL !== 'https://your-project.supabase.co' &&
+    process.env.NEXT_PUBLIC_SUPABASE_URL !== 'https://placeholder.supabase.co';
+
+  const fetchProperties = async () => {
+    setLoading(true);
+    try {
+      if (isSupabaseConfigured) {
+        const { data, error } = await supabase
+          .from('properties')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (error) {
+          console.warn("Supabase fetch error, falling back to local:", error.message);
+          loadLocalData();
+        } else if (data) {
+          const mappedData = data.map((p: any) => {
+            const { video_url, zip_code, ...rest } = p;
+            return { ...rest, videoUrl: video_url, zipCode: zip_code };
+          });
+          setProperties(mappedData as Property[]);
+        }
+      } else {
+        loadLocalData();
+      }
+    } catch (e) {
+      console.error("Error in fetchProperties:", e);
+      loadLocalData();
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadLocalData = () => {
+    const stored = localStorage.getItem("@carlao-imoveis:properties");
+    if (stored) {
+      try {
+        setProperties(JSON.parse(stored));
+      } catch (e) {
+        setProperties(INITIAL_PROPERTIES);
+      }
+    } else {
+      setProperties(INITIAL_PROPERTIES);
+      localStorage.setItem("@carlao-imoveis:properties", JSON.stringify(INITIAL_PROPERTIES));
+    }
+  };
+
+  useEffect(() => {
+    fetchProperties();
+  }, []);
+
+  const addProperty = async (propertyData: Omit<Property, "id">) => {
+    try {
+      if (isSupabaseConfigured) {
+        const { videoUrl, zipCode, ...rest } = propertyData;
+        const { data, error } = await supabase
+          .from('properties')
+          .insert([{ ...rest, video_url: videoUrl, zip_code: zipCode }])
+          .select();
+
+        if (error) throw error;
+        if (data) {
+          setProperties(prev => [data[0] as Property, ...prev]);
+        }
+      } else {
+        const newProperty = { ...propertyData, id: Date.now().toString() } as Property;
+        const newProperties = [newProperty, ...properties];
+        setProperties(newProperties);
+        localStorage.setItem("@carlao-imoveis:properties", JSON.stringify(newProperties));
+      }
+    } catch (e) {
+      console.error("Error adding property:", e);
+      alert("Erro ao salvar no banco. Verifique se a tabela 'properties' foi criada no Supabase.");
+    }
+  };
+
+  const updateProperty = async (updatedProperty: Property) => {
+    try {
+      if (isSupabaseConfigured) {
+        const { videoUrl, zipCode, ...rest } = updatedProperty;
+        const { error } = await supabase
+          .from('properties')
+          .update({ ...rest, video_url: videoUrl, zip_code: zipCode })
+          .eq('id', updatedProperty.id);
+
+        if (error) throw error;
+        setProperties(prev => prev.map(p => p.id === updatedProperty.id ? updatedProperty : p));
+      } else {
+        const newProperties = properties.map((p) => (p.id === updatedProperty.id ? updatedProperty : p));
+        setProperties(newProperties);
+        localStorage.setItem("@carlao-imoveis:properties", JSON.stringify(newProperties));
+      }
+    } catch (e) {
+      console.error("Error updating property:", e);
+    }
+  };
+
+  const deleteProperty = async (id: string) => {
+    try {
+      if (isSupabaseConfigured) {
+        const { error } = await supabase
+          .from('properties')
+          .delete()
+          .eq('id', id);
+
+        if (error) throw error;
+        setProperties(prev => prev.filter(p => p.id !== id));
+      } else {
+        const newProperties = properties.filter((p) => (p.id !== id));
+        setProperties(newProperties);
+        localStorage.setItem("@carlao-imoveis:properties", JSON.stringify(newProperties));
+      }
+    } catch (e) {
+      console.error("Error deleting property:", e);
+    }
+  };
+
+  return (
+    <PropertiesContext.Provider
+      value={{ 
+        properties, 
+        loading, 
+        addProperty, 
+        updateProperty, 
+        deleteProperty,
+        refreshProperties: fetchProperties 
+      }}
+    >
+      {children}
+    </PropertiesContext.Provider>
+  );
+}
+
+export function useProperties() {
+  const context = useContext(PropertiesContext);
+  if (context === undefined) {
+    throw new Error("useProperties must be used within a PropertiesProvider");
+  }
+  return context;
+}

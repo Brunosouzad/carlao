@@ -12,7 +12,7 @@ import { formatPrice } from "@/utils/format";
 import dynamic from "next/dynamic";
 
 const PropertyMap = dynamic(() => import("@/components/PropertyMap"), { ssr: false });
-import NeighborhoodPOIs from "@/components/NeighborhoodPOIs";
+const NeighborhoodPOIs = dynamic(() => import("@/components/NeighborhoodPOIs"), { ssr: false });
 
 import { supabase } from "@/lib/supabase";
 import { useCompare } from "@/store/CompareContext";

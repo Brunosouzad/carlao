@@ -44,7 +44,11 @@ interface SiteSettingsContextType {
   resetSettings: () => void;
 }
 
-const SiteSettingsContext = createContext<SiteSettingsContextType | undefined>(undefined);
+const SiteSettingsContext = createContext<SiteSettingsContextType>({
+  settings: DEFAULT_SETTINGS,
+  updateSettings: () => {},
+  resetSettings: () => {},
+});
 
 export function SiteSettingsProvider({ children }: { children: React.ReactNode }) {
   const [settings, setSettings] = useState<SiteSettings>(DEFAULT_SETTINGS);
@@ -79,7 +83,5 @@ export function SiteSettingsProvider({ children }: { children: React.ReactNode }
 }
 
 export function useSiteSettings() {
-  const ctx = useContext(SiteSettingsContext);
-  if (!ctx) throw new Error("useSiteSettings must be used within SiteSettingsProvider");
-  return ctx;
+  return useContext(SiteSettingsContext);
 }

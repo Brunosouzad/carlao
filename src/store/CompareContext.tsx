@@ -10,7 +10,12 @@ interface CompareContextType {
   clearCompare: () => void;
 }
 
-const CompareContext = createContext<CompareContextType | undefined>(undefined);
+const CompareContext = createContext<CompareContextType>({
+  compareList: [],
+  toggleCompare: () => {},
+  isInCompare: () => false,
+  clearCompare: () => {},
+});
 
 export function CompareProvider({ children }: { children: React.ReactNode }) {
   const [compareList, setCompareList] = useState<string[]>([]);
@@ -60,9 +65,5 @@ export function CompareProvider({ children }: { children: React.ReactNode }) {
 }
 
 export function useCompare() {
-  const context = useContext(CompareContext);
-  if (context === undefined) {
-    throw new Error("useCompare must be used within a CompareProvider");
-  }
-  return context;
+  return useContext(CompareContext);
 }

@@ -13,7 +13,14 @@ interface PropertiesContextType {
   refreshProperties: () => Promise<void>;
 }
 
-const PropertiesContext = createContext<PropertiesContextType | undefined>(undefined);
+const PropertiesContext = createContext<PropertiesContextType>({
+  properties: INITIAL_PROPERTIES,
+  loading: false,
+  addProperty: async () => {},
+  updateProperty: async () => {},
+  deleteProperty: async () => {},
+  refreshProperties: async () => {},
+});
 
 export function PropertiesProvider({ children }: { children: React.ReactNode }) {
   const [properties, setProperties] = useState<Property[]>([]);
@@ -161,9 +168,5 @@ export function PropertiesProvider({ children }: { children: React.ReactNode }) 
 }
 
 export function useProperties() {
-  const context = useContext(PropertiesContext);
-  if (context === undefined) {
-    throw new Error("useProperties must be used within a PropertiesProvider");
-  }
-  return context;
+  return useContext(PropertiesContext);
 }

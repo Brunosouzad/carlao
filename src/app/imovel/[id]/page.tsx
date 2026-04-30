@@ -278,13 +278,13 @@ export default function PropertyDetailsPage() {
                 
                 <button 
                   onClick={prevMedia} 
-                  className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/40 backdrop-blur-sm text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/60 z-10 focus:outline-none cursor-pointer"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/40 backdrop-blur-sm text-white flex items-center justify-center md:opacity-0 md:group-hover:opacity-100 transition-opacity hover:bg-black/60 z-10 focus:outline-none cursor-pointer"
                 >
                   <ChevronLeft size={32} />
                 </button>
                 <button 
                   onClick={nextMedia} 
-                  className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/40 backdrop-blur-sm text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/60 z-10 focus:outline-none cursor-pointer"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/40 backdrop-blur-sm text-white flex items-center justify-center md:opacity-0 md:group-hover:opacity-100 transition-opacity hover:bg-black/60 z-10 focus:outline-none cursor-pointer"
                 >
                   <ChevronRight size={32} />
                 </button>
@@ -305,7 +305,7 @@ export default function PropertyDetailsPage() {
               <div className="relative group">
                 <button 
                   onClick={() => scrollThumbnails('left')}
-                  className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white shadow-lg text-slate-700 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-slate-50 hover:text-primary z-10 cursor-pointer -ml-5"
+                  className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white shadow-lg text-slate-700 flex items-center justify-center md:opacity-0 md:group-hover:opacity-100 transition-opacity hover:bg-slate-50 hover:text-primary z-10 cursor-pointer -ml-5"
                 >
                   <ChevronLeft size={24} />
                 </button>
@@ -334,7 +334,7 @@ export default function PropertyDetailsPage() {
 
                 <button 
                   onClick={() => scrollThumbnails('right')}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white shadow-lg text-slate-700 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-slate-50 hover:text-primary z-10 cursor-pointer -mr-5"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white shadow-lg text-slate-700 flex items-center justify-center md:opacity-0 md:group-hover:opacity-100 transition-opacity hover:bg-slate-50 hover:text-primary z-10 cursor-pointer -mr-5"
                 >
                   <ChevronRight size={24} />
                 </button>
@@ -549,7 +549,7 @@ export default function PropertyDetailsPage() {
                 <h2 className="text-4xl font-bold text-primary">Propriedades semelhantes</h2>
               </div>
               
-              <div className="flex gap-1.5 p-1.5 bg-white border border-slate-200 rounded-2xl w-fit shadow-sm">
+              <div className="flex gap-1.5 p-1.5 bg-white border border-slate-200 rounded-2xl w-full md:w-fit shadow-sm overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                 {[
                   { id: 'recomendado', label: 'Recomendado' },
                   { id: 'tipo', label: 'Tipo De Imóvel' },

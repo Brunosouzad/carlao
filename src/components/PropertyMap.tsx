@@ -6,8 +6,9 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
 // Custom pin: teal marker with orange house icon
-const createCustomIcon = () =>
-  L.divIcon({
+const getCustomIcon = () => {
+  if (typeof window === 'undefined') return null;
+  return L.divIcon({
     className: "",
     iconSize: [40, 52],
     iconAnchor: [20, 52],
@@ -20,6 +21,7 @@ const createCustomIcon = () =>
       </svg>
     `,
   });
+};
 
 interface PropertyMapProps {
   location: string;
@@ -99,7 +101,7 @@ export default function PropertyMap({ location, title, className = "h-[350px]" }
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        <Marker position={coords} icon={createCustomIcon()}>
+        <Marker position={coords} icon={getCustomIcon() as L.DivIcon}>
           <Popup>
             <strong>{title || "Imóvel"}</strong>
             <br />

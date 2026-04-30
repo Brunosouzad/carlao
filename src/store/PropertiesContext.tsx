@@ -56,6 +56,11 @@ export function PropertiesProvider({ children }: { children: React.ReactNode }) 
   };
 
   const loadLocalData = () => {
+    if (typeof window === 'undefined') {
+      setProperties(INITIAL_PROPERTIES);
+      return;
+    }
+
     const stored = localStorage.getItem("@carlao-imoveis:properties");
     if (stored) {
       try {

@@ -15,7 +15,7 @@ export interface Property {
   garages: number;
   area: number;
   type: "Venda" | "Aluguel";
-  category: "Apartamento" | "Área" | "Barracão" | "Casa" | "Chácara" | "Fazenda" | "Galpão" | "Loja" | "Lote" | "Prédio" | "Sala" | "Sítio" | "Quitinete" | "Pousada";
+  category: "Apartamento" | "Área" | "Barracão" | "Casa" | "Chácara" | "Fazenda" | "Galpão" | "Loja" | "Lote" | "Prédio" | "Sala" | "Sítio" | "Quitinete" | "Pousada" | "Comercial" | "Industrial";
   image: string;
   images?: string[];
   features?: string[];

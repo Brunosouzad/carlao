@@ -23,20 +23,26 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.carlaoimoveismg.com.br'),
-  title: "Carlão Imóveis | A sua Imobiliária de confiança em Minas Gerais",
-  description: "Encontre os melhores imóveis em Minas Gerais com o corretor Carlão. Casas, apartamentos, lotes e fazendas com atendimento personalizado e excelência.",
-  keywords: "imobiliária, corretor de imóveis, minas gerais, carlão imóveis, casas à venda, apartamentos, aluguel, Governador Valadares, Coronel Fabriciano",
+  title: {
+    default: 'Carlão Imóveis | Imobiliária em Governador Valadares e Coronel Fabriciano - MG',
+    template: '%s | Carlão Imóveis',
+  },
+  description: 'Encontre os melhores imóveis em Governador Valadares e Coronel Fabriciano. Casas, apartamentos, lotes e fazendas à venda e para alugar com atendimento personalizado.',
+  keywords: 'imobiliária, corretor de imóveis, minas gerais, carlão imóveis, casas à venda, apartamentos, aluguel, Governador Valadares, Coronel Fabriciano, imóveis MG',
+  alternates: {
+    canonical: '/',
+  },
   openGraph: {
-    title: 'Carlão Imóveis | Imobiliária em Minas Gerais',
+    title: 'Carlão Imóveis | Imobiliária em Governador Valadares e Coronel Fabriciano',
     description: 'A sua parceira de confiança em negócios imobiliários. Casas, apartamentos, fazendas e lotes em Governador Valadares e região.',
     url: 'https://www.carlaoimoveismg.com.br',
     siteName: 'Carlão Imóveis',
     images: [
       {
-        url: '/logo-carlao.png',
+        url: '/og-carlao.png',
         width: 1200,
         height: 630,
-        alt: 'Carlão Imóveis Logo',
+        alt: 'Carlão Imóveis - Imobiliária em Governador Valadares e Coronel Fabriciano',
       },
     ],
     locale: 'pt_BR',
@@ -44,9 +50,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Carlão Imóveis | Imobiliária em Minas Gerais',
-    description: 'A sua parceira de confiança em negócios imobiliários.',
-    images: ['/logo-carlao.png'],
+    title: 'Carlão Imóveis | Imobiliária em Governador Valadares e Coronel Fabriciano',
+    description: 'A sua parceira de confiança em negócios imobiliários em Minas Gerais.',
+    images: ['/og-carlao.png'],
   },
   robots: {
     index: true,
@@ -60,8 +66,8 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: "/favicon.png",
-    apple: "/favicon.png",
+    icon: '/favicon.png',
+    apple: '/favicon.png',
   },
 };
 
@@ -83,29 +89,60 @@ export default function RootLayout({
                   "@type": "RealEstateAgent",
                   "name": "Carlão Imóveis",
                   "image": "https://www.carlaoimoveismg.com.br/logo-carlao.png",
-                  "description": "Sua parceira de confiança em negócios imobiliários em Minas Gerais desde 2011.",
-                  "@id": "https://www.carlaoimoveismg.com.br",
+                  "description": "Sua parceira de confiança em negócios imobiliários em Minas Gerais desde 2011. Especialistas em venda, aluguel e administração de imóveis em Governador Valadares e Coronel Fabriciano.",
+                  "@id": "https://www.carlaoimoveismg.com.br/#organization",
                   "url": "https://www.carlaoimoveismg.com.br",
-                  "telephone": "+5531988956224",
+                  "telephone": "+553384136800",
+                  "email": "carlaoimoveisva@gmail.com",
+                  "priceRange": "$$",
+                  "areaServed": [
+                    { "@type": "City", "name": "Governador Valadares", "address": { "@type": "PostalAddress", "addressRegion": "MG", "addressCountry": "BR" } },
+                    { "@type": "City", "name": "Coronel Fabriciano", "address": { "@type": "PostalAddress", "addressRegion": "MG", "addressCountry": "BR" } }
+                  ],
                   "address": {
                     "@type": "PostalAddress",
-                    "streetAddress": "R. Nádia, 134 - Loja 1",
-                    "addressLocality": "Pte. Preta, Queimados",
-                    "addressRegion": "RJ",
-                    "postalCode": "26311-420",
+                    "streetAddress": "Rua Marechal Floriano, 600, Loja 05",
+                    "addressLocality": "Governador Valadares",
+                    "addressRegion": "MG",
+                    "postalCode": "35010-140",
                     "addressCountry": "BR"
-                  }
+                  },
+                  "openingHoursSpecification": {
+                    "@type": "OpeningHoursSpecification",
+                    "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+                    "opens": "08:00",
+                    "closes": "18:00"
+                  },
+                  "sameAs": [
+                    "https://www.instagram.com/carlao_imoveis",
+                    "https://facebook.com/carlaoimoveismg"
+                  ]
                 },
                 {
                   "@type": "WebSite",
                   "@id": "https://www.carlaoimoveismg.com.br/#website",
                   "url": "https://www.carlaoimoveismg.com.br",
                   "name": "Carlão Imóveis",
+                  "publisher": { "@id": "https://www.carlaoimoveismg.com.br/#organization" },
                   "potentialAction": {
                     "@type": "SearchAction",
                     "target": "https://www.carlaoimoveismg.com.br/pesquisa?q={search_term_string}",
                     "query-input": "required name=search_term_string"
                   }
+                },
+                {
+                  "@type": "SiteNavigationElement",
+                  "name": ["Home", "A Empresa", "Serviços", "Imóveis à Venda", "Imóveis para Aluguel", "Anuncie seu Imóvel", "FAQ", "Contato"],
+                  "url": [
+                    "https://www.carlaoimoveismg.com.br/",
+                    "https://www.carlaoimoveismg.com.br/a-empresa",
+                    "https://www.carlaoimoveismg.com.br/servicos",
+                    "https://www.carlaoimoveismg.com.br/venda",
+                    "https://www.carlaoimoveismg.com.br/aluguel",
+                    "https://www.carlaoimoveismg.com.br/administrar",
+                    "https://www.carlaoimoveismg.com.br/faq",
+                    "https://www.carlaoimoveismg.com.br/contato"
+                  ]
                 }
               ]
             })

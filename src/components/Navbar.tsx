@@ -50,6 +50,7 @@ export default function Navbar() {
             { name: "Anuncie seu Imóvel", href: "/administrar" },
             { name: "Venda", href: "/venda" },
             { name: "Aluguel", href: "/aluguel" },
+            { name: "Contato", href: "/contato" },
           ].map((item) => (
             <Link key={item.name} href={item.href} className="relative py-1 hover:text-secondary transition-colors group/link">
               {item.name}
@@ -144,6 +145,7 @@ export default function Navbar() {
               <Link href="/administrar" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-secondary transition-colors py-2 border-b border-slate-50">Anuncie seu Imóvel</Link>
               <Link href="/venda" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-secondary transition-colors py-2 border-b border-slate-50">Venda</Link>
               <Link href="/aluguel" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-secondary transition-colors py-2 border-b border-slate-50">Aluguel</Link>
+              <Link href="/contato" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-secondary transition-colors py-2 border-b border-slate-50">Contato</Link>
               <Link href="/favoritos" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-secondary transition-colors py-2 border-b border-slate-50">Favoritos ({favorites.length})</Link>
               <Link href="/comparar" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-secondary transition-colors py-2 border-b border-slate-50">Comparar ({compareList.length})</Link>
               <Link href="/procura" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-[#B30F1A] transition-colors py-2 text-[#B30F1A]">O que procura?</Link>

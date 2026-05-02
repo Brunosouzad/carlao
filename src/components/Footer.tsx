@@ -24,10 +24,13 @@ export default function Footer() {
           <div>
             <h4 className="text-secondary font-bold mb-8 uppercase text-xs tracking-widest">Navegação</h4>
             <ul className="space-y-4">
-              <li><Link href="/#inicio" className="text-white hover:text-secondary transition-colors text-sm font-medium">Início</Link></li>
+              <li><Link href="/" className="text-white hover:text-secondary transition-colors text-sm font-medium">Início</Link></li>
               <li><Link href="/a-empresa" className="text-white hover:text-secondary transition-colors text-sm font-medium">A Empresa</Link></li>
               <li><Link href="/servicos" className="text-white hover:text-secondary transition-colors text-sm font-medium">Nossos Serviços</Link></li>
-              <li><Link href="/#imoveis" className="text-white hover:text-secondary transition-colors text-sm font-medium">Busca de Imóveis</Link></li>
+              <li><Link href="/venda" className="text-white hover:text-secondary transition-colors text-sm font-medium">Imóveis à Venda</Link></li>
+              <li><Link href="/aluguel" className="text-white hover:text-secondary transition-colors text-sm font-medium">Imóveis para Aluguel</Link></li>
+              <li><Link href="/faq" className="text-white hover:text-secondary transition-colors text-sm font-medium">Perguntas Frequentes</Link></li>
+              <li><Link href="/contato" className="text-white hover:text-secondary transition-colors text-sm font-medium">Contato</Link></li>
             </ul>
           </div>
           

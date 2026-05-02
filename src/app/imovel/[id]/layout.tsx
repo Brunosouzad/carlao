@@ -5,6 +5,12 @@ type Props = {
   params: { id: string }
 }
 
+function formatPriceSEO(price: string): string {
+  const num = parseFloat(price);
+  if (isNaN(num)) return price;
+  return num.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 });
+}
+
 export async function generateMetadata(
   { params }: Props,
   parent: ResolvingMetadata
@@ -14,16 +20,32 @@ export async function generateMetadata(
 
   if (!property) {
     return {
-      title: 'Imóvel não encontrado | Carlão Imóveis'
+      title: 'Imóvel não encontrado',
+      robots: { index: false, follow: true },
     }
   }
 
+  const priceFormatted = formatPriceSEO(property.price);
+  const suffix = property.type === 'Aluguel' ? '/mês' : '';
+  const specs = [
+    property.beds > 0 ? `${property.beds} quartos` : null,
+    property.baths > 0 ? `${property.baths} banheiros` : null,
+    property.area > 0 ? `${property.area}m²` : null,
+  ].filter(Boolean).join(', ');
+
+  const title = `${property.title} - ${property.code}`;
+  const description = property.description
+    || `${property.category} ${property.type === 'Aluguel' ? 'para alugar' : 'à venda'} em ${property.location}. ${specs}. ${priceFormatted}${suffix}.`;
+
   return {
-    title: `${property.title} - ${property.code} | Carlão Imóveis`,
-    description: property.description || `Confira este imóvel: ${property.title} em ${property.location}.`,
+    title,
+    description: `${description.slice(0, 140)}... Confira fotos e detalhes na Carlão Imóveis.`,
+    alternates: {
+      canonical: `/imovel/${property.id}`,
+    },
     openGraph: {
-      title: `${property.title} - ${property.code} | Carlão Imóveis`,
-      description: property.description || `Confira este excelente imóvel em ${property.location}.`,
+      title: `${property.title} | ${priceFormatted}${suffix}`,
+      description: `${property.category} em ${property.location}. ${specs}. Veja fotos e agende uma visita.`,
       images: [
         {
           url: property.image,
@@ -33,13 +55,14 @@ export async function generateMetadata(
         }
       ],
       type: 'website',
+      url: `/imovel/${property.id}`,
     },
     twitter: {
       card: 'summary_large_image',
-      title: `${property.title} - ${property.code} | Carlão Imóveis`,
-      description: property.description || `Confira este excelente imóvel em ${property.location}.`,
+      title: `${property.title} | ${priceFormatted}${suffix}`,
+      description: `${property.category} em ${property.location}. ${specs}.`,
       images: [property.image],
-    }
+    },
   }
 }
 

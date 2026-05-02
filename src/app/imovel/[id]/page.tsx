@@ -555,13 +555,18 @@ export default function PropertyDetailsPage() {
             <div className="space-y-8">
               <div className="bg-white p-6 md:p-8 rounded-3xl shadow-lg shadow-black/5 border border-slate-100 sticky top-32">
                 <p className="text-slate-400 text-xs md:text-sm font-bold uppercase tracking-widest mb-2">Valor do Imóvel</p>
-                <h2 className="text-3xl md:text-4xl font-bold text-accent-blue mb-1">
+                <h2 className={`text-3xl md:text-4xl font-bold text-accent-blue ${!(property.condominium || property.iptu) ? 'mb-4 pb-4 border-b border-slate-100' : 'mb-1'}`}>
                   {formatPrice(property.price)}
                   {property.type === "Aluguel" && <span className="text-xl md:text-2xl font-normal text-slate-500">/mês</span>}
                 </h2>
-                <div className="text-sm font-medium text-slate-400 mb-4 pb-4 border-b border-slate-100">
-                  Cond. {property.condominium ? formatPrice(property.condominium) : 'não informado'} • IPTU {property.iptu ? formatPrice(property.iptu) : 'não informado'}
-                </div>
+                {(property.condominium || property.iptu) && (
+                  <div className="text-sm font-medium text-slate-400 mb-4 pb-4 border-b border-slate-100">
+                    {[
+                      property.condominium && `Cond. ${formatPrice(property.condominium)}`,
+                      property.iptu && `IPTU ${formatPrice(property.iptu)}`
+                    ].filter(Boolean).join(' • ')}
+                  </div>
+                )}
 
                 <p className="text-base font-semibold text-primary mb-1 leading-snug">{property.title}</p>
                 <p className="text-xs text-slate-400 flex items-center gap-1 mb-5">

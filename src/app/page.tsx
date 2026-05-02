@@ -35,7 +35,7 @@ function HomeContent() {
       <>
         <Navbar />
         <div className="pt-48 pb-24 min-h-screen bg-slate-50">
-          <div className="container mx-auto px-4 md:px-8">
+          <div className="w-full max-w-7xl mx-auto mx-auto px-4 md:px-8">
             <div className="flex items-center justify-between mb-8">
               <div>
                 <h1 className="text-3xl font-bold text-primary mb-2">Resultados da Busca</h1>
@@ -71,9 +71,9 @@ function HomeContent() {
       <Navbar />
       <Hero />
       
-      <section id="imoveis" className="py-24 bg-white">
-        <div className="container mx-auto px-4 md:px-8">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+      <section id="imoveis" className="py-12 md:py-16 bg-white">
+        <div className="w-full max-w-7xl mx-auto px-4 md:px-8">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-4 md:gap-6">
             <div>
               <span className="text-secondary font-bold tracking-widest text-xs uppercase mb-2 block">{settings.homeVendaSubtitle || "Imóveis para Venda"}</span>
               <h2 className="text-4xl font-bold text-primary">{settings.homeVendaTitle || "Melhores Oportunidades"}</h2>
@@ -83,13 +83,13 @@ function HomeContent() {
             </Link>
           </div>
           
-          <div className={`grid ${gridClass} gap-8 mb-24`}>
+          <div className={`grid ${gridClass} gap-4 sm:gap-8 mb-12 md:mb-16`}>
             {propertiesGroup1.map((property) => (
               <PropertyCard key={property.id} {...property} />
             ))}
           </div>
 
-          <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-4 md:gap-6">
             <div>
               <span className="text-secondary font-bold tracking-widest text-xs uppercase mb-2 block">{settings.homeAluguelSubtitle || "Imóveis para Alugar"}</span>
               <h2 className="text-4xl font-bold text-primary">{settings.homeAluguelTitle || "Destaques de Locação"}</h2>
@@ -99,7 +99,7 @@ function HomeContent() {
             </Link>
           </div>
           
-          <div className={`grid ${gridClass} gap-8`}>
+          <div className={`grid ${gridClass} gap-4 sm:gap-8`}>
             {propertiesGroup2.map((property) => (
               <PropertyCard key={property.id} {...property} />
             ))}
@@ -108,11 +108,11 @@ function HomeContent() {
       </section>
 
       {/* About Us Section — Premium */}
-      <section id="empresa" className="py-28 overflow-hidden relative bg-gradient-to-br from-slate-50 via-white to-slate-100/30">
+      <section id="empresa" className="py-16 md:py-20 overflow-hidden relative bg-gradient-to-br from-slate-50 via-white to-slate-100/30">
         <div className="absolute top-0 left-0 w-96 h-96 bg-primary/5 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2" />
         <div className="absolute bottom-0 right-0 w-80 h-80 bg-slate-200/10 rounded-full blur-[100px] translate-x-1/3 translate-y-1/3" />
 
-        <div className="container mx-auto px-8 relative z-10">
+        <div className="w-full max-w-7xl mx-auto mx-auto px-8 relative z-10">
           <div className="flex flex-col lg:flex-row items-center gap-20">
             
             <div className="flex-1 relative w-full max-w-xl">
@@ -179,13 +179,13 @@ function HomeContent() {
         </div>
       </section>
 
-      <section id="servicos" className="py-24 bg-white">
-        <div className="container mx-auto px-8 text-center mb-16">
+      <section id="servicos" className="py-12 md:py-16 bg-white">
+        <div className="w-full max-w-7xl mx-auto mx-auto px-8 text-center mb-10 md:mb-16">
           <span className="text-secondary font-bold tracking-widest text-xs uppercase mb-2 block">O que fazemos</span>
           <h2 className="text-4xl font-bold text-primary">Soluções Imobiliárias <span className="text-secondary">Completas</span></h2>
         </div>
         
-        <div className="container mx-auto px-4 md:px-8">
+        <div className="w-full max-w-7xl mx-auto mx-auto px-4 md:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="p-8 border border-slate-200 rounded-3xl hover:border-secondary/30 hover:shadow-xl transition-all group shadow-sm bg-white">
               <div className="w-14 h-14 bg-primary/5 rounded-2xl flex items-center justify-center text-primary mb-6 group-hover:bg-secondary group-hover:text-white transition-all">
@@ -220,8 +220,8 @@ function HomeContent() {
         </div>
       </section>
 
-      <section id="localizacao" className="py-24">
-        <div className="container mx-auto px-4 md:px-8">
+      <section id="localizacao" className="py-12 md:py-16">
+        <div className="w-full max-w-7xl mx-auto mx-auto px-4 md:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-12 gap-6 text-center md:text-left">
             <div>
               <span className="text-secondary font-bold tracking-widest text-xs uppercase mb-2 block">Onde estamos</span>
@@ -252,16 +252,16 @@ function HomeContent() {
                 </div>
 
                 <div className="space-y-3 mt-auto">
-                  <a href="tel:+553332210552" className="flex items-center justify-center md:justify-start gap-2 text-primary hover:text-secondary transition-colors group/tel">
+                  <a href="tel:+553384136800" className="flex items-center justify-center md:justify-start gap-2 text-primary hover:text-secondary transition-colors group/tel">
                     <div className="w-8 h-8 bg-primary/5 rounded-lg flex items-center justify-center group-hover/tel:bg-secondary/10">
                       <Phone size={14} className="group-hover/tel:text-secondary transition-colors" />
                     </div>
-                    <span className="font-bold text-lg font-oswald tracking-tighter">(33) 3221-0552</span>
+                    <span className="font-bold text-lg font-oswald tracking-tighter">(33) 8413-6800</span>
                   </a>
                   
                   <div className="flex flex-col sm:flex-row gap-3 pt-2">
                     <Link 
-                      href="https://wa.me/553332210552" 
+                      href="https://wa.me/553186003497" 
                       target="_blank"
                       className="flex-1 bg-[#25D366] hover:bg-[#128C7E] text-white py-3 px-4 rounded-xl text-[10px] font-bold uppercase tracking-widest flex items-center justify-center gap-2 transition-all shadow-md shadow-green-500/10"
                     >
@@ -295,16 +295,16 @@ function HomeContent() {
                 </div>
 
                 <div className="space-y-3 mt-auto">
-                  <a href="tel:+553138421200" className="flex items-center justify-center md:justify-start gap-2 text-primary hover:text-secondary transition-colors group/tel">
+                  <a href="tel:+5531988956224" className="flex items-center justify-center md:justify-start gap-2 text-primary hover:text-secondary transition-colors group/tel">
                     <div className="w-8 h-8 bg-primary/5 rounded-lg flex items-center justify-center group-hover/tel:bg-secondary/10">
                       <Phone size={14} className="group-hover/tel:text-secondary transition-colors" />
                     </div>
-                    <span className="font-bold text-lg font-oswald tracking-tighter">(31) 3842-1200</span>
+                    <span className="font-bold text-lg font-oswald tracking-tighter">(31) 98895-6224</span>
                   </a>
                   
                   <div className="flex flex-col sm:flex-row gap-3 pt-2">
                     <Link 
-                      href="https://wa.me/553138421200" 
+                      href="https://wa.me/553186003497" 
                       target="_blank"
                       className="flex-1 bg-[#25D366] hover:bg-[#128C7E] text-white py-3 px-4 rounded-xl text-[10px] font-bold uppercase tracking-widest flex items-center justify-center gap-2 transition-all shadow-md shadow-green-500/10"
                     >
@@ -320,7 +320,7 @@ function HomeContent() {
       </section>
 
       <section className="py-20 bg-slate-100 border-y border-slate-200">
-        <div className="container mx-auto px-4 md:px-8">
+        <div className="w-full max-w-7xl mx-auto mx-auto px-4 md:px-8">
           <div className="bg-white border-l-8 border-secondary p-12 md:p-16 shadow-2xl flex flex-col lg:flex-row items-center justify-between gap-12">
             <div className="max-w-3xl">
               <span className="text-secondary font-bold tracking-[0.3em] text-xs uppercase mb-4 block">Atendimento Exclusivo</span>
@@ -335,7 +335,7 @@ function HomeContent() {
             
             <div className="flex flex-col sm:flex-row items-center gap-4 w-full lg:w-auto">
               <Link 
-                href="https://wa.me/553332210552" 
+                href="https://wa.me/553186003497" 
                 target="_blank"
                 className="w-full sm:w-auto bg-primary hover:bg-black text-white flex items-center justify-center gap-3 px-10 py-5 font-bold transition-all uppercase tracking-widest text-sm"
               >

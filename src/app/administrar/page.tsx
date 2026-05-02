@@ -82,66 +82,48 @@ export default function AdministrarPage() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen bg-white">
+      <main className="min-h-screen bg-[#fcfcfc]">
         {/* Hero Section */}
-        <section className="relative pt-40 pb-20 overflow-hidden bg-[#1e293b]">
-          <div className="absolute inset-0 z-0">
-            <img 
-              src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2000&auto=format&fit=crop" 
-              className="w-full h-full object-cover opacity-30" 
-              alt="Background" 
-            />
-            <div className="absolute inset-0 bg-gradient-to-br from-[#1e293b] via-[#1e293b]/90 to-transparent" />
-            
-            {/* Decorative elements */}
-            <div className="absolute bottom-0 left-0 w-1/4 h-full bg-primary/5 blur-[100px] translate-y-1/2 -translate-x-1/2 rounded-full" />
-          </div>
+        <section className="relative pt-28 md:pt-32 pb-12 md:pb-16 overflow-hidden bg-gradient-to-b from-white to-[#fcfcfc]">
+          <div className="absolute top-0 right-0 w-[30rem] h-[30rem] bg-secondary/5 blur-[100px] rounded-full translate-x-1/2 -translate-y-1/2" />
+          <div className="absolute bottom-0 left-0 w-[20rem] h-[20rem] bg-primary/5 blur-[100px] rounded-full -translate-x-1/2 translate-y-1/2" />
 
-          <div className="container mx-auto px-6 relative z-10">
-            <div className="max-w-3xl">
-              <motion.h1 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-                className="text-4xl md:text-5xl font-bold text-white mb-6 leading-tight font-oswald uppercase"
-              >
-                Seu imóvel merece a <span className="text-secondary underline decoration-accent-red/30 underline-offset-8">gestão certa</span>.
-              </motion.h1>
-              <motion.p 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="text-base md:text-lg text-slate-300 mb-8 leading-relaxed max-w-xl"
-              >
-                Maximize seu retorno e minimize suas preocupações. O Carlão Imóveis oferece soluções completas de administração patrimonial com transparência absoluta.
-              </motion.p>
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                className="flex flex-wrap gap-4"
-              >
-                <a href="#contato" className="bg-secondary hover:bg-secondary/90 text-white font-bold px-8 py-3 rounded-xl transition-all shadow-xl shadow-secondary/10 flex items-center gap-3 active:scale-95 font-oswald uppercase tracking-wider text-sm">
+          <div className="container mx-auto px-6 max-w-6xl relative z-10">
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-center max-w-3xl mx-auto"
+            >
+              <span className="text-secondary font-bold tracking-[0.3em] text-[10px] uppercase mb-4 block">Administração Profissional</span>
+              <h1 className="text-4xl md:text-5xl font-bold text-primary mb-6 leading-tight font-oswald uppercase tracking-tight">
+                Seu imóvel merece a <span className="text-secondary underline decoration-secondary/30 underline-offset-8">gestão certa</span>
+              </h1>
+              <p className="text-slate-500 text-lg leading-relaxed mb-8 max-w-2xl mx-auto">
+                Maximize seu retorno e minimize suas preocupações. A <strong className="text-primary font-bold">Carlão Imóveis</strong> oferece soluções completas de administração patrimonial com transparência absoluta.
+              </p>
+              
+              <div className="flex flex-wrap justify-center gap-4">
+                <a href="#contato" className="bg-secondary hover:bg-secondary/90 text-white font-bold px-8 py-3.5 rounded-xl transition-all shadow-xl shadow-secondary/10 flex items-center gap-3 active:scale-95 font-oswald uppercase tracking-wider text-sm">
                   Quero anunciar agora
                 </a>
-                <a href="https://wa.me/553332210552" target="_blank" className="bg-white/5 backdrop-blur-xl text-white border border-white/10 px-6 py-3 rounded-xl font-bold hover:bg-white/10 transition-all flex items-center gap-3 active:scale-95 font-oswald uppercase tracking-wider text-sm">
+                <a href="https://wa.me/553186003497" target="_blank" className="bg-white text-slate-700 border border-slate-200 px-8 py-3.5 rounded-xl font-bold hover:bg-slate-50 hover:border-slate-300 transition-all flex items-center gap-3 active:scale-95 font-oswald uppercase tracking-wider text-sm shadow-sm">
                   <MessageSquare size={18} className="text-secondary" /> Consultor
                 </a>
-              </motion.div>
-            </div>
+              </div>
+            </motion.div>
           </div>
         </section>
 
         {/* Stats Section */}
-        <div className="container mx-auto px-6 -mt-10 relative z-20">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="w-full max-w-7xl mx-auto mx-auto px-6 -mt-10 relative z-20">
+          <div className="flex sm:grid sm:grid-cols-3 gap-4 sm:gap-6 max-w-4xl mx-auto overflow-x-auto snap-x snap-mandatory pb-4 sm:pb-0 px-4 sm:px-0 -mx-4 sm:mx-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             {[
               { label: "Anos de Experiência", value: "25+" },
               { label: "Imóveis Gerenciados", value: "800+" },
               { label: "Índice de Satisfação", value: "98%" },
-              { label: "Aluguel Garantido", value: "100%" },
             ].map((stat, i) => (
-              <div key={i} className="bg-white p-5 rounded-2xl shadow-lg border border-slate-100 flex flex-col items-center text-center">
+              <div key={i} className="bg-white p-5 rounded-2xl shadow-lg border border-slate-100 flex flex-col items-center text-center shrink-0 w-[80%] sm:w-auto snap-center">
                 <span className="text-2xl font-bold text-primary mb-0.5 font-oswald">{stat.value}</span>
                 <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">{stat.label}</span>
               </div>
@@ -150,8 +132,8 @@ export default function AdministrarPage() {
         </div>
 
         {/* Benefits Section */}
-        <section className="py-20 bg-white overflow-hidden">
-          <div className="container mx-auto px-6">
+        <section className="py-12 md:py-20 bg-white overflow-hidden">
+          <div className="w-full max-w-7xl mx-auto mx-auto px-6">
             <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
               <div className="max-w-xl">
                 <h2 className="text-primary font-bold uppercase tracking-[0.2em] text-[10px] mb-3">Diferenciais Carlão</h2>
@@ -160,16 +142,16 @@ export default function AdministrarPage() {
               <div className="w-16 h-1 bg-secondary rounded-full mb-3 hidden md:block" />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 overflow-x-auto snap-x snap-mandatory pb-4 md:pb-0 px-4 md:px-0 -mx-4 md:mx-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
               {benefits.map((item, idx) => {
                 const Icon = item.icon;
                 return (
-                  <div key={idx} className="group p-8 rounded-[2rem] bg-slate-50 hover:bg-slate-900 transition-all duration-500 border border-slate-100">
+                  <div key={idx} className="group p-6 md:p-8 rounded-[2rem] bg-slate-50 hover:bg-primary transition-all duration-500 border border-slate-100 shrink-0 w-[85%] md:w-auto snap-center">
                     <div className="w-12 h-12 bg-white shadow-md text-secondary rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-secondary group-hover:text-white transition-all duration-500">
                       <Icon size={24} />
                     </div>
                     <h3 className="text-xl font-bold text-primary mb-3 group-hover:text-white transition-colors font-oswald uppercase">{item.title}</h3>
-                    <p className="text-slate-500 text-xs leading-relaxed group-hover:text-slate-400 transition-colors">{item.description}</p>
+                    <p className="text-slate-500 text-xs leading-relaxed group-hover:text-white/90 transition-colors">{item.description}</p>
                   </div>
                 );
               })}
@@ -178,8 +160,8 @@ export default function AdministrarPage() {
         </section>
 
         {/* Form Section */}
-        <section id="contato" className="py-20 bg-slate-50 relative overflow-hidden">
-          <div className="container mx-auto px-6 relative z-10">
+        <section id="contato" className="py-20 bg-slate-100 border-y border-slate-200 relative overflow-hidden">
+          <div className="w-full max-w-7xl mx-auto mx-auto px-6 relative z-10">
             <div className="flex flex-col lg:flex-row gap-12 items-center">
               <div className="lg:w-5/12">
                 <span className="text-secondary font-bold uppercase tracking-widest text-[10px] mb-3 block">Comece Agora</span>
@@ -195,7 +177,7 @@ export default function AdministrarPage() {
                     </div>
                     <div className="flex-1">
                       <p className="text-sm text-slate-400 font-bold uppercase tracking-widest mb-1">Telefone Principal</p>
-                      <p className="text-lg font-bold text-primary hover:text-secondary transition-colors cursor-pointer font-oswald">(33) 3221-0552</p>
+                      <p className="text-lg font-bold text-primary hover:text-secondary transition-colors cursor-pointer font-oswald">(31) 8600-3497</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-4">
@@ -204,7 +186,7 @@ export default function AdministrarPage() {
                     </div>
                     <div>
                       <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">E-mail</p>
-                      <p className="text-lg font-bold text-primary hover:text-secondary transition-colors cursor-pointer font-oswald uppercase">comercial@carlaoimoveismg.com.br</p>
+                      <p className="text-lg font-bold text-primary hover:text-secondary transition-colors cursor-pointer font-oswald uppercase">carlaoimoveisva@gmail.com</p>
                     </div>
                   </div>
                 </div>

@@ -124,7 +124,7 @@ function PesquisaContent() {
       <Navbar />
 
       <div className="pt-32 pb-12 bg-slate-50 min-h-screen">
-        <div className="container mx-auto px-6">
+        <div className="w-full max-w-7xl mx-auto mx-auto px-6">
           {/* Header */}
           <div className="mb-8">
             <h1 className="text-4xl font-bold text-primary mb-2">Resultados da Pesquisa</h1>

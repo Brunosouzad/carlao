@@ -186,13 +186,15 @@ export default function LeadsPage() {
                   <td className="px-6 py-6">
                     <div className="max-w-xs">
                       <div className="text-sm font-semibold text-slate-700 line-clamp-1">{lead.property_title}</div>
-                      <Link 
-                        href={`/imovel/${lead.property_id}`}
-                        target="_blank"
-                        className="text-[10px] font-bold text-accent-blue hover:underline flex items-center gap-1 mt-1"
-                      >
-                        VER IMÓVEL <ExternalLink size={10} />
-                      </Link>
+                      {lead.property_id && (
+                        <Link 
+                          href={`/imovel/${lead.property_id}`}
+                          target="_blank"
+                          className="text-[10px] font-bold text-accent-blue hover:underline flex items-center gap-1 mt-1"
+                        >
+                          VER IMÓVEL <ExternalLink size={10} />
+                        </Link>
+                      )}
                     </div>
                   </td>
                   <td className="px-6 py-6">

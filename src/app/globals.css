@@ -40,6 +40,10 @@
 }
 
 @layer components {
+  .container {
+    @apply w-full max-w-7xl mx-auto;
+  }
+
   .btn-primary {
     @apply bg-secondary hover:bg-secondary/90 text-white font-bold px-6 py-3 rounded-xl transition-all active:scale-95 shadow-md shadow-secondary/20;
   }

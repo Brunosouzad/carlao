@@ -86,7 +86,7 @@ export default function ProcuraPage() {
       <main className="min-h-screen bg-[#fcfcfc]">
         {/* Hero Section */}
         <section className="relative pt-32 pb-16 overflow-hidden bg-white border-b border-slate-100">
-          <div className="container mx-auto px-6 relative z-10">
+          <div className="w-full max-w-7xl mx-auto mx-auto px-6 relative z-10">
             <div className="max-w-4xl mx-auto text-center">
               <motion.h1 
                 initial={{ opacity: 0, y: 20 }}
@@ -101,7 +101,7 @@ export default function ProcuraPage() {
                 transition={{ delay: 0.1 }}
                 className="text-base md:text-lg text-slate-500 mb-0 leading-relaxed max-w-2xl mx-auto"
               >
-                Conte-nos exatamente o que você precisa. Nossa equipe de "Personal Shoppers" fará uma busca personalizada em todo o mercado para encontrar o seu lar ideal.
+                Conte-nos exatamente o que você precisa. Nossa equipe fará uma busca personalizada em todo o mercado para encontrar o seu lar ideal.
               </motion.p>
             </div>
           </div>
@@ -111,8 +111,8 @@ export default function ProcuraPage() {
           <div className="absolute bottom-0 left-0 w-1/4 h-full bg-primary/5 blur-[100px] translate-y-1/2 -translate-x-1/2 rounded-full" />
         </section>
 
-        <section className="py-16">
-          <div className="container mx-auto px-6">
+        <section className="py-16 bg-slate-100 border-y border-slate-200">
+          <div className="w-full max-w-7xl mx-auto mx-auto px-6">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
               
               {/* Info Column */}
@@ -142,7 +142,7 @@ export default function ProcuraPage() {
                     <h3 className="text-xl font-bold mb-4 font-oswald uppercase">Prefere falar agora?</h3>
                     <p className="text-sm text-slate-300 mb-6 leading-relaxed">Nossos consultores estão prontos para ouvir suas necessidades pelo WhatsApp.</p>
                     <a 
-                      href="https://wa.me/553332210552" 
+                      href="https://wa.me/553186003497" 
                       target="_blank" 
                       className="inline-flex items-center gap-2 bg-secondary text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-secondary/90 transition-all font-oswald uppercase tracking-wider"
                     >

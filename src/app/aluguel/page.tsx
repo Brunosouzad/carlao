@@ -15,7 +15,7 @@ export default function AluguelPage() {
       <Navbar />
       
       <div className="pt-32 pb-12 bg-slate-50">
-        <div className="container mx-auto px-6">
+        <div className="w-full max-w-7xl mx-auto px-4 md:px-8">
           <div className="mb-12">
             <h1 className="text-4xl font-bold text-primary mb-4">Imóveis para Aluguel</h1>
             <p className="text-slate-500">As melhores opções de locação para você ou sua empresa.</p>
@@ -27,7 +27,7 @@ export default function AluguelPage() {
             </Suspense>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-8">
             {propertiesForRent.map((property) => (
               <PropertyCard key={property.id} {...property} />
             ))}

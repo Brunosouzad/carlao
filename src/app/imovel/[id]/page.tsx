@@ -28,6 +28,7 @@ export default function PropertyDetailsPage() {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [showCopyToast, setShowCopyToast] = useState(false);
   const [recommendTab, setRecommendTab] = useState<'recomendado' | 'tipo' | 'localizacao'>('recomendado');
+  const [lightboxOpen, setLightboxOpen] = useState(false);
 
   // Form State
   const [formData, setFormData] = useState({
@@ -69,6 +70,68 @@ export default function PropertyDetailsPage() {
       setShowCopyToast(true);
       setTimeout(() => setShowCopyToast(false), 2000);
     }
+  };
+
+  const handlePrint = () => {
+    if (!property) return;
+    const allImgs = Array.from(new Set([property.image, ...(property.images || [])])).filter(Boolean);
+    const featuresList = (property.features || []).map((f: string) => `<li style="margin-bottom:4px">✓ ${f}</li>`).join('');
+    const printWindow = window.open('', '_blank', 'width=900,height=700');
+    if (!printWindow) return;
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html lang="pt-BR">
+      <head>
+        <meta charset="UTF-8" />
+        <title>${property.title} – Carlão Imóveis</title>
+        <style>
+          * { box-sizing: border-box; margin: 0; padding: 0; }
+          body { font-family: Arial, sans-serif; color: #1e293b; padding: 32px; max-width: 800px; margin: auto; }
+          .header { display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid #c41230; padding-bottom: 16px; margin-bottom: 24px; }
+          .logo { font-size: 22px; font-weight: 900; color: #c41230; letter-spacing: -1px; }
+          .badge { background: #f59e0b; color: #1e293b; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 700; }
+          .title { font-size: 26px; font-weight: 800; color: #1e293b; margin-bottom: 6px; }
+          .location { color: #64748b; font-size: 14px; margin-bottom: 20px; }
+          .price { font-size: 32px; font-weight: 900; color: #0ea5e9; margin-bottom: 4px; }
+          .code { font-size: 13px; color: #94a3b8; margin-bottom: 24px; }
+          .specs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
+          .spec { text-align: center; background: #f8fafc; border-radius: 10px; padding: 14px 8px; }
+          .spec-value { font-size: 22px; font-weight: 800; color: #1e293b; }
+          .spec-label { font-size: 10px; color: #94a3b8; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; }
+          .section-title { font-size: 15px; font-weight: 700; color: #1e293b; margin-bottom: 8px; border-left: 4px solid #c41230; padding-left: 10px; }
+          .description { font-size: 14px; color: #475569; line-height: 1.7; margin-bottom: 24px; white-space: pre-wrap; }
+          .features { columns: 2; list-style: none; font-size: 13px; color: #475569; margin-bottom: 24px; }
+          .images { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 24px; }
+          .images img { width: 100%; height: 140px; object-fit: cover; border-radius: 8px; }
+          .footer { text-align: center; font-size: 12px; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 16px; }
+          @media print { body { padding: 16px; } button { display: none; } }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <span class="logo">CARLÃO IMÓVEIS</span>
+          <span class="badge">${property.type?.toUpperCase()}</span>
+        </div>
+        <p class="title">${property.title}</p>
+        <p class="location">📍 ${property.location}</p>
+        <p class="price">${property.price}${property.type === 'Aluguel' ? '/mês' : ''}</p>
+        <p class="code">CÓD: ${property.code}</p>
+        <div class="specs">
+          <div class="spec"><div class="spec-value">${property.beds}</div><div class="spec-label">Quartos</div></div>
+          <div class="spec"><div class="spec-value">${property.baths}</div><div class="spec-label">Banheiros</div></div>
+          <div class="spec"><div class="spec-value">${property.garages}</div><div class="spec-label">Vagas</div></div>
+          <div class="spec"><div class="spec-value">${property.area} m²</div><div class="spec-label">Área</div></div>
+        </div>
+        ${property.description ? `<p class="section-title">Descrição</p><p class="description">${property.description}</p>` : ''}
+        ${featuresList ? `<p class="section-title">Características</p><ul class="features">${featuresList}</ul>` : ''}
+        ${allImgs.length ? `<p class="section-title">Fotos</p><div class="images">${allImgs.slice(0,6).map((img: string) => `<img src="${img}" alt="Foto" />`).join('')}</div>` : ''}
+        <div class="footer">
+          Carlão Imóveis | (31) 98895-6224 | carlaoimoveisva@gmail.com | ${window.location.href}
+        </div>
+        <script>window.onload = () => { window.print(); }<\/script>
+      </body></html>
+    `);
+    printWindow.document.close();
   };
 
   useEffect(() => {
@@ -147,7 +210,7 @@ export default function PropertyDetailsPage() {
   const handleWhatsApp = (e: React.MouseEvent) => {
     e.preventDefault();
     const text = `${formData.mensagem}\n\n*Nome:* ${formData.nome}\n*Telefone:* ${formData.telefone}\n*E-mail:* ${formData.email}`;
-    window.open(`https://wa.me/553332210552?text=${encodeURIComponent(text)}`, '_blank');
+    window.open(`https://wa.me/553186003497?text=${encodeURIComponent(text)}`, '_blank');
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -169,8 +232,7 @@ export default function PropertyDetailsPage() {
             email: formData.email,
             phone: formData.telefone,
             message: formData.mensagem,
-            property_id: property.id,
-            property_title: property.title,
+            property_title: `[${property.code}] ${property.title}`,
             status: 'novo'
           }
         ]);
@@ -237,17 +299,40 @@ export default function PropertyDetailsPage() {
       />
       
       <div className="pt-44 md:pt-48 pb-24 bg-slate-50 min-h-screen overflow-x-hidden">
-        <div className="container mx-auto px-4 md:px-8">
+        <div className="w-full max-w-7xl mx-auto mx-auto px-4 md:px-8">
           
           <button onClick={() => router.back()} className="flex items-center gap-2 text-slate-500 font-bold mb-6 hover:text-primary transition-colors cursor-pointer">
             <ArrowLeft size={20} /> Voltar
           </button>
  
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
             {/* Left Column (Images & Details) */}
             <div className="lg:col-span-2 space-y-8">
               
-              <div className="w-full aspect-[4/3] md:aspect-[16/9] max-h-[70vh] rounded-3xl overflow-hidden shadow-lg relative group bg-slate-900 border border-slate-200">
+              {/* Lightbox */}
+              {lightboxOpen && currentMedia.type === 'image' && (
+                <div 
+                  className="fixed inset-0 z-[9999] bg-black/95 flex items-center justify-center p-4"
+                  onClick={() => setLightboxOpen(false)}
+                >
+                  <button className="absolute top-4 right-4 text-white/80 hover:text-white text-4xl font-thin leading-none z-10" onClick={() => setLightboxOpen(false)}>✕</button>
+                  <button onClick={(e) => { e.stopPropagation(); prevMedia(); }} className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center z-10">
+                    <ChevronLeft size={28} />
+                  </button>
+                  <img 
+                    src={currentMedia.url} 
+                    alt={property.title} 
+                    className="max-w-full max-h-[90vh] object-contain rounded-xl shadow-2xl"
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                  <button onClick={(e) => { e.stopPropagation(); nextMedia(); }} className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center z-10">
+                    <ChevronRight size={28} />
+                  </button>
+                  <span className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white/60 text-sm">{currentImageIndex + 1} / {mediaItems.length}</span>
+                </div>
+              )}
+
+              <div className="w-full aspect-[4/3] md:aspect-[16/9] max-h-[70vh] rounded-3xl overflow-hidden shadow-lg relative group">
                 {currentMedia.type === 'video' ? (
                   !isVideoPlaying ? (
                     <div 
@@ -275,17 +360,16 @@ export default function PropertyDetailsPage() {
                     />
                   )
                 ) : (
-                  <>
+                  <div 
+                    className="w-full h-full cursor-zoom-in"
+                    onClick={() => setLightboxOpen(true)}
+                  >
                     <img 
                       src={currentMedia.url} 
                       alt={property.title} 
-                      className="w-full h-full object-contain transition-all duration-500" 
+                      className="w-full h-full object-cover transition-all duration-500 hover:scale-[1.02]" 
                     />
-                    <div 
-                      className="absolute inset-0 -z-10 blur-2xl opacity-30 scale-110"
-                      style={{ backgroundImage: `url(${currentMedia.url})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
-                    />
-                  </>
+                  </div>
                 )}
                 
                 <button 
@@ -311,26 +395,32 @@ export default function PropertyDetailsPage() {
                     </span>
                   )}
                 </div>
+
+                {currentMedia.type === 'image' && (
+                  <div className="absolute bottom-3 right-3 bg-black/40 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                    🔍 Clique para ampliar
+                  </div>
+                )}
               </div>
 
               {/* Thumbnails */}
-              <div className="relative group">
+              <div className="relative">
                 <button 
                   onClick={() => scrollThumbnails('left')}
-                  className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white shadow-lg text-slate-700 flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity hover:bg-slate-50 hover:text-primary z-10 cursor-pointer -ml-5"
+                  className="absolute left-0 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white shadow-md text-slate-700 flex items-center justify-center hover:bg-slate-50 hover:text-primary z-10 cursor-pointer border border-slate-100"
                 >
-                  <ChevronLeft size={24} />
+                  <ChevronLeft size={20} />
                 </button>
                 
                 <div 
                   ref={scrollContainerRef}
-                  className="flex gap-4 overflow-x-auto pb-4 pt-2 snap-x [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] scroll-smooth"
+                  className="flex gap-3 overflow-x-auto pb-3 pt-2 px-12 snap-x [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] scroll-smooth"
                 >
                   {mediaItems.map((item, idx) => (
                     <button 
                       key={idx}
                       onClick={() => setCurrentImageIndex(idx)}
-                      className={`flex-shrink-0 w-32 h-24 rounded-xl overflow-hidden snap-start transition-all cursor-pointer focus:outline-none relative ${currentImageIndex === idx ? 'ring-4 ring-secondary opacity-100' : 'opacity-60 hover:opacity-100'}`}
+                      className={`flex-shrink-0 w-28 h-20 rounded-xl snap-start transition-all cursor-pointer focus:outline-none relative overflow-hidden ${currentImageIndex === idx ? 'outline outline-4 outline-secondary outline-offset-2 opacity-100 scale-105' : 'opacity-60 hover:opacity-90 hover:scale-[1.02]'}`}
                     >
                       <img src={item.thumb} alt={`Thumb ${idx}`} className="w-full h-full object-cover" />
                       {item.type === 'video' && (
@@ -346,9 +436,9 @@ export default function PropertyDetailsPage() {
 
                 <button 
                   onClick={() => scrollThumbnails('right')}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white shadow-lg text-slate-700 flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity hover:bg-slate-50 hover:text-primary z-10 cursor-pointer -mr-5"
+                  className="absolute right-0 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white shadow-md text-slate-700 flex items-center justify-center hover:bg-slate-50 hover:text-primary z-10 cursor-pointer border border-slate-100"
                 >
-                  <ChevronRight size={24} />
+                  <ChevronRight size={20} />
                 </button>
               </div>
 
@@ -381,7 +471,7 @@ export default function PropertyDetailsPage() {
                     <button onClick={handleCompare} className={`transition-colors cursor-pointer ${isComparing ? 'text-secondary' : 'hover:text-primary'}`} title="Comparar">
                       <ArrowLeftRight size={20} />
                     </button>
-                    <button onClick={() => window.print()} className="hover:text-primary transition-colors hidden md:block cursor-pointer" title="Imprimir">
+                    <button onClick={handlePrint} className="hover:text-primary transition-colors hidden md:block cursor-pointer" title="Imprimir">
                       <Printer size={20} />
                     </button>
                   </div>
@@ -459,10 +549,16 @@ export default function PropertyDetailsPage() {
             <div className="space-y-8">
               <div className="bg-white p-6 md:p-8 rounded-3xl shadow-lg shadow-black/5 border border-slate-100 sticky top-32">
                 <p className="text-slate-400 text-xs md:text-sm font-bold uppercase tracking-widest mb-2">Valor do Imóvel</p>
-                <h2 className="text-3xl md:text-4xl font-bold text-accent-blue mb-6">
+                <h2 className="text-3xl md:text-4xl font-bold text-accent-blue mb-3">
                   {formatPrice(property.price)}
                   {property.type === "Aluguel" && <span className="text-xl md:text-2xl font-normal text-slate-500">/mês</span>}
                 </h2>
+
+                <p className="text-base font-semibold text-primary mb-1 leading-snug">{property.title}</p>
+                <p className="text-xs text-slate-400 flex items-center gap-1 mb-5">
+                  <MapPin size={12} className="text-secondary shrink-0" />
+                  {property.location}
+                </p>
                 
                 <p className="text-sm text-slate-500 mb-6 pb-6 border-b border-slate-100 font-medium">
                   CÓD: <span className="text-primary font-bold">{property.code}</span>
@@ -504,7 +600,7 @@ export default function PropertyDetailsPage() {
                       WhatsApp
                     </button>
                     <a 
-                      href="tel:+553332210552"
+                      href="tel:+553186003497"
                       className="btn-secondary py-3.5 rounded-xl flex items-center justify-center gap-2 font-bold text-primary hover:bg-slate-50 text-sm"
                     >
                       <Phone size={18} />
@@ -610,7 +706,7 @@ export default function PropertyDetailsPage() {
           WhatsApp
         </button>
         <a 
-          href="tel:+553332210552"
+          href="tel:+553186003497"
           className="flex-1 border-2 border-primary text-primary py-4 rounded-2xl flex items-center justify-center gap-2 font-bold text-sm active:scale-95 transition-transform"
         >
           <Phone size={20} />

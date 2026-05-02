@@ -77,9 +77,9 @@ export default function Navbar() {
             <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-secondary group-hover/link:w-full transition-all duration-300"></span>
           </Link>
 
-          <Link href="/procura" className="relative py-1 hover:text-secondary transition-colors text-secondary group/link">
+          <Link href="/procura" className="relative py-1 hover:text-[#B30F1A] transition-colors text-[#B30F1A] group/link">
             O que procura?
-            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-secondary group-hover/link:w-full transition-all duration-300"></span>
+            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#B30F1A] group-hover/link:w-full transition-all duration-300"></span>
           </Link>
         </div>
 
@@ -110,7 +110,7 @@ export default function Navbar() {
           </div>
           
           <Link 
-            href="https://wa.me/553332210552" 
+            href="https://wa.me/553186003497" 
             target="_blank"
             className="btn-primary py-2 px-5 text-xs hidden sm:flex items-center gap-2"
           >
@@ -146,11 +146,11 @@ export default function Navbar() {
               <Link href="/aluguel" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-secondary transition-colors py-2 border-b border-slate-50">Aluguel</Link>
               <Link href="/favoritos" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-secondary transition-colors py-2 border-b border-slate-50">Favoritos ({favorites.length})</Link>
               <Link href="/comparar" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-secondary transition-colors py-2 border-b border-slate-50">Comparar ({compareList.length})</Link>
-              <Link href="/procura" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-secondary transition-colors py-2 text-secondary">O que procura?</Link>
+              <Link href="/procura" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-[#B30F1A] transition-colors py-2 text-[#B30F1A]">O que procura?</Link>
             </div>
             
             <Link 
-              href="https://wa.me/553332210552" 
+              href="https://wa.me/553186003497" 
               target="_blank"
               onClick={() => setIsMobileMenuOpen(false)}
               className="btn-primary py-3 mt-2 w-full flex items-center justify-center gap-2"

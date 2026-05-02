@@ -79,7 +79,7 @@ export default function LoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-4 pl-12 pr-4 text-slate-700 outline-none focus:bg-white focus:border-primary transition-all"
-                  placeholder="admin@carlaoimoveis.com.br"
+                  placeholder="admin@carlaoimoveisva.gmail.com"
                   required
                 />
               </div>

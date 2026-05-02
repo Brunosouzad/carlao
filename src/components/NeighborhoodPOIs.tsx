@@ -1,132 +1,44 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Check, Loader2, MapPin } from "lucide-react";
-
-interface POI {
-  name: string;
-  category: string;
-  distance: string;
-}
+import { Loader2 } from "lucide-react";
 
 interface CategoryGroup {
   category: string;
-  icon: React.ReactNode;
+  color: string;
   items: { name: string; dist: string }[];
 }
+
+const colorMap: Record<string, string> = {
+  blue: 'bg-blue-50 text-blue-600',
+  red: 'bg-red-50 text-red-600',
+  green: 'bg-green-50 text-green-600',
+  amber: 'bg-amber-50 text-amber-600',
+};
+
+const emojiMap: Record<string, string> = {
+  'Educação': '🎓',
+  'Saúde': '🏥',
+  'Lazer': '🌳',
+  'Serviços': '🛒',
+};
 
 export default function NeighborhoodPOIs({ location }: { location: string }) {
   const [poiGroups, setPoiGroups] = useState<CategoryGroup[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!location) return;
+
     const fetchPOIs = async () => {
+      setLoading(true);
       try {
-        // 1. Geocode the address
-        const geoRes = await fetch(
-          `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(location + ", Brasil")}&format=json&limit=1`,
-          {
-            headers: {
-              "User-Agent": "CarlaoImoveis/1.0"
-            }
-          }
-        );
-        const geoData = await geoRes.json();
-        
-        if (geoData.length === 0) {
-          setLoading(false);
-          return;
-        }
-
-        const { lat, lon } = geoData[0];
-
-        // 2. Query Overpass API for nearby POIs
-        // Querying for: school, university, hospital, pharmacy, supermarket, park, gym, bakery
-        const overpassQuery = `
-          [out:json][timeout:25];
-          (
-            node["amenity"~"school|university|hospital|pharmacy|supermarket|park|gym|bakery"](around:1500, ${lat}, ${lon});
-            way["amenity"~"school|university|hospital|pharmacy|supermarket|park|gym|bakery"](around:1500, ${lat}, ${lon});
-            node["shop"~"supermarket|bakery"](around:1500, ${lat}, ${lon});
-            node["leisure"~"park|fitness_centre"](around:1500, ${lat}, ${lon});
-          );
-          out body;
-        `;
-
-        const overpassRes = await fetch("https://overpass-api.de/api/interpreter", {
-          method: "POST",
-          body: overpassQuery,
-        });
-        const overpassData = await overpassRes.json();
-
-        // 3. Process and Group POIs
-        const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
-          const R = 6371; // km
-          const dLat = (lat2 - lat1) * (Math.PI / 180);
-          const dLon = (lon2 - lon1) * (Math.PI / 180);
-          const a = 
-            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-            Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) * 
-            Math.sin(dLon / 2) * Math.sin(dLon / 2);
-          const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-          return R * c;
-        };
-
-        const rawPois = overpassData.elements
-          .map((el: any) => {
-            const elLat = el.lat || el.center?.lat;
-            const elLon = el.lon || el.center?.lon;
-            if (!elLat || !elLon) return null;
-
-            const dist = calculateDistance(parseFloat(lat), parseFloat(lon), elLat, elLon);
-            return {
-              name: el.tags.name || el.tags.amenity || el.tags.shop || el.tags.leisure || "Estabelecimento",
-              category: el.tags.amenity || el.tags.shop || el.tags.leisure,
-              distance: dist,
-            };
-          })
-          .filter(Boolean)
-          .sort((a: any, b: any) => a.distance - b.distance);
-
-        // Group by theme
-        const groups: CategoryGroup[] = [
-          {
-            category: "Educação",
-            icon: <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center"><Check size={18} strokeWidth={3} /></div>,
-            items: rawPois
-              .filter((p: any) => ["school", "university"].includes(p.category))
-              .slice(0, 3)
-              .map((p: any) => ({ name: p.name, dist: p.distance < 1 ? `${Math.round(p.distance * 1000)}m` : `${p.distance.toFixed(1)}km` })),
-          },
-          {
-            category: "Saúde",
-            icon: <div className="w-10 h-10 bg-red-50 text-red-600 rounded-xl flex items-center justify-center"><Check size={18} strokeWidth={3} /></div>,
-            items: rawPois
-              .filter((p: any) => ["hospital", "pharmacy"].includes(p.category))
-              .slice(0, 3)
-              .map((p: any) => ({ name: p.name, dist: p.distance < 1 ? `${Math.round(p.distance * 1000)}m` : `${p.distance.toFixed(1)}km` })),
-          },
-          {
-            category: "Lazer",
-            icon: <div className="w-10 h-10 bg-green-50 text-green-600 rounded-xl flex items-center justify-center"><Check size={18} strokeWidth={3} /></div>,
-            items: rawPois
-              .filter((p: any) => ["park", "gym", "fitness_centre"].includes(p.category))
-              .slice(0, 3)
-              .map((p: any) => ({ name: p.name, dist: p.distance < 1 ? `${Math.round(p.distance * 1000)}m` : `${p.distance.toFixed(1)}km` })),
-          },
-          {
-            category: "Serviços",
-            icon: <div className="w-10 h-10 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center"><Check size={18} strokeWidth={3} /></div>,
-            items: rawPois
-              .filter((p: any) => ["supermarket", "bakery"].includes(p.category))
-              .slice(0, 3)
-              .map((p: any) => ({ name: p.name, dist: p.distance < 1 ? `${Math.round(p.distance * 1000)}m` : `${p.distance.toFixed(1)}km` })),
-          },
-        ].filter(g => g.items.length > 0);
-
-        setPoiGroups(groups);
+        const res = await fetch(`/api/pois?location=${encodeURIComponent(location)}`);
+        const data = await res.json();
+        setPoiGroups(data.groups || []);
       } catch (err) {
-        console.error("Error fetching POIs:", err);
+        console.error('Error fetching POIs:', err);
+        setPoiGroups([]);
       } finally {
         setLoading(false);
       }
@@ -146,9 +58,7 @@ export default function NeighborhoodPOIs({ location }: { location: string }) {
     );
   }
 
-  if (poiGroups.length === 0) {
-    return null;
-  }
+  if (poiGroups.length === 0) return null;
 
   return (
     <div className="mt-12 pt-8 border-t border-slate-100">
@@ -164,7 +74,9 @@ export default function NeighborhoodPOIs({ location }: { location: string }) {
         {poiGroups.map((cat, i) => (
           <div key={i} className="p-6 bg-slate-50/50 border border-slate-100 rounded-[2rem] hover:bg-white hover:shadow-xl hover:shadow-slate-200/50 transition-all group">
             <div className="flex items-center gap-4 mb-6">
-              {cat.icon}
+              <div className={`w-10 h-10 ${colorMap[cat.color] || 'bg-slate-50 text-slate-600'} rounded-xl flex items-center justify-center text-lg`}>
+                {emojiMap[cat.category] || '📍'}
+              </div>
               <h4 className="font-bold text-primary font-oswald uppercase tracking-wider">{cat.category}</h4>
             </div>
             <div className="space-y-4">

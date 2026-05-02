@@ -20,7 +20,7 @@ export default function FavoritosPage() {
     <>
       <Navbar />
       <main className="min-h-screen bg-slate-50 pt-32 pb-20">
-        <div className="container mx-auto px-6">
+        <div className="w-full max-w-7xl mx-auto mx-auto px-6">
           
           {/* Header */}
           <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
@@ -83,7 +83,7 @@ export default function FavoritosPage() {
                   <p className="text-slate-300 leading-relaxed">Nossos consultores podem te ajudar a comparar os detalhes técnicos e as vantagens de cada um desses imóveis favoritados.</p>
                 </div>
                 <Link 
-                  href="https://wa.me/553332210552" 
+                  href="https://wa.me/553186003497" 
                   target="_blank"
                   className="bg-secondary hover:bg-secondary/90 text-white px-8 py-4 rounded-xl font-bold flex items-center gap-3 transition-all font-oswald uppercase tracking-widest whitespace-nowrap"
                 >

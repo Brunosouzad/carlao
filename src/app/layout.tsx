@@ -26,8 +26,8 @@ export const metadata: Metadata = {
   description: "Encontre os melhores imóveis em Minas Gerais com o corretor Carlão. Casas, apartamentos, lotes e fazendas com atendimento personalizado.",
   keywords: "imobiliária, corretor de imóveis, minas gerais, carlão imóveis, casas à venda, apartamentos",
   icons: {
-    icon: "/logo-carlao.png",
-    apple: "/logo-carlao.png",
+    icon: "/favicon.png",
+    apple: "/favicon.png",
   },
 };
 

@@ -175,7 +175,7 @@ export default function PropertyCard({ id, code, title, location, price, beds, b
               <Camera size={14} />
               {cardImages.length}
             </div>
-            <div className="px-3 py-1 bg-amber-500 text-slate-950 text-[10px] flex items-center font-bold uppercase rounded-lg shadow-lg">
+            <div className="px-3 py-1 bg-[#B30F1A] text-white text-[10px] flex items-center font-bold uppercase rounded-lg shadow-lg">
               {type}
             </div>
           </div>
@@ -203,7 +203,7 @@ export default function PropertyCard({ id, code, title, location, price, beds, b
       </div>
 
       {/* Content */}
-      <div className="p-6 bg-white">
+      <div className="p-4 sm:p-6 bg-white">
         <button 
           onClick={(e) => { e.stopPropagation(); setIsMapOpen(true); }}
           className="flex items-center gap-1.5 mb-2 group/location cursor-pointer w-full text-left focus:outline-none"
@@ -220,7 +220,7 @@ export default function PropertyCard({ id, code, title, location, price, beds, b
         </p>
 
       </div>
-      <div className="bg-slate-50 px-6 py-4 grid grid-cols-4 gap-2 border-t border-slate-100">
+      <div className="bg-slate-50 px-4 sm:px-6 py-3 sm:py-4 grid grid-cols-4 gap-1 sm:gap-2 border-t border-slate-100">
         <div className="flex flex-col items-center gap-1 text-slate-500">
           <BedDouble size={18} className="text-slate-400" />
           <span className="text-[9px] font-bold uppercase tracking-tighter">{beds} Qtos</span>

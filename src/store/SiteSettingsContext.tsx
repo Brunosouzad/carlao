@@ -57,13 +57,16 @@ export function SiteSettingsProvider({ children }: { children: React.ReactNode }
       const { data, error } = await supabase
         .from('site_settings')
         .select('settings')
+        .eq('key', 'singleton')
         .single();
       
       if (data && data.settings) {
         setSettings({ ...DEFAULT_SETTINGS, ...data.settings });
-      } else if (error && error.code === 'PGRST116') {
-        // Table exists but no row, create the first one
-        await supabase.from('site_settings').insert([{ settings: DEFAULT_SETTINGS }]);
+      } else if (error && (error.code === 'PGRST116' || error.message?.includes('No rows'))) {
+        // Nenhuma linha encontrada, cria a primeira
+        await supabase
+          .from('site_settings')
+          .insert([{ key: 'singleton', settings: DEFAULT_SETTINGS }]);
       }
     } catch (err) {
       console.error("Error fetching settings from Supabase:", err);
@@ -81,12 +84,14 @@ export function SiteSettingsProvider({ children }: { children: React.ReactNode }
     try {
       const { error } = await supabase
         .from('site_settings')
-        .update({ settings: updated })
-        .eq('id', 1); // Assuming we only have one row with id 1 or we use a better logic
+        .upsert(
+          [{ key: 'singleton', settings: updated }],
+          { onConflict: 'key' }
+        );
       
-      // If update fails because id 1 doesn't exist, try upsert
       if (error) {
-        await supabase.from('site_settings').upsert([{ id: 1, settings: updated }]);
+        console.error("Error saving settings:", error);
+        throw error;
       }
     } catch (err) {
       console.error("Error saving settings to Supabase:", err);
@@ -98,8 +103,10 @@ export function SiteSettingsProvider({ children }: { children: React.ReactNode }
     try {
       await supabase
         .from('site_settings')
-        .update({ settings: DEFAULT_SETTINGS })
-        .eq('id', 1);
+        .upsert(
+          [{ key: 'singleton', settings: DEFAULT_SETTINGS }],
+          { onConflict: 'key' }
+        );
     } catch (err) {
       console.error("Error resetting settings in Supabase:", err);
     }

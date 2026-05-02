@@ -95,6 +95,8 @@ export default function PropertyForm({ property, mode }: PropertyFormProps) {
     complement: property?.complement || "",
     zipCode: property?.zipCode || "",
     price: property?.price || "",
+    condominium: property?.condominium || "",
+    iptu: property?.iptu || "",
     beds: property?.beds ?? 0,
     baths: property?.baths ?? 0,
     garages: property?.garages ?? 0,
@@ -422,14 +424,22 @@ export default function PropertyForm({ property, mode }: PropertyFormProps) {
               <h2 className="font-bold text-primary flex items-center gap-2 mb-6">
                 <DollarSign size={18} /> Valor e Destaque
               </h2>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="md:col-span-2">
                   <label className={labelClass}>Preço (R$) *</label>
                   <input className={inputClass} type="number" placeholder="Ex: 1850000" value={form.price} onChange={e => set("price", e.target.value)} required />
                 </div>
-                <div>
+                <div className="md:col-span-2">
                   <label className={labelClass}><Tag size={12} className="inline mr-1" />Tag de Destaque</label>
                   <input className={inputClass} placeholder="Ex: Destaque, Novo, Exclusivo..." value={form.tag || ""} onChange={e => set("tag", e.target.value)} />
+                </div>
+                <div className="md:col-span-2">
+                  <label className={labelClass}>Condomínio (R$)</label>
+                  <input className={inputClass} type="number" placeholder="Ex: 500" value={form.condominium || ""} onChange={e => set("condominium", e.target.value)} />
+                </div>
+                <div className="md:col-span-2">
+                  <label className={labelClass}>IPTU (R$)</label>
+                  <input className={inputClass} type="number" placeholder="Ex: 150" value={form.iptu || ""} onChange={e => set("iptu", e.target.value)} />
                 </div>
               </div>
             </div>

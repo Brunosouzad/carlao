@@ -10,6 +10,8 @@ export interface Property {
   complement?: string;
   zipCode?: string;
   price: string;
+  condominium?: string;
+  iptu?: string;
   beds: number;
   baths: number;
   garages: number;

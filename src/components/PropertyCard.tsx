@@ -112,9 +112,11 @@ interface PropertyCardProps {
   images?: string[];
   type: "Venda" | "Aluguel";
   tag?: string;
+  condominium?: string;
+  iptu?: string;
 }
 
-export default function PropertyCard({ id, code, title, location, price, beds, baths, garages, area, image, images, type, tag }: PropertyCardProps) {
+export default function PropertyCard({ id, code, title, location, price, beds, baths, garages, area, image, images, type, tag, condominium, iptu }: PropertyCardProps) {
   const router = useRouter();
   const [isMapOpen, setIsMapOpen] = useState(false);
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
@@ -214,9 +216,12 @@ export default function PropertyCard({ id, code, title, location, price, beds, b
         <h3 className="text-lg font-bold text-primary mb-1 group-hover:text-secondary transition-colors line-clamp-1 leading-tight">
           {title}
         </h3>
-        <p className="text-accent-blue font-bold text-2xl tracking-tighter mb-4">
+        <p className="text-accent-blue font-bold text-2xl tracking-tighter">
           {formatPrice(price)}
           {type === 'Aluguel' && <span className="text-sm font-normal text-slate-500">/mês</span>}
+        </p>
+        <p className="text-xs text-slate-400 font-medium mb-4 mt-1">
+          Cond. {condominium ? formatPrice(condominium) : 'não informado'} • IPTU {iptu ? formatPrice(iptu) : 'não informado'}
         </p>
 
       </div>

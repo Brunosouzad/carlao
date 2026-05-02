@@ -538,7 +538,13 @@ export default function PropertyDetailsPage() {
                     Localização
                   </h3>
                   <p className="text-slate-500 text-sm mb-4">{property.location}</p>
-                  <PropertyMap location={property.location} title={property.title} />
+                  <PropertyMap 
+                    location={property.location} 
+                    title={property.title} 
+                    city={property.city}
+                    neighborhood={property.neighborhood}
+                    street={property.street}
+                  />
                 </div>
 
                 <NeighborhoodPOIs location={property.location} />

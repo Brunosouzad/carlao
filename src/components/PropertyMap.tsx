@@ -25,9 +25,12 @@ interface PropertyMapProps {
   location: string;
   title?: string;
   className?: string;
+  city?: string;
+  neighborhood?: string;
+  street?: string;
 }
 
-export default function PropertyMap({ location, title, className = "h-[350px]" }: PropertyMapProps) {
+export default function PropertyMap({ location, title, className = "h-[350px]", city, neighborhood, street }: PropertyMapProps) {
   const [coords, setCoords] = useState<[number, number] | null>(null);
   const [loading, setLoading] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
@@ -38,18 +41,33 @@ export default function PropertyMap({ location, title, className = "h-[350px]" }
     // Geocode the address using Nominatim (OpenStreetMap free geocoder)
     const geocode = async () => {
       try {
-        const res = await fetch(
-          `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(location + ", Brasil")}&format=json&limit=1`,
-          { 
-            headers: { 
-              "Accept-Language": "pt-BR",
-              "User-Agent": "CarlaoImoveis/1.0"
-            } 
+        const fallbacks = [
+          location + ", Brasil"
+        ];
+        
+        if (street && city) fallbacks.push(`${street}, ${city}, Brasil`);
+        if (neighborhood && city) fallbacks.push(`${neighborhood}, ${city}, Brasil`);
+        if (city) fallbacks.push(`${city}, Brasil`);
+        
+        for (const query of fallbacks) {
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1`,
+            { 
+              headers: { 
+                "Accept-Language": "pt-BR",
+                "User-Agent": "CarlaoImoveis/1.0"
+              } 
+            }
+          );
+          const data = await res.json();
+          if (data && data.length > 0) {
+            setCoords([parseFloat(data[0].lat), parseFloat(data[0].lon)]);
+            setLoading(false);
+            return;
           }
-        );
-        const data = await res.json();
-        if (data.length > 0) {
-          setCoords([parseFloat(data[0].lat), parseFloat(data[0].lon)]);
+          
+          // Small delay to respect Nominatim rate limits if we need to try next fallback
+          await new Promise(r => setTimeout(r, 500));
         }
       } catch (err) {
         console.error("Geocoding error:", err);
@@ -58,7 +76,7 @@ export default function PropertyMap({ location, title, className = "h-[350px]" }
       }
     };
     geocode();
-  }, [location]);
+  }, [location, street, neighborhood, city]);
 
   if (loading) {
     return (

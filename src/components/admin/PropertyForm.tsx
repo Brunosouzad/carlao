@@ -1,13 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Property } from "@/data/properties";
 import { useProperties } from "@/store/PropertiesContext";
 import { supabase } from "@/lib/supabase";
+import { useToast } from "@/store/ToastContext";
 import {
   Save, X, Plus, Trash2, Image as ImageIcon, Video, Tag,
-  BedDouble, Bath, Square, Home, DollarSign, MapPin, FileText, CheckSquare
+  BedDouble, Bath, Square, Home, DollarSign, MapPin, FileText, CheckSquare,
+  GripVertical, ArrowUp, ArrowDown
 } from "lucide-react";
 
 const DEFAULT_FEATURES = [
@@ -21,11 +23,13 @@ const DEFAULT_FEATURES = [
 interface PropertyFormProps {
   property?: Property;
   mode: "create" | "edit";
+  onSuccess?: () => void;
 }
 
-export default function PropertyForm({ property, mode }: PropertyFormProps) {
+export default function PropertyForm({ property, mode, onSuccess }: PropertyFormProps) {
   const router = useRouter();
   const { addProperty, updateProperty } = useProperties();
+  const toast = useToast();
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [states, setStates] = useState<{ sigla: string, nome: string }[]>([]);
@@ -114,6 +118,8 @@ export default function PropertyForm({ property, mode }: PropertyFormProps) {
   const [newImageUrl, setNewImageUrl] = useState("");
   const [customFeature, setCustomFeature] = useState("");
   const [activeTab, setActiveTab] = useState<"basico" | "midia" | "caracteristicas">("basico");
+  const dragIdx = useRef<number | null>(null);
+  const dragOverIdx = useRef<number | null>(null);
 
   const set = (key: keyof typeof form, value: unknown) =>
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -129,6 +135,29 @@ export default function PropertyForm({ property, mode }: PropertyFormProps) {
 
   const removeImage = (idx: number) =>
     set("images", (form.images || []).filter((_, i) => i !== idx));
+
+  // Move image up or down by one position
+  const moveImage = (idx: number, dir: -1 | 1) => {
+    const imgs = [...(form.images || [])];
+    const target = idx + dir;
+    if (target < 0 || target >= imgs.length) return;
+    [imgs[idx], imgs[target]] = [imgs[target], imgs[idx]];
+    set("images", imgs);
+  };
+
+  // HTML5 drag-and-drop handlers
+  const handleDragStart = (idx: number) => { dragIdx.current = idx; };
+  const handleDragEnter = (idx: number) => { dragOverIdx.current = idx; };
+  const handleDragEnd = () => {
+    if (dragIdx.current === null || dragOverIdx.current === null) return;
+    if (dragIdx.current === dragOverIdx.current) return;
+    const imgs = [...(form.images || [])];
+    const [moved] = imgs.splice(dragIdx.current, 1);
+    imgs.splice(dragOverIdx.current, 0, moved);
+    set("images", imgs);
+    dragIdx.current = null;
+    dragOverIdx.current = null;
+  };
 
   const toggleFeature = (f: string) => {
     const current = form.features || [];
@@ -164,7 +193,7 @@ export default function PropertyForm({ property, mode }: PropertyFormProps) {
       return publicUrl;
     } catch (error: any) {
       console.error('Error uploading image:', error);
-      alert(`Erro no Supabase: ${error.message || "Erro desconhecido"}`);
+      toast.error("Erro no upload", error.message || "Erro desconhecido");
       return null;
     } finally {
       setUploading(false);
@@ -208,7 +237,7 @@ export default function PropertyForm({ property, mode }: PropertyFormProps) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.title || !form.price || !form.location) {
-      alert("Preencha os campos obrigatórios: Título, Localização e Preço.");
+      toast.warning("Campos obrigatórios", "Preencha Título, Localização e Preço.");
       return;
     }
 
@@ -538,25 +567,70 @@ export default function PropertyForm({ property, mode }: PropertyFormProps) {
                 </button>
               </div>
 
-              <div className="grid grid-cols-3 gap-3">
+              {/* Gallery grid — draggable */}
+              <div className="space-y-2">
                 {(form.images || []).map((img, idx) => (
-                  <div key={idx} className="relative group rounded-xl overflow-hidden h-32 bg-slate-100">
-                    <img src={img} alt={`Foto ${idx + 1}`} className="w-full h-full object-cover" />
-                    <button
-                      type="button"
-                      onClick={() => removeImage(idx)}
-                      className="absolute top-2 right-2 w-7 h-7 rounded-full bg-red-500 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
-                    >
-                      <Trash2 size={12} />
-                    </button>
-                    <span className="absolute bottom-2 left-2 bg-black/50 text-white text-[10px] px-2 py-0.5 rounded-full">
-                      #{idx + 1}
-                    </span>
+                  <div
+                    key={idx}
+                    draggable
+                    onDragStart={() => handleDragStart(idx)}
+                    onDragEnter={() => handleDragEnter(idx)}
+                    onDragEnd={handleDragEnd}
+                    onDragOver={e => e.preventDefault()}
+                    className="flex items-center gap-3 p-2 bg-slate-50 border border-slate-200 rounded-xl group transition-all hover:border-primary/30 hover:bg-primary/5 cursor-grab active:cursor-grabbing active:opacity-60 active:scale-[0.99]"
+                  >
+                    {/* Drag handle */}
+                    <div className="flex-shrink-0 text-slate-300 group-hover:text-slate-400 transition-colors">
+                      <GripVertical size={18} />
+                    </div>
+
+                    {/* Thumb */}
+                    <div className="w-16 h-14 rounded-lg overflow-hidden bg-slate-200 flex-shrink-0">
+                      <img src={img} alt={`Foto ${idx + 1}`} className="w-full h-full object-cover" />
+                    </div>
+
+                    {/* URL */}
+                    <div className="flex-1 min-w-0">
+                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">
+                        Foto #{idx + 1}
+                      </span>
+                      <p className="text-xs text-slate-500 truncate">{img}</p>
+                    </div>
+
+                    {/* Controls */}
+                    <div className="flex items-center gap-1 flex-shrink-0">
+                      <button
+                        type="button"
+                        onClick={() => moveImage(idx, -1)}
+                        disabled={idx === 0}
+                        title="Mover para cima"
+                        className="w-7 h-7 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-primary hover:border-primary/30 transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+                      >
+                        <ArrowUp size={13} />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => moveImage(idx, 1)}
+                        disabled={idx === (form.images || []).length - 1}
+                        title="Mover para baixo"
+                        className="w-7 h-7 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-primary hover:border-primary/30 transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+                      >
+                        <ArrowDown size={13} />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => removeImage(idx)}
+                        title="Remover foto"
+                        className="w-7 h-7 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-red-500 hover:border-red-200 transition-all cursor-pointer"
+                      >
+                        <Trash2 size={13} />
+                      </button>
+                    </div>
                   </div>
                 ))}
                 {(form.images || []).length === 0 && (
-                  <div className="col-span-3 py-10 text-center text-slate-400 bg-slate-50 rounded-xl border-2 border-dashed border-slate-200">
-                    Nenhuma foto na galeria. Adicione URLs acima.
+                  <div className="py-10 text-center text-slate-400 bg-slate-50 rounded-xl border-2 border-dashed border-slate-200">
+                    Nenhuma foto na galeria. Adicione URLs ou faça upload acima.
                   </div>
                 )}
               </div>

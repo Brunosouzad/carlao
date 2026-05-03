@@ -2,16 +2,43 @@
 
 import { useState, useEffect } from "react";
 import { useSiteSettings, SiteSettings } from "@/store/SiteSettingsContext";
-import { Save, Plus, Trash2, RotateCcw, Image as ImageIcon, Layout, Type } from "lucide-react";
+import { useProperties } from "@/store/PropertiesContext";
+import { Save, Plus, Trash2, RotateCcw, Image as ImageIcon, Layout, Type, Star, X, GripVertical, Info, Building, Code } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { formatPrice } from "@/utils/format";
+import { useToast } from "@/store/ToastContext";
+import ConfirmModal from "@/components/admin/ConfirmModal";
 
 export default function AdminConfiguracoes() {
   const { settings, updateSettings, resetSettings } = useSiteSettings();
+  const { properties } = useProperties();
+  const toast = useToast();
   const [form, setForm] = useState<SiteSettings>({ ...settings });
   const [newImageUrl, setNewImageUrl] = useState("");
   const [saved, setSaved] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const [activeTab, setActiveTab] = useState<"banner" | "layout">("banner");
+  const [activeTab, setActiveTab] = useState<"banner" | "layout" | "destaques" | "integracoes">("banner");
+  const [confirmModal, setConfirmModal] = useState(false);
+
+  // ── Helpers para destaques manuais ──
+  const toggleFeatured = (id: string, tipo: "Venda" | "Aluguel") => {
+    const key = tipo === "Venda" ? "featuredVendaIds" : "featuredAluguelIds";
+    const current = form[key] ?? [];
+    const updated = current.includes(id)
+      ? current.filter((x) => x !== id)
+      : [...current, id];
+    setForm(prev => ({ ...prev, [key]: updated }));
+  };
+
+  const removeFeatured = (id: string, tipo: "Venda" | "Aluguel") => {
+    const key = tipo === "Venda" ? "featuredVendaIds" : "featuredAluguelIds";
+    setForm(prev => ({ ...prev, [key]: (prev[key] ?? []).filter((x) => x !== id) }));
+  };
+
+  const clearFeatured = (tipo: "Venda" | "Aluguel") => {
+    const key = tipo === "Venda" ? "featuredVendaIds" : "featuredAluguelIds";
+    setForm(prev => ({ ...prev, [key]: [] }));
+  };
 
   // Sincroniza o form quando os settings carregam (ou mudam)
   useEffect(() => {
@@ -64,7 +91,7 @@ export default function AdminConfiguracoes() {
       }
     } catch (error: any) {
       console.error('Error uploading banner:', error);
-      alert(`Erro no Supabase (Banner): ${error.message || "Erro desconhecido"}`);
+      toast.error("Erro no upload", error.message || "Erro desconhecido");
     } finally {
       setUploading(false);
     }
@@ -77,10 +104,8 @@ export default function AdminConfiguracoes() {
   };
 
   const handleReset = async () => {
-    if (confirm("Resetar todas as configurações para o padrão?")) {
-      await resetSettings();
-      window.location.reload();
-    }
+    await resetSettings();
+    window.location.reload();
   };
 
   const inputClass = "w-full border border-slate-200 rounded-xl px-4 py-3 text-slate-700 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all bg-white";
@@ -89,10 +114,20 @@ export default function AdminConfiguracoes() {
   const tabs = [
     { key: "banner", label: "Banner / Hero", icon: ImageIcon },
     { key: "layout", label: "Layout da Home", icon: Layout },
+    { key: "destaques", label: "Destaques", icon: Star },
+    { key: "integracoes", label: "Integrações e SEO", icon: Code },
   ] as const;
 
   return (
     <div className="max-w-4xl mx-auto">
+      <ConfirmModal 
+        isOpen={confirmModal}
+        title="Resetar Configurações"
+        message="Tem certeza que deseja resetar todas as configurações para o padrão inicial? Você perderá todas as personalizações (banner, contatos, destaques)."
+        onConfirm={handleReset}
+        onCancel={() => setConfirmModal(false)}
+      />
+
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
@@ -101,7 +136,7 @@ export default function AdminConfiguracoes() {
         </div>
         <button
           type="button"
-          onClick={handleReset}
+          onClick={() => setConfirmModal(true)}
           className="flex items-center gap-2 px-4 py-2 text-slate-500 hover:bg-red-50 hover:text-red-500 border border-slate-200 rounded-xl transition-colors cursor-pointer text-sm"
         >
           <RotateCcw size={16} /> Resetar padrões
@@ -306,6 +341,308 @@ export default function AdminConfiguracoes() {
                 <input className={inputClass} placeholder="Destaques de Locação" value={form.homeAluguelTitle} onChange={e => set("homeAluguelTitle", e.target.value)} />
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── DESTAQUES MANUAIS ── */}
+      {activeTab === "destaques" && (
+        <div className="space-y-6">
+          {/* Info */}
+          <div className="flex items-start gap-3 bg-blue-50 border border-blue-200 rounded-2xl p-4">
+            <Info size={16} className="text-blue-500 flex-shrink-0 mt-0.5" />
+            <p className="text-xs text-blue-700">
+              Selecione manualmente quais imóveis aparecerão nos <strong>Destaques da Home</strong>.
+              Se nenhum for selecionado, o site exibirá automaticamente os mais recentes de cada tipo.
+            </p>
+          </div>
+
+          {/* Venda */}
+          <div className="bg-white border border-slate-200 rounded-2xl p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="font-bold text-primary flex items-center gap-2">
+                <Star size={18} /> Destaques — Venda
+              </h2>
+              {(form.featuredVendaIds ?? []).length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => clearFeatured("Venda")}
+                  className="text-xs text-red-500 hover:text-red-700 flex items-center gap-1 cursor-pointer"
+                >
+                  <X size={12} /> Limpar seleção
+                </button>
+              )}
+            </div>
+
+            {/* Selecionados */}
+            {(form.featuredVendaIds ?? []).length > 0 && (
+              <div className="mb-4 space-y-2">
+                <p className={labelClass}>Selecionados ({(form.featuredVendaIds ?? []).length})</p>
+                {(form.featuredVendaIds ?? []).map(id => {
+                  const p = properties.find(x => x.id === id);
+                  if (!p) return null;
+                  return (
+                    <div key={id} className="flex items-center gap-3 p-2 bg-primary/5 border border-primary/20 rounded-xl">
+                      <GripVertical size={14} className="text-slate-300 flex-shrink-0" />
+                      <div className="w-10 h-10 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0">
+                        {p.image
+                          ? <img src={p.image} alt={p.title} className="w-full h-full object-cover" />
+                          : <div className="w-full h-full flex items-center justify-center text-slate-300"><Building size={16} /></div>}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-bold text-slate-400">{p.code}</p>
+                        <p className="text-sm font-medium text-slate-700 truncate">{p.title}</p>
+                      </div>
+                      <p className="text-sm font-bold text-primary flex-shrink-0">{formatPrice(p.price)}</p>
+                      <button type="button" onClick={() => removeFeatured(id, "Venda")} className="text-slate-300 hover:text-red-500 transition-colors cursor-pointer flex-shrink-0">
+                        <X size={14} />
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
+            {/* Lista para selecionar */}
+            <p className={labelClass}>Clique para adicionar / remover</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-72 overflow-y-auto pr-1">
+              {properties.filter(p => p.type === "Venda").map(p => {
+                const selected = (form.featuredVendaIds ?? []).includes(p.id);
+                return (
+                  <button
+                    key={p.id}
+                    type="button"
+                    onClick={() => toggleFeatured(p.id, "Venda")}
+                    className={`flex items-center gap-3 p-3 rounded-xl border-2 text-left transition-all cursor-pointer ${
+                      selected
+                        ? "border-primary bg-primary/5"
+                        : "border-slate-100 bg-slate-50 hover:border-primary/30"
+                    }`}
+                  >
+                    <div className="w-10 h-10 rounded-lg overflow-hidden bg-slate-200 flex-shrink-0">
+                      {p.image
+                        ? <img src={p.image} alt={p.title} className="w-full h-full object-cover" />
+                        : <div className="w-full h-full flex items-center justify-center text-slate-300"><Building size={16} /></div>}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[10px] font-bold text-slate-400">{p.code}</p>
+                      <p className="text-xs font-semibold text-slate-700 truncate">{p.title}</p>
+                      <p className="text-[10px] text-slate-400 truncate">{p.location}</p>
+                    </div>
+                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all ${
+                      selected ? "border-primary bg-primary" : "border-slate-300"
+                    }`}>
+                      {selected && <span className="text-white text-[8px] font-bold">✓</span>}
+                    </div>
+                  </button>
+                );
+              })}
+              {properties.filter(p => p.type === "Venda").length === 0 && (
+                <p className="col-span-2 py-8 text-center text-slate-400 text-sm">Nenhum imóvel de Venda cadastrado.</p>
+              )}
+            </div>
+          </div>
+
+          {/* Aluguel */}
+          <div className="bg-white border border-slate-200 rounded-2xl p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="font-bold text-primary flex items-center gap-2">
+                <Star size={18} /> Destaques — Aluguel
+              </h2>
+              {(form.featuredAluguelIds ?? []).length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => clearFeatured("Aluguel")}
+                  className="text-xs text-red-500 hover:text-red-700 flex items-center gap-1 cursor-pointer"
+                >
+                  <X size={12} /> Limpar seleção
+                </button>
+              )}
+            </div>
+
+            {/* Selecionados */}
+            {(form.featuredAluguelIds ?? []).length > 0 && (
+              <div className="mb-4 space-y-2">
+                <p className={labelClass}>Selecionados ({(form.featuredAluguelIds ?? []).length})</p>
+                {(form.featuredAluguelIds ?? []).map(id => {
+                  const p = properties.find(x => x.id === id);
+                  if (!p) return null;
+                  return (
+                    <div key={id} className="flex items-center gap-3 p-2 bg-primary/5 border border-primary/20 rounded-xl">
+                      <GripVertical size={14} className="text-slate-300 flex-shrink-0" />
+                      <div className="w-10 h-10 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0">
+                        {p.image
+                          ? <img src={p.image} alt={p.title} className="w-full h-full object-cover" />
+                          : <div className="w-full h-full flex items-center justify-center text-slate-300"><Building size={16} /></div>}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-bold text-slate-400">{p.code}</p>
+                        <p className="text-sm font-medium text-slate-700 truncate">{p.title}</p>
+                      </div>
+                      <p className="text-sm font-bold text-primary flex-shrink-0">{formatPrice(p.price)}</p>
+                      <button type="button" onClick={() => removeFeatured(id, "Aluguel")} className="text-slate-300 hover:text-red-500 transition-colors cursor-pointer flex-shrink-0">
+                        <X size={14} />
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
+            {/* Lista para selecionar */}
+            <p className={labelClass}>Clique para adicionar / remover</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-72 overflow-y-auto pr-1">
+              {properties.filter(p => p.type === "Aluguel").map(p => {
+                const selected = (form.featuredAluguelIds ?? []).includes(p.id);
+                return (
+                  <button
+                    key={p.id}
+                    type="button"
+                    onClick={() => toggleFeatured(p.id, "Aluguel")}
+                    className={`flex items-center gap-3 p-3 rounded-xl border-2 text-left transition-all cursor-pointer ${
+                      selected
+                        ? "border-primary bg-primary/5"
+                        : "border-slate-100 bg-slate-50 hover:border-primary/30"
+                    }`}
+                  >
+                    <div className="w-10 h-10 rounded-lg overflow-hidden bg-slate-200 flex-shrink-0">
+                      {p.image
+                        ? <img src={p.image} alt={p.title} className="w-full h-full object-cover" />
+                        : <div className="w-full h-full flex items-center justify-center text-slate-300"><Building size={16} /></div>}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[10px] font-bold text-slate-400">{p.code}</p>
+                      <p className="text-xs font-semibold text-slate-700 truncate">{p.title}</p>
+                      <p className="text-[10px] text-slate-400 truncate">{p.location}</p>
+                    </div>
+                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all ${
+                      selected ? "border-primary bg-primary" : "border-slate-300"
+                    }`}>
+                      {selected && <span className="text-white text-[8px] font-bold">✓</span>}
+                    </div>
+                  </button>
+                );
+              })}
+              {properties.filter(p => p.type === "Aluguel").length === 0 && (
+                <p className="col-span-2 py-8 text-center text-slate-400 text-sm">Nenhum imóvel de Aluguel cadastrado.</p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── INTEGRAÇÕES ── */}
+      {activeTab === "integracoes" && (
+        <div className="space-y-6">
+          <div className="bg-white border border-slate-200 rounded-2xl p-6">
+            <h2 className="font-bold text-primary flex items-center gap-2 mb-6">
+              <Type size={18} /> SEO & Meta Tags
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className={labelClass}>Título Base (Meta Title)</label>
+                <input 
+                  className={inputClass} 
+                  placeholder="Carlão Imóveis | Imobiliária em..." 
+                  value={form.metaTitle || ""} 
+                  onChange={e => set("metaTitle", e.target.value)} 
+                />
+              </div>
+              <div>
+                <label className={labelClass}>Descrição (Meta Description)</label>
+                <input 
+                  className={inputClass} 
+                  placeholder="Encontre os melhores imóveis..." 
+                  value={form.metaDescription || ""} 
+                  onChange={e => set("metaDescription", e.target.value)} 
+                />
+              </div>
+            </div>
+            <p className="text-xs text-slate-400 mt-4">
+              <Info size={12} className="inline mr-1" />
+              Estes campos serão adicionados à página inicial do site para melhorar o ranqueamento no Google.
+            </p>
+          </div>
+
+          <div className="bg-white border border-slate-200 rounded-2xl p-6">
+            <h2 className="font-bold text-primary flex items-center gap-2 mb-6">
+              <Code size={18} /> Scripts e Rastreamento
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className={labelClass}>Google Analytics ID</label>
+                <input 
+                  className={inputClass} 
+                  placeholder="Ex: G-XXXXXXXXXX" 
+                  value={form.googleAnalyticsId || ""} 
+                  onChange={e => set("googleAnalyticsId", e.target.value)} 
+                />
+              </div>
+              <div>
+                <label className={labelClass}>Google Ads ID</label>
+                <input 
+                  className={inputClass} 
+                  placeholder="Ex: AW-XXXXXXXXXX" 
+                  value={form.googleAdsId || ""} 
+                  onChange={e => set("googleAdsId", e.target.value)} 
+                />
+              </div>
+              <div>
+                <label className={labelClass}>Google Tag Manager ID</label>
+                <input 
+                  className={inputClass} 
+                  placeholder="Ex: GTM-XXXXXXX" 
+                  value={form.gtmId || ""} 
+                  onChange={e => set("gtmId", e.target.value)} 
+                />
+              </div>
+              <div>
+                <label className={labelClass}>Microsoft Clarity ID</label>
+                <input 
+                  className={inputClass} 
+                  placeholder="Ex: a1b2c3d4e5" 
+                  value={form.clarityId || ""} 
+                  onChange={e => set("clarityId", e.target.value)} 
+                />
+              </div>
+              <div>
+                <label className={labelClass}>Hotjar ID (hjid)</label>
+                <input 
+                  className={inputClass} 
+                  placeholder="Ex: 3123456" 
+                  value={form.hotjarId || ""} 
+                  onChange={e => set("hotjarId", e.target.value)} 
+                />
+              </div>
+              <div>
+                <label className={labelClass}>Hotjar Version (hjsv)</label>
+                <input 
+                  className={inputClass} 
+                  placeholder="Ex: 6" 
+                  value={form.hotjarSv || ""} 
+                  onChange={e => set("hotjarSv", e.target.value)} 
+                />
+              </div>
+            </div>
+
+            <div className="mt-6 border-t border-slate-100 pt-6">
+              <label className={labelClass}>Tags Personalizadas (HTML/Script)</label>
+              <textarea 
+                className={`${inputClass} min-h-[120px] font-mono text-xs`}
+                placeholder={`<!-- Cole aqui seus pixels do Facebook, Pinterest, ou outras tags personalizadas -->\n<script>\n  console.log('Exemplo');\n</script>`}
+                value={form.customScripts || ""} 
+                onChange={e => set("customScripts", e.target.value)} 
+              />
+              <p className="text-xs text-slate-400 mt-2">
+                <Info size={12} className="inline mr-1" />
+                Estes scripts serão injetados exatamente como digitados. Cuidado para não inserir tags maliciosas ou que quebrem o layout.
+              </p>
+            </div>
+            
+            <p className="text-xs text-slate-400 mt-6 pt-4 border-t border-slate-100">
+              <Info size={12} className="inline mr-1" />
+              Para os campos de ID acima, insira apenas os códigos. O sistema se encarregará de injetar os scripts completos automaticamente no código-fonte.
+            </p>
           </div>
         </div>
       )}

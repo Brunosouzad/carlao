@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Loader2 } from "lucide-react";
+import { Loader2, GraduationCap, HeartPulse, TreePine, ShoppingBag, MapPin } from "lucide-react";
 
 interface CategoryGroup {
   category: string;
@@ -16,11 +16,11 @@ const colorMap: Record<string, string> = {
   amber: 'bg-amber-50 text-amber-600',
 };
 
-const emojiMap: Record<string, string> = {
-  'Educação': '🎓',
-  'Saúde': '🏥',
-  'Lazer': '🌳',
-  'Serviços': '🛒',
+const iconMap: Record<string, React.ElementType> = {
+  'Educação': GraduationCap,
+  'Saúde': HeartPulse,
+  'Lazer': TreePine,
+  'Serviços': ShoppingBag,
 };
 
 export default function NeighborhoodPOIs({ location }: { location: string }) {
@@ -74,8 +74,15 @@ export default function NeighborhoodPOIs({ location }: { location: string }) {
         {poiGroups.map((cat, i) => (
           <div key={i} className="p-6 bg-slate-50/50 border border-slate-100 rounded-[2rem] hover:bg-white hover:shadow-xl hover:shadow-slate-200/50 transition-all group">
             <div className="flex items-center gap-4 mb-6">
-              <div className={`w-10 h-10 ${colorMap[cat.color] || 'bg-slate-50 text-slate-600'} rounded-xl flex items-center justify-center text-lg`}>
-                {emojiMap[cat.category] || '📍'}
+              <div className={`w-10 h-10 ${colorMap[cat.color] || 'bg-slate-50 text-slate-600'} rounded-xl flex items-center justify-center`}>
+                {iconMap[cat.category] ? (
+                  (() => {
+                    const Icon = iconMap[cat.category];
+                    return <Icon size={20} strokeWidth={2.5} />;
+                  })()
+                ) : (
+                  <MapPin size={20} strokeWidth={2.5} />
+                )}
               </div>
               <h4 className="font-bold text-primary font-oswald uppercase tracking-wider">{cat.category}</h4>
             </div>

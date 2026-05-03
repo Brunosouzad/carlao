@@ -7,6 +7,7 @@ import {
   CheckCircle2, Clock, AlertCircle, Trash2, ExternalLink 
 } from "lucide-react";
 import Link from "next/link";
+import ConfirmModal from "@/components/admin/ConfirmModal";
 
 const formatDate = (dateString: string) => {
   const date = new Date(dateString);
@@ -35,6 +36,8 @@ export default function LeadsPage() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("todos");
+
+  const [confirmModal, setConfirmModal] = useState<{isOpen: boolean, id: string | null}>({ isOpen: false, id: null });
 
   useEffect(() => {
     fetchLeads();
@@ -73,8 +76,6 @@ export default function LeadsPage() {
   };
 
   const deleteLead = async (id: string) => {
-    if (!confirm("Tem certeza que deseja excluir este lead permanentemente?")) return;
-    
     try {
       const { error } = await supabase
         .from('leads')
@@ -110,6 +111,16 @@ export default function LeadsPage() {
 
   return (
     <div className="space-y-8">
+      <ConfirmModal 
+        isOpen={confirmModal.isOpen}
+        title="Excluir Lead"
+        message="Tem certeza que deseja excluir este lead permanentemente? Esta ação não pode ser desfeita."
+        onConfirm={() => {
+          if (confirmModal.id) deleteLead(confirmModal.id);
+        }}
+        onCancel={() => setConfirmModal({ isOpen: false, id: null })}
+      />
+      
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-primary flex items-center gap-3">
@@ -211,7 +222,7 @@ export default function LeadsPage() {
                   </td>
                   <td className="px-6 py-6 text-right">
                     <button 
-                      onClick={() => deleteLead(lead.id)}
+                      onClick={() => setConfirmModal({ isOpen: true, id: lead.id })}
                       className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all cursor-pointer"
                       title="Excluir Lead"
                     >

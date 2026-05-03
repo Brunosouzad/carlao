@@ -7,8 +7,10 @@ import { motion } from "framer-motion";
 import { Phone, Mail, MapPin, Clock, MessageSquare, CheckCircle2 } from "lucide-react";
 import { useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { useToast } from "@/store/ToastContext";
 
 export default function ContatoPage() {
+  const toast = useToast();
   const [formData, setFormData] = useState({
     nome: '',
     email: '',
@@ -48,7 +50,7 @@ export default function ContatoPage() {
       setTimeout(() => setSubmitSuccess(false), 5000);
     } catch (err) {
       console.error("Erro ao enviar:", err);
-      alert("Ocorreu um erro. Tente novamente via WhatsApp.");
+      toast.error("Erro ao enviar mensagem", "Tente novamente ou fale pelo WhatsApp.");
     } finally {
       setIsSubmitting(false);
     }
@@ -81,8 +83,8 @@ export default function ContatoPage() {
 
       {/* Hero */}
       <section className="relative pt-28 md:pt-40 pb-12 md:pb-16 overflow-hidden bg-gradient-to-b from-white to-[#fcfcfc]">
-        <div className="absolute top-0 right-0 w-[30rem] h-[30rem] bg-secondary/5 blur-[100px] rounded-full translate-x-1/2 -translate-y-1/2" />
-        <div className="absolute bottom-0 left-0 w-[20rem] h-[20rem] bg-primary/5 blur-[100px] rounded-full -translate-x-1/2 translate-y-1/2" />
+        <div className="hidden md:block absolute top-0 right-0 w-[30rem] h-[30rem] bg-secondary/5 blur-[100px] rounded-full translate-x-1/2 -translate-y-1/2" />
+        <div className="hidden md:block absolute bottom-0 left-0 w-[20rem] h-[20rem] bg-primary/5 blur-[100px] rounded-full -translate-x-1/2 translate-y-1/2" />
 
         <div className="container mx-auto px-6 max-w-6xl relative z-10">
           <motion.div

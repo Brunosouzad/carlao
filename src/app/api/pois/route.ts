@@ -112,7 +112,11 @@ export async function GET(request: NextRequest) {
     const overpassRes = await fetch('https://overpass-api.de/api/interpreter', {
       method: 'POST',
       body: `data=${encodeURIComponent(overpassQuery)}`,
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      headers: { 
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'User-Agent': 'CarlaoImoveisWebsite/2.0 (https://www.carlaoimoveismg.com.br; carlaoimoveisva@gmail.com)',
+        'Referer': 'https://www.carlaoimoveismg.com.br'
+      },
     });
 
     if (!overpassRes.ok) {

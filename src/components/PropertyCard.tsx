@@ -12,6 +12,7 @@ const PropertyMap = dynamic(() => import("./PropertyMap"), { ssr: false });
 
 import { useFavorites } from "@/store/FavoritesContext";
 import { useCompare } from "@/store/CompareContext";
+import { useToast } from "@/store/ToastContext";
 
 function FavoriteButton({ id }: { id: string }) {
   const { toggleFavorite, isFavorite } = useFavorites();
@@ -48,7 +49,7 @@ function FavoriteButton({ id }: { id: string }) {
       </AnimatePresence>
       <button 
         onClick={toggleFav}
-        className={`w-12 h-12 backdrop-blur-md rounded-2xl flex items-center justify-center transition-all shadow-xl pointer-events-auto cursor-pointer ${isFav ? 'bg-secondary text-white' : 'bg-white/10 text-white hover:bg-white/20'}`}
+        className={`w-12 h-12 lg:backdrop-blur-md bg-black/40 lg:bg-transparent rounded-2xl flex items-center justify-center transition-all shadow-xl pointer-events-auto cursor-pointer ${isFav ? 'bg-secondary text-white' : 'lg:bg-white/10 text-white hover:bg-white/20'}`}
       >
         <Heart size={20} className={isFav ? "fill-current" : ""} />
       </button>
@@ -60,16 +61,20 @@ function CompareButton({ id }: { id: string }) {
   const { toggleCompare, isInCompare } = useCompare();
   const [showTooltip, setShowTooltip] = useState(false);
   const isComparing = isInCompare(id);
+  const toast = useToast();
 
   const handleToggle = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     
-    if (!isComparing) {
+    const result = toggleCompare(id);
+
+    if (result === "added") {
       setShowTooltip(true);
       setTimeout(() => setShowTooltip(false), 2000);
+    } else if (result === "limit") {
+      toast.warning("Limite atingido", "Você pode comparar no máximo 4 imóveis por vez.");
     }
-    toggleCompare(id);
   };
 
   return (
@@ -89,7 +94,7 @@ function CompareButton({ id }: { id: string }) {
       </AnimatePresence>
       <button 
         onClick={handleToggle}
-        className={`w-12 h-12 backdrop-blur-md rounded-2xl flex items-center justify-center transition-all shadow-xl pointer-events-auto cursor-pointer ${isComparing ? 'bg-primary text-white' : 'bg-white/10 text-white hover:bg-white/20'}`}
+        className={`w-12 h-12 lg:backdrop-blur-md bg-black/40 lg:bg-transparent rounded-2xl flex items-center justify-center transition-all shadow-xl pointer-events-auto cursor-pointer ${isComparing ? 'bg-primary text-white' : 'lg:bg-white/10 text-white hover:bg-white/20'}`}
         title="Comparar imóvel"
       >
         <ArrowLeftRight size={20} />
@@ -114,9 +119,12 @@ interface PropertyCardProps {
   tag?: string;
   condominium?: string;
   iptu?: string;
+  city?: string;
+  neighborhood?: string;
+  street?: string;
 }
 
-export default function PropertyCard({ id, code, title, location, price, beds, baths, garages, area, image, images, type, tag, condominium, iptu }: PropertyCardProps) {
+export default function PropertyCard({ id, code, title, location, price, beds, baths, garages, area, image, images, type, tag, condominium, iptu, city, neighborhood, street }: PropertyCardProps) {
   const router = useRouter();
   const [isMapOpen, setIsMapOpen] = useState(false);
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
@@ -160,13 +168,13 @@ export default function PropertyCard({ id, code, title, location, price, beds, b
         {/* Navigation Arrows */}
         <button 
           onClick={(e) => { e.stopPropagation(); prevImage(e); }} 
-          className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/30 backdrop-blur-sm text-white flex items-center justify-center opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity hover:bg-black/50 z-10 focus:outline-none cursor-pointer"
+          className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/50 lg:bg-black/30 lg:backdrop-blur-sm text-white flex items-center justify-center opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity hover:bg-black/50 z-10 focus:outline-none cursor-pointer"
         >
           <ChevronLeft size={20} />
         </button>
         <button 
           onClick={(e) => { e.stopPropagation(); nextImage(e); }} 
-          className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/30 backdrop-blur-sm text-white flex items-center justify-center opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity hover:bg-black/50 z-10 focus:outline-none cursor-pointer"
+          className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/50 lg:bg-black/30 lg:backdrop-blur-sm text-white flex items-center justify-center opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity hover:bg-black/50 z-10 focus:outline-none cursor-pointer"
         >
           <ChevronRight size={20} />
         </button>
@@ -182,13 +190,13 @@ export default function PropertyCard({ id, code, title, location, price, beds, b
             </div>
           </div>
           {tag && (
-            <div className="w-max px-3 py-1 bg-white/10 backdrop-blur-md text-white text-[10px] font-bold uppercase rounded-lg border border-white/10">
+            <div className="w-max px-3 py-1 bg-black/40 lg:bg-white/10 lg:backdrop-blur-md text-white text-[10px] font-bold uppercase rounded-lg border border-white/10">
               {tag}
             </div>
           )}
         </div>
 
-        <div className="absolute top-4 right-4 px-2 py-1 bg-slate-950/60 backdrop-blur-md text-slate-300 text-[9px] font-mono rounded border border-white/5 pointer-events-none z-10">
+        <div className="absolute top-4 right-4 px-2 py-1 bg-slate-950/80 lg:bg-slate-950/60 lg:backdrop-blur-md text-slate-300 text-[9px] font-mono rounded border border-white/5 pointer-events-none z-10">
           CÓD: {code}
         </div>
         
@@ -197,7 +205,7 @@ export default function PropertyCard({ id, code, title, location, price, beds, b
           <CompareButton id={id} />
           <div 
             onClick={(e) => { e.stopPropagation(); router.push(`/imovel/${id}`); }}
-            className="w-12 h-12 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center text-white hover:bg-amber-500 hover:text-slate-950 transition-all shadow-xl group-hover:translate-y-0 cursor-pointer"
+            className="w-12 h-12 bg-black/40 lg:bg-white/10 lg:backdrop-blur-md rounded-2xl flex items-center justify-center text-white hover:bg-amber-500 hover:text-slate-950 transition-all shadow-xl group-hover:translate-y-0 cursor-pointer"
           >
             <ArrowUpRight size={24} />
           </div>
@@ -336,7 +344,14 @@ export default function PropertyCard({ id, code, title, location, price, beds, b
               </button>
             </div>
             <div className="w-full bg-slate-100 p-2 sm:p-4">
-              <PropertyMap location={location} title={title} className="h-[50vh] sm:h-[60vh] w-full" />
+              <PropertyMap 
+                location={location} 
+                title={title} 
+                city={city} 
+                neighborhood={neighborhood} 
+                street={street} 
+                className="h-[50vh] sm:h-[60vh] w-full" 
+              />
             </div>
           </motion.div>
         </div>

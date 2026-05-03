@@ -17,6 +17,19 @@ export interface SiteSettings {
   homeAluguelSubtitle: string;
   homeMaxVenda: number;
   homeMaxAluguel: number;
+  // Destaques Manuais
+  featuredVendaIds?: string[];
+  featuredAluguelIds?: string[];
+  // Integrações e SEO
+  metaTitle?: string;
+  metaDescription?: string;
+  googleAnalyticsId?: string; // G-XXXXXX
+  googleAdsId?: string;       // AW-XXXXXX
+  gtmId?: string;             // GTM-XXXXXX
+  clarityId?: string;
+  hotjarId?: string;
+  hotjarSv?: string;
+  customScripts?: string;
 }
 
 const DEFAULT_SETTINGS: SiteSettings = {
@@ -35,6 +48,17 @@ const DEFAULT_SETTINGS: SiteSettings = {
   homeAluguelSubtitle: "Imóveis para Alugar",
   homeMaxVenda: 4,
   homeMaxAluguel: 4,
+  featuredVendaIds: [],
+  featuredAluguelIds: [],
+  metaTitle: "",
+  metaDescription: "",
+  googleAnalyticsId: "",
+  googleAdsId: "",
+  gtmId: "",
+  clarityId: "",
+  hotjarId: "",
+  hotjarSv: "",
+  customScripts: "",
 };
 
 interface SiteSettingsContextType {

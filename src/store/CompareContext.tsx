@@ -5,14 +5,14 @@ import { Property } from "../data/properties";
 
 interface CompareContextType {
   compareList: string[];
-  toggleCompare: (id: string) => void;
+  toggleCompare: (id: string) => "added" | "removed" | "limit";
   isInCompare: (id: string) => boolean;
   clearCompare: () => void;
 }
 
 const CompareContext = createContext<CompareContextType>({
   compareList: [],
-  toggleCompare: () => {},
+  toggleCompare: () => "limit",
   isInCompare: () => false,
   clearCompare: () => {},
 });
@@ -31,23 +31,22 @@ export function CompareProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  const toggleCompare = (id: string) => {
-    setCompareList(prev => {
-      if (prev.includes(id)) {
-        const newList = prev.filter(pId => pId !== id);
-        localStorage.setItem("@carlao-imoveis:compare", JSON.stringify(newList));
-        return newList;
-      }
-      
-      if (prev.length >= 4) {
-        alert("Você pode comparar no máximo 4 imóveis por vez.");
-        return prev;
-      }
-
-      const newList = [...prev, id];
+  const toggleCompare = (id: string): "added" | "removed" | "limit" => {
+    if (compareList.includes(id)) {
+      const newList = compareList.filter(pId => pId !== id);
+      setCompareList(newList);
       localStorage.setItem("@carlao-imoveis:compare", JSON.stringify(newList));
-      return newList;
-    });
+      return "removed";
+    }
+
+    if (compareList.length >= 4) {
+      return "limit";
+    }
+
+    const newList = [...compareList, id];
+    setCompareList(newList);
+    localStorage.setItem("@carlao-imoveis:compare", JSON.stringify(newList));
+    return "added";
   };
 
   const isInCompare = (id: string) => compareList.includes(id);

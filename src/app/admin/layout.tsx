@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Home, Building, PlusCircle, Settings, LogOut, Loader2, Users, MessageSquare } from "lucide-react";
+import { Home, Building, PlusCircle, Settings, LogOut, Loader2, Users, FileCode } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -45,6 +45,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { name: "Leads / Contatos", href: "/admin/leads", icon: Users },
     { name: "Imóveis", href: "/admin/imoveis", icon: Building },
     { name: "Novo Imóvel", href: "/admin/imoveis/novo", icon: PlusCircle },
+    { name: "Integração XML", href: "/admin/xml", icon: FileCode },
     { name: "Configurações", href: "/admin/configuracoes", icon: Settings },
   ];
 
@@ -78,7 +79,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <nav className="flex-1 p-4 space-y-1">
           {navItems.map((item) => {
             const Icon = item.icon;
-            const isActive = pathname === item.href || (item.href !== "/admin" && pathname.startsWith(item.href));
+            const isActive =
+              pathname === item.href ||
+              (item.href !== "/admin" &&
+                pathname.startsWith(item.href + "/") &&
+                !navItems.some(
+                  (other) => other.href !== item.href && pathname.startsWith(other.href)
+                ));
             return (
               <Link
                 key={item.name}

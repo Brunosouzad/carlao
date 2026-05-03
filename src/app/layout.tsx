@@ -5,6 +5,8 @@ import { PropertiesProvider } from "@/store/PropertiesContext";
 import { SiteSettingsProvider } from "@/store/SiteSettingsContext";
 import { FavoritesProvider } from "@/store/FavoritesContext";
 import { CompareProvider } from "@/store/CompareContext";
+import { ToastProvider } from "@/store/ToastContext";
+import IntegrationsScript from "@/components/IntegrationsScript";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -149,10 +151,13 @@ export default function RootLayout({
           }}
         />
         <SiteSettingsProvider>
+          <IntegrationsScript />
           <PropertiesProvider>
             <FavoritesProvider>
               <CompareProvider>
-                <main>{children}</main>
+                <ToastProvider>
+                  <main>{children}</main>
+                </ToastProvider>
               </CompareProvider>
             </FavoritesProvider>
           </PropertiesProvider>

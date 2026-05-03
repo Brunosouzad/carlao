@@ -17,6 +17,7 @@ import NeighborhoodPOIs from "@/components/NeighborhoodPOIs";
 import { supabase } from "@/lib/supabase";
 import { useCompare } from "@/store/CompareContext";
 import { useFavorites } from "@/store/FavoritesContext";
+import { useToast } from "@/store/ToastContext";
 
 export default function PropertyDetailsPage() {
   const { id } = useParams();
@@ -45,13 +46,17 @@ export default function PropertyDetailsPage() {
   const { toggleCompare, isInCompare } = useCompare();
   const isFav = isFavorite(id as string);
   const isComparing = isInCompare(id as string);
+  const toast = useToast();
 
   const toggleFav = () => {
     toggleFavorite(id as string);
   };
 
   const handleCompare = () => {
-    toggleCompare(id as string);
+    const result = toggleCompare(id as string);
+    if (result === "limit") {
+      toast.warning("Limite atingido", "Você pode comparar no máximo 4 imóveis por vez.");
+    }
   };
 
   const handleShare = async () => {
@@ -216,7 +221,7 @@ export default function PropertyDetailsPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.nome || !formData.email) {
-      alert("Por favor, preencha pelo menos seu Nome e E-mail para podermos retornar o contato.");
+      toast.warning("Campos obrigatórios", "Preencha Nome e E-mail para podermos retornar o contato.");
       return;
     }
     
@@ -374,13 +379,13 @@ export default function PropertyDetailsPage() {
                 
                 <button 
                   onClick={prevMedia} 
-                  className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 rounded-full bg-black/40 backdrop-blur-sm text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/60 z-10 focus:outline-none cursor-pointer"
+                  className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 rounded-full bg-black/40 lg:backdrop-blur-sm text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/60 z-10 focus:outline-none cursor-pointer"
                 >
                   <ChevronLeft size={24} className="md:w-8 md:h-8" />
                 </button>
                 <button 
                   onClick={nextMedia} 
-                  className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 rounded-full bg-black/40 backdrop-blur-sm text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/60 z-10 focus:outline-none cursor-pointer"
+                  className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 rounded-full bg-black/40 lg:backdrop-blur-sm text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/60 z-10 focus:outline-none cursor-pointer"
                 >
                   <ChevronRight size={24} className="md:w-8 md:h-8" />
                 </button>
@@ -390,14 +395,14 @@ export default function PropertyDetailsPage() {
                     {property.type}
                   </span>
                   {property.tag && (
-                    <span className="px-3 py-1.5 md:px-4 md:py-2 bg-slate-950/70 backdrop-blur-md text-white text-xs md:text-sm font-bold uppercase rounded-xl shadow-lg">
+                    <span className="px-3 py-1.5 md:px-4 md:py-2 bg-slate-950/70 lg:backdrop-blur-md text-white text-xs md:text-sm font-bold uppercase rounded-xl shadow-lg">
                       {property.tag}
                     </span>
                   )}
                 </div>
 
                 {currentMedia.type === 'image' && (
-                  <div className="absolute bottom-3 right-3 bg-black/40 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                  <div className="absolute bottom-3 right-3 bg-black/40 lg:backdrop-blur-sm text-white text-xs px-2 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
                     🔍 Clique para ampliar
                   </div>
                 )}

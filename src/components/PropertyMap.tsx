@@ -41,15 +41,42 @@ export default function PropertyMap({ location, title, className = "h-[350px]", 
     // Geocode the address using Nominatim (OpenStreetMap free geocoder)
     const geocode = async () => {
       try {
+        let extractedCity = city;
+        let extractedNeighborhood = neighborhood;
+        let extractedStreet = street;
+        
+        // Se as props não existirem, tentar extrair da string location
+        // Formato comum: "Rua X, 100 - Bairro, Cidade" ou "Bairro, Cidade"
+        if (!extractedCity && location) {
+          const parts = location.split(/[,\\-]/).map(p => p.trim());
+          if (parts.length >= 3) {
+             extractedCity = parts[parts.length - 1];
+             extractedNeighborhood = parts[parts.length - 2];
+             extractedStreet = parts.slice(0, parts.length - 2).join(', ');
+          } else if (parts.length === 2) {
+             extractedCity = parts[1];
+             extractedNeighborhood = parts[0];
+          } else {
+             extractedCity = location;
+          }
+        }
+
         const fallbacks = [
           location + ", Brasil"
         ];
         
-        if (street && city) fallbacks.push(`${street}, ${city}, Brasil`);
-        if (neighborhood && city) fallbacks.push(`${neighborhood}, ${city}, Brasil`);
-        if (city) fallbacks.push(`${city}, Brasil`);
+        // Remove números da rua para melhorar geocoding em cidades menores
+        const streetWithoutNumber = extractedStreet ? extractedStreet.replace(/,\s*\d+.*$/, '') : '';
         
-        for (const query of fallbacks) {
+        if (extractedStreet && extractedCity) fallbacks.push(`${extractedStreet}, ${extractedCity}, Brasil`);
+        if (streetWithoutNumber && extractedCity) fallbacks.push(`${streetWithoutNumber}, ${extractedCity}, Brasil`);
+        if (extractedNeighborhood && extractedCity) fallbacks.push(`${extractedNeighborhood}, ${extractedCity}, Brasil`);
+        if (extractedCity) fallbacks.push(`${extractedCity}, Brasil`);
+        
+        // Filtra possíveis duplicatas
+        const uniqueFallbacks = Array.from(new Set(fallbacks));
+        
+        for (const query of uniqueFallbacks) {
           const res = await fetch(
             `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1`,
             { 

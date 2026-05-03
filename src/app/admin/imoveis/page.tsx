@@ -4,18 +4,29 @@ import { useProperties } from "@/store/PropertiesContext";
 import Link from "next/link";
 import { Edit, Trash2, Plus } from "lucide-react";
 import { formatPrice } from "@/utils/format";
+import ConfirmModal from "@/components/admin/ConfirmModal";
+import { useState } from "react";
 
 export default function AdminImoveis() {
   const { properties, deleteProperty } = useProperties();
+  const [confirmModal, setConfirmModal] = useState<{isOpen: boolean, id: string | null}>({ isOpen: false, id: null });
 
   const handleDelete = (id: string) => {
-    if (confirm("Tem certeza que deseja excluir este imóvel?")) {
-      deleteProperty(id);
-    }
+    deleteProperty(id);
   };
 
   return (
     <div>
+      <ConfirmModal 
+        isOpen={confirmModal.isOpen}
+        title="Excluir Imóvel"
+        message="Tem certeza que deseja excluir este imóvel? Esta ação não pode ser desfeita."
+        onConfirm={() => {
+          if (confirmModal.id) handleDelete(confirmModal.id);
+        }}
+        onCancel={() => setConfirmModal({ isOpen: false, id: null })}
+      />
+      
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold text-primary">Gerenciar Imóveis</h1>
         <Link 
@@ -70,8 +81,8 @@ export default function AdminImoveis() {
                     <Edit size={18} />
                   </Link>
                   <button 
-                    onClick={() => handleDelete(prop.id)}
-                    className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                    onClick={() => setConfirmModal({ isOpen: true, id: prop.id })}
+                    className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
                     title="Excluir"
                   >
                     <Trash2 size={18} />

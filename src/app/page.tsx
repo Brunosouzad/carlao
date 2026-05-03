@@ -63,8 +63,23 @@ function HomeContent() {
 
   const cols = settings.homeCardsPerRow || 4;
   const gridClass = cols === 3 ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" : "grid-cols-1 md:grid-cols-2 lg:grid-cols-4";
-  const propertiesGroup1 = properties.filter(p => p.type === "Venda").slice(0, settings.homeMaxVenda || 4);
-  const propertiesGroup2 = properties.filter(p => p.type === "Aluguel").slice(0, settings.homeMaxAluguel || 4);
+
+  // Destaques manuais: se houver IDs configurados, exibe exatamente esses imóveis na ordem definida.
+  // Caso contrário, exibe os mais recentes por tipo.
+  const vendaIds = settings.featuredVendaIds ?? [];
+  const aluguelIds = settings.featuredAluguelIds ?? [];
+
+  const propertiesGroup1 = vendaIds.length > 0
+    ? vendaIds
+        .map(id => properties.find(p => p.id === id))
+        .filter((p): p is NonNullable<typeof p> => Boolean(p))
+    : properties.filter(p => p.type === "Venda").slice(0, settings.homeMaxVenda || 4);
+
+  const propertiesGroup2 = aluguelIds.length > 0
+    ? aluguelIds
+        .map(id => properties.find(p => p.id === id))
+        .filter((p): p is NonNullable<typeof p> => Boolean(p))
+    : properties.filter(p => p.type === "Aluguel").slice(0, settings.homeMaxAluguel || 4);
 
   return (
     <>
@@ -109,8 +124,8 @@ function HomeContent() {
 
       {/* About Us Section — Premium */}
       <section id="empresa" className="py-16 md:py-20 overflow-hidden relative bg-gradient-to-br from-slate-50 via-white to-slate-100/30">
-        <div className="absolute top-0 left-0 w-96 h-96 bg-primary/5 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2" />
-        <div className="absolute bottom-0 right-0 w-80 h-80 bg-slate-200/10 rounded-full blur-[100px] translate-x-1/3 translate-y-1/3" />
+        <div className="hidden md:block absolute top-0 left-0 w-96 h-96 bg-primary/5 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2" />
+        <div className="hidden md:block absolute bottom-0 right-0 w-80 h-80 bg-slate-200/10 rounded-full blur-[100px] translate-x-1/3 translate-y-1/3" />
 
         <div className="w-full max-w-7xl mx-auto mx-auto px-8 relative z-10">
           <div className="flex flex-col lg:flex-row items-center gap-20">

@@ -8,9 +8,11 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { useToast } from "@/store/ToastContext";
 import { motion } from "framer-motion";
 
 export default function ProcuraPage() {
+  const toast = useToast();
   const [formData, setFormData] = useState({
     nome: '',
     email: '',
@@ -56,7 +58,7 @@ export default function ProcuraPage() {
       setTimeout(() => setSubmitSuccess(false), 5000);
     } catch (err) {
       console.error("Erro ao enviar:", err);
-      alert("Ocorreu um erro. Por favor, tente novamente via WhatsApp.");
+      toast.error("Erro ao enviar pedido", "Tente novamente ou fale pelo WhatsApp.");
     } finally {
       setIsSubmitting(false);
     }
@@ -107,8 +109,8 @@ export default function ProcuraPage() {
           </div>
           
           {/* Background decoration */}
-          <div className="absolute top-0 right-0 w-1/4 h-full bg-secondary/5 blur-[100px] -translate-y-1/2 translate-x-1/2 rounded-full" />
-          <div className="absolute bottom-0 left-0 w-1/4 h-full bg-primary/5 blur-[100px] translate-y-1/2 -translate-x-1/2 rounded-full" />
+          <div className="hidden md:block absolute top-0 right-0 w-1/4 h-full bg-secondary/5 blur-[100px] -translate-y-1/2 translate-x-1/2 rounded-full" />
+          <div className="hidden md:block absolute bottom-0 left-0 w-1/4 h-full bg-primary/5 blur-[100px] translate-y-1/2 -translate-x-1/2 rounded-full" />
         </section>
 
         <section className="py-16 bg-slate-100 border-y border-slate-200">

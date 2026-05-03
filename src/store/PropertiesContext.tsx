@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { Property, INITIAL_PROPERTIES } from "../data/properties";
 import { supabase } from "../lib/supabase";
+import { useToast } from "@/store/ToastContext";
 
 interface PropertiesContextType {
   properties: Property[];
@@ -25,6 +26,7 @@ const PropertiesContext = createContext<PropertiesContextType>({
 export function PropertiesProvider({ children }: { children: React.ReactNode }) {
   const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
+  const toast = useToast();
 
   // Consideramos configurado se não for o placeholder padrão
   const isSupabaseConfigured = 
@@ -43,6 +45,7 @@ export function PropertiesProvider({ children }: { children: React.ReactNode }) 
 
         if (error) {
           console.warn("Supabase fetch error, falling back to local:", error.message);
+          toast.error("Erro ao carregar dados", "Não foi possível conectar ao banco de dados.");
           loadLocalData();
         } else if (data) {
           const mappedData = data.map((p: any) => {

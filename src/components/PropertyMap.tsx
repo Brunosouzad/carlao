@@ -61,27 +61,29 @@ export default function PropertyMap({ location, title, className = "h-[350px]", 
           }
         }
 
+        const baseLocation = location.replace(/[-–—]/g, ',').split(',').map(s => s.trim()).filter(Boolean).join(', ');
+        
         const fallbacks = [
-          location + ", Brasil"
+          baseLocation + ", Minas Gerais, Brasil",
+          location + ", Brasil",
+          `${extractedStreet}, ${extractedCity}, Minas Gerais, Brasil`,
+          `${extractedNeighborhood}, ${extractedCity}, Minas Gerais, Brasil`,
+          `${extractedCity}, Minas Gerais, Brasil`,
+          "Coronel Fabriciano, MG, Brasil" // Último recurso se tudo falhar e for na região
         ];
         
-        // Remove números da rua para melhorar geocoding em cidades menores
-        const streetWithoutNumber = extractedStreet ? extractedStreet.replace(/,\s*\d+.*$/, '') : '';
-        
-        if (extractedStreet && extractedCity) fallbacks.push(`${extractedStreet}, ${extractedCity}, Brasil`);
-        if (streetWithoutNumber && extractedCity) fallbacks.push(`${streetWithoutNumber}, ${extractedCity}, Brasil`);
-        if (extractedNeighborhood && extractedCity) fallbacks.push(`${extractedNeighborhood}, ${extractedCity}, Brasil`);
-        if (extractedCity) fallbacks.push(`${extractedCity}, Brasil`);
-        
-        // Filtra possíveis duplicatas
         const uniqueFallbacks = Array.from(new Set(fallbacks));
         
         for (const query of uniqueFallbacks) {
-          if (query.length < 5) continue; // Evita buscas vazias ou muito genéricas
+          if (query.length < 3) continue;
           
           try {
-            const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1&email=carlaoimoveisva@gmail.com`;
-            const res = await fetch(url);
+            const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1&addressdetails=1`;
+            const res = await fetch(url, {
+              headers: {
+                "Accept-Language": "pt-BR"
+              }
+            });
             
             if (!res.ok) continue;
             
@@ -92,10 +94,10 @@ export default function PropertyMap({ location, title, className = "h-[350px]", 
               return;
             }
           } catch (fetchErr) {
-            console.warn("Geocoding fetch failed:", fetchErr);
+            console.warn("Geocoding try failed:", query, fetchErr);
           }
           
-          await new Promise(r => setTimeout(r, 1000)); // Aumentado para 1s por segurança
+          await new Promise(r => setTimeout(r, 800));
         }
       } catch (err) {
         console.error("Geocoding error:", err);

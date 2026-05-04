@@ -82,10 +82,11 @@ export default function PropertyMap({ location, title, className = "h-[350px]", 
             { 
               headers: { 
                 "Accept-Language": "pt-BR",
-                "User-Agent": "CarlaoImoveis/1.0"
+                "User-Agent": "CarlaoImoveis/1.1"
               } 
             }
           );
+          if (!res.ok) continue;
           const data = await res.json();
           if (data && data.length > 0) {
             setCoords([parseFloat(data[0].lat), parseFloat(data[0].lon)]);
@@ -107,7 +108,7 @@ export default function PropertyMap({ location, title, className = "h-[350px]", 
 
   if (loading) {
     return (
-      <div className={`${className} rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center`}>
+      <div className={`${className} rounded-none bg-slate-100 border border-slate-200 flex items-center justify-center`}>
         <div className="flex items-center gap-3 text-slate-400">
           <div className="w-5 h-5 border-2 border-secondary border-t-transparent rounded-full animate-spin" />
           <span className="text-sm font-medium">Carregando mapa...</span>
@@ -118,14 +119,14 @@ export default function PropertyMap({ location, title, className = "h-[350px]", 
 
   if (!coords) {
     return (
-      <div className={`${className} rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center`}>
+      <div className={`${className} rounded-none bg-slate-100 border border-slate-200 flex items-center justify-center`}>
         <span className="text-slate-400 text-sm">Não foi possível localizar o endereço no mapa.</span>
       </div>
     );
   }
 
   return (
-    <div className={`${className} rounded-2xl overflow-hidden border border-slate-200 shadow-sm relative z-0`}>
+    <div className={`${className} rounded-none overflow-hidden border border-slate-200 shadow-sm relative z-0`}>
       <MapContainer
         key={`${coords[0]}-${coords[1]}`}
         center={coords}

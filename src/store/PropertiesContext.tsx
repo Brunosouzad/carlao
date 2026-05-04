@@ -111,11 +111,13 @@ export function PropertiesProvider({ children }: { children: React.ReactNode }) 
 
         if (error) throw error;
         if (data) {
-          setProperties(prev => [data[0] as Property, ...prev]);
+          const newProp = data[0] as Property;
+          setProperties(prev => [{ ...newProp, slug: generateSlug(newProp) } as Property, ...prev]);
         }
       } else {
         const newProperty = { ...propertyData, id: Date.now().toString() } as Property;
-        const newProperties = [newProperty, ...properties];
+        const newPropertyWithSlug = { ...newProperty, slug: generateSlug(newProperty) };
+        const newProperties = [newPropertyWithSlug, ...properties];
         setProperties(newProperties);
         localStorage.setItem("@carlao-imoveis:properties", JSON.stringify(newProperties));
       }
@@ -137,7 +139,8 @@ export function PropertiesProvider({ children }: { children: React.ReactNode }) 
         if (error) throw error;
         setProperties(prev => prev.map(p => p.id === updatedProperty.id ? updatedProperty : p));
       } else {
-        const newProperties = properties.map((p) => (p.id === updatedProperty.id ? updatedProperty : p));
+        const updatedWithSlug = { ...updatedProperty, slug: generateSlug(updatedProperty) };
+        const newProperties = properties.map((p) => (p.id === updatedProperty.id ? updatedWithSlug : p));
         setProperties(newProperties);
         localStorage.setItem("@carlao-imoveis:properties", JSON.stringify(newProperties));
       }

@@ -122,23 +122,23 @@ export default function ContatoPage() {
                 transition={{ duration: 0.4, delay: i * 0.1 }}
               >
                 {item.href ? (
-                  <a href={item.href} className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md hover:border-secondary/30 transition-all flex items-center gap-4 group block">
-                    <div className="w-12 h-12 rounded-xl bg-primary/5 flex items-center justify-center group-hover:bg-secondary group-hover:text-white transition-colors shrink-0">
+                  <a href={item.href} className="bg-white p-6 rounded-none border border-slate-100 shadow-sm hover:shadow-md hover:border-secondary/30 transition-all flex items-center gap-4 group block">
+                    <div className="w-12 h-12 rounded-none bg-primary/5 flex items-center justify-center group-hover:bg-secondary group-hover:text-white transition-colors shrink-0">
                       <item.icon size={22} className="text-primary group-hover:text-white transition-colors" />
                     </div>
-                    <div>
+                    <div className="min-w-0">
                       <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{item.label}</p>
-                      <p className="text-primary font-bold text-sm">{item.value}</p>
+                      <p className="text-primary font-bold text-sm break-all">{item.value}</p>
                     </div>
                   </a>
                 ) : (
-                  <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-primary/5 flex items-center justify-center shrink-0">
+                  <div className="bg-white p-6 rounded-none border border-slate-100 shadow-sm flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-none bg-primary/5 flex items-center justify-center shrink-0">
                       <item.icon size={22} className="text-primary" />
                     </div>
-                    <div>
+                    <div className="min-w-0">
                       <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{item.label}</p>
-                      <p className="text-primary font-bold text-sm">{item.value}</p>
+                      <p className="text-primary font-bold text-sm break-all">{item.value}</p>
                     </div>
                   </div>
                 )}
@@ -163,7 +163,7 @@ export default function ContatoPage() {
               <h2 className="text-3xl font-bold text-primary mb-2 font-oswald uppercase">Envie sua Mensagem</h2>
               <p className="text-slate-500 mb-8">Preencha o formulário e retornaremos em até 24 horas úteis.</p>
 
-              <div className="bg-white p-8 md:p-10 rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-white">
+              <div className="bg-white p-8 md:p-10 rounded-none shadow-xl shadow-slate-200/50 border border-white">
                 {submitSuccess ? (
                   <div className="text-center py-12">
                     <div className="w-20 h-20 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -173,7 +173,7 @@ export default function ContatoPage() {
                     <p className="text-slate-500 text-sm">Obrigado pelo contato. Retornaremos em breve.</p>
                     <button
                       onClick={() => setSubmitSuccess(false)}
-                      className="mt-8 px-6 py-2.5 bg-slate-900 text-white font-bold rounded-xl hover:bg-primary transition-all font-oswald uppercase tracking-wider text-xs"
+                      className="mt-8 px-6 py-2.5 bg-slate-900 text-white font-bold rounded-none hover:bg-primary transition-all font-oswald uppercase tracking-wider text-xs"
                     >
                       Enviar outra
                     </button>
@@ -189,7 +189,7 @@ export default function ContatoPage() {
                           value={formData.nome}
                           onChange={handleInputChange}
                           placeholder="Seu nome"
-                          className="w-full px-5 py-3 rounded-xl bg-slate-50 border border-slate-100 focus:bg-white focus:outline-none focus:ring-4 focus:ring-secondary/5 transition-all font-medium text-sm"
+                          className="w-full px-5 py-3 rounded-none bg-slate-50 border border-slate-100 focus:bg-white focus:outline-none focus:ring-4 focus:ring-secondary/5 transition-all font-medium text-sm"
                           required
                         />
                       </div>
@@ -201,7 +201,7 @@ export default function ContatoPage() {
                           value={formData.telefone}
                           onChange={handleInputChange}
                           placeholder="(00) 00000-0000"
-                          className="w-full px-5 py-3 rounded-xl bg-slate-50 border border-slate-100 focus:bg-white focus:outline-none focus:ring-4 focus:ring-secondary/5 transition-all font-medium text-sm"
+                          className="w-full px-5 py-3 rounded-none bg-slate-50 border border-slate-100 focus:bg-white focus:outline-none focus:ring-4 focus:ring-secondary/5 transition-all font-medium text-sm"
                           required
                         />
                       </div>
@@ -216,7 +216,7 @@ export default function ContatoPage() {
                           value={formData.email}
                           onChange={handleInputChange}
                           placeholder="seu@email.com"
-                          className="w-full px-5 py-3 rounded-xl bg-slate-50 border border-slate-100 focus:bg-white focus:outline-none focus:ring-4 focus:ring-secondary/5 transition-all font-medium text-sm"
+                          className="w-full px-5 py-3 rounded-none bg-slate-50 border border-slate-100 focus:bg-white focus:outline-none focus:ring-4 focus:ring-secondary/5 transition-all font-medium text-sm"
                           required
                         />
                       </div>
@@ -226,7 +226,7 @@ export default function ContatoPage() {
                           name="assunto"
                           value={formData.assunto}
                           onChange={handleInputChange}
-                          className="w-full px-5 py-3 rounded-xl bg-slate-50 border border-slate-100 focus:bg-white focus:outline-none focus:ring-4 focus:ring-secondary/5 transition-all font-medium text-sm appearance-none cursor-pointer"
+                          className="w-full px-5 py-3 rounded-none bg-slate-50 border border-slate-100 focus:bg-white focus:outline-none focus:ring-4 focus:ring-secondary/5 transition-all font-medium text-sm appearance-none cursor-pointer"
                         >
                           <option>Informações Gerais</option>
                           <option>Quero Comprar um Imóvel</option>
@@ -246,7 +246,7 @@ export default function ContatoPage() {
                         onChange={handleInputChange}
                         placeholder="Como podemos ajudá-lo?"
                         rows={4}
-                        className="w-full px-5 py-3 rounded-xl bg-slate-50 border border-slate-100 focus:bg-white focus:outline-none focus:ring-4 focus:ring-secondary/5 transition-all font-medium text-sm resize-none"
+                        className="w-full px-5 py-3 rounded-none bg-slate-50 border border-slate-100 focus:bg-white focus:outline-none focus:ring-4 focus:ring-secondary/5 transition-all font-medium text-sm resize-none"
                         required
                       ></textarea>
                     </div>
@@ -255,7 +255,7 @@ export default function ContatoPage() {
                       <button
                         type="submit"
                         disabled={isSubmitting}
-                        className="flex-1 bg-primary hover:bg-slate-900 text-white py-4 rounded-xl font-bold shadow-lg shadow-primary/10 transition-all active:scale-[0.98] disabled:opacity-70 flex items-center justify-center gap-3 font-oswald uppercase tracking-wider"
+                        className="flex-1 bg-primary hover:bg-slate-900 text-white py-4 rounded-none font-bold shadow-lg shadow-primary/10 transition-all active:scale-[0.98] disabled:opacity-70 flex items-center justify-center gap-3 font-oswald uppercase tracking-wider"
                       >
                         {isSubmitting ? "Enviando..." : (
                           <>
@@ -267,7 +267,7 @@ export default function ContatoPage() {
                       <a
                         href="https://wa.me/553186003497"
                         target="_blank"
-                        className="flex-1 bg-[#25D366] hover:bg-[#128C7E] text-white py-4 rounded-xl font-bold shadow-lg shadow-green-500/10 transition-all active:scale-[0.98] flex items-center justify-center gap-3 font-oswald uppercase tracking-wider"
+                        className="flex-1 bg-[#25D366] hover:bg-[#128C7E] text-white py-4 rounded-none font-bold shadow-lg shadow-green-500/10 transition-all active:scale-[0.98] flex items-center justify-center gap-3 font-oswald uppercase tracking-wider"
                       >
                         <MessageSquare size={18} />
                         WhatsApp
@@ -289,7 +289,7 @@ export default function ContatoPage() {
               <h2 className="text-3xl font-bold text-primary font-oswald uppercase">Nossas Unidades</h2>
 
               {unidades.map((u, i) => (
-                <div key={i} className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+                <div key={i} className="bg-white rounded-none border border-slate-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow">
                   <div className="w-full h-48 bg-slate-100">
                     <iframe
                       src={u.mapa}

@@ -19,7 +19,11 @@ export async function generateMetadata(
   const slug = params.slug
   const property = INITIAL_PROPERTIES.find(p => {
     const pSlug = generateSlug(p);
-    return pSlug === slug || String(p.id) === String(slug);
+    return (
+      pSlug.toLowerCase() === slug.toLowerCase() || 
+      String(p.id) === String(slug) ||
+      p.code?.toLowerCase() === slug.toLowerCase()
+    );
   })
 
   if (!property) {

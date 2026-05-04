@@ -9,7 +9,7 @@ export default function Footer() {
       <div className="w-full max-w-7xl mx-auto mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-24 mb-16">
           <div className="space-y-8">
-            <div className="bg-white p-4 rounded-2xl w-fit">
+            <div className="bg-white p-4 rounded-none w-fit">
               <img 
                 src="/logo-carlao.png" 
                 alt="Carlão Imóveis" 
@@ -58,14 +58,14 @@ export default function Footer() {
               <Link 
                 href="https://facebook.com/carlaoimoveismg" 
                 target="_blank"
-                className="w-10 h-10 rounded-xl bg-white/10 border border-white/10 flex items-center justify-center text-white hover:bg-secondary hover:text-primary transition-all cursor-pointer"
+                className="w-10 h-10 rounded-none bg-white/10 border border-white/10 flex items-center justify-center text-white hover:bg-secondary hover:text-primary transition-all cursor-pointer"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
               </Link>
               <Link 
                 href="https://www.instagram.com/carlao_imoveis?igsh=M3pzMmNlaHVqMmZ4" 
                 target="_blank"
-                className="w-10 h-10 rounded-xl bg-white/10 border border-white/10 flex items-center justify-center text-white hover:bg-secondary hover:text-primary transition-all cursor-pointer"
+                className="w-10 h-10 rounded-none bg-white/10 border border-white/10 flex items-center justify-center text-white hover:bg-secondary hover:text-primary transition-all cursor-pointer"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
               </Link>
@@ -83,7 +83,7 @@ export default function Footer() {
               <Link href="#" className="text-white/80 hover:text-secondary text-xs uppercase tracking-wider font-bold transition-colors">Termos</Link>
             </div>
             
-            <a href="https://www.webcria.com.br" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 group bg-white hover:bg-slate-50 px-4 py-1.5 rounded-full transition-all shadow-xl border border-transparent hover:border-slate-200">
+            <a href="https://www.webcria.com.br" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 group bg-white hover:bg-slate-50 px-4 py-1.5 rounded-none transition-all shadow-xl border border-transparent hover:border-slate-200">
               <span className="text-slate-500 text-[9px] uppercase tracking-wider font-bold">Desenvolvido por</span>
               <div className="flex items-center gap-0.5">
                 <img src="/webcrialogo.png" alt="Webcria Logo" className="h-5 sm:h-6 -mx-1 group-hover:scale-105 transition-transform" />

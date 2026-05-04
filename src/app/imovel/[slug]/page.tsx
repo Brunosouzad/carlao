@@ -142,7 +142,15 @@ export default function PropertyDetailsPage() {
 
   useEffect(() => {
     if (slug && !loading) {
-      const found = properties.find((p) => p.slug === slug || String(p.id) === String(slug));
+      const found = properties.find((p) => {
+        const currentSlug = p.slug || generateSlug(p);
+        return (
+          currentSlug.toLowerCase() === String(slug).toLowerCase() || 
+          String(p.id) === String(slug) ||
+          p.code?.toLowerCase() === String(slug).toLowerCase()
+        );
+      });
+
       if (found) {
         setProperty(found);
         setFormData(prev => ({

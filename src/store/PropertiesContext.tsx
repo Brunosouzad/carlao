@@ -103,16 +103,44 @@ export function PropertiesProvider({ children }: { children: React.ReactNode }) 
   const addProperty = async (propertyData: Omit<Property, "id">) => {
     try {
       if (isSupabaseConfigured) {
-        const { videoUrl, zipCode, ...rest } = propertyData;
+        const { videoUrl, zipCode, price, condominium, iptu, ...rest } = propertyData;
+        
+        // Limpar formatação de moeda para salvar apenas números (centavos)
+        const cleanPrice = price ? price.replace(/\D/g, "") : "0";
+        const cleanCondominium = condominium ? condominium.replace(/\D/g, "") : "0";
+        const cleanIptu = iptu ? iptu.replace(/\D/g, "") : "0";
+
         const { data, error } = await supabase
           .from('properties')
-          .insert([{ ...rest, video_url: videoUrl, zip_code: zipCode }])
+          .insert([{ 
+            ...rest, 
+            price: cleanPrice,
+            condominium: cleanCondominium,
+            iptu: cleanIptu,
+            video_url: videoUrl, 
+            zip_code: zipCode 
+          }])
           .select();
 
-        if (error) throw error;
-        if (data) {
-          const newProp = data[0] as Property;
-          setProperties(prev => [{ ...newProp, slug: generateSlug(newProp) } as Property, ...prev]);
+        if (error) {
+          console.error("Supabase insert error details:", error);
+          throw new Error(error.message);
+        }
+
+        if (data && data[0]) {
+          const p = data[0] as any;
+          const { video_url, zip_code, images, ...restData } = p;
+          
+          const mappedProp = { 
+            ...restData, 
+            videoUrl: video_url, 
+            zipCode: zip_code,
+            images: Array.isArray(images) ? images : (typeof images === 'string' ? JSON.parse(images) : [])
+          } as Property;
+
+          const newPropWithSlug = { ...mappedProp, slug: generateSlug(mappedProp) };
+          setProperties(prev => [newPropWithSlug, ...prev]);
+          toast.success("Sucesso", "Imóvel cadastrado com sucesso!");
         }
       } else {
         const newProperty = { ...propertyData, id: Date.now().toString() } as Property;
@@ -120,32 +148,53 @@ export function PropertiesProvider({ children }: { children: React.ReactNode }) 
         const newProperties = [newPropertyWithSlug, ...properties];
         setProperties(newProperties);
         localStorage.setItem("@carlao-imoveis:properties", JSON.stringify(newProperties));
+        toast.success("Sucesso", "Imóvel salvo localmente (Supabase não configurado).");
       }
-    } catch (e) {
+    } catch (e: any) {
       console.error("Error adding property:", e);
-      alert("Erro ao salvar no banco. Verifique se a tabela 'properties' foi criada no Supabase.");
+      alert(`Erro ao salvar no banco: ${e.message || "Erro desconhecido"}. Verifique se todos os campos estão corretos.`);
     }
   };
 
   const updateProperty = async (updatedProperty: Property) => {
     try {
       if (isSupabaseConfigured) {
-        const { videoUrl, zipCode, ...rest } = updatedProperty;
+        const { videoUrl, zipCode, price, condominium, iptu, slug, ...rest } = updatedProperty;
+        
+        // Limpar formatação de moeda para salvar apenas números (centavos)
+        const cleanPrice = price ? String(price).replace(/\D/g, "") : "0";
+        const cleanCondominium = condominium ? String(condominium).replace(/\D/g, "") : "0";
+        const cleanIptu = iptu ? String(iptu).replace(/\D/g, "") : "0";
+
         const { error } = await supabase
           .from('properties')
-          .update({ ...rest, video_url: videoUrl, zip_code: zipCode })
+          .update({ 
+            ...rest, 
+            price: cleanPrice,
+            condominium: cleanCondominium,
+            iptu: cleanIptu,
+            video_url: videoUrl, 
+            zip_code: zipCode 
+          })
           .eq('id', updatedProperty.id);
 
-        if (error) throw error;
+        if (error) {
+          console.error("Supabase update error details:", error);
+          throw new Error(error.message);
+        }
+        
         setProperties(prev => prev.map(p => p.id === updatedProperty.id ? updatedProperty : p));
+        toast.success("Sucesso", "Imóvel atualizado com sucesso!");
       } else {
         const updatedWithSlug = { ...updatedProperty, slug: generateSlug(updatedProperty) };
         const newProperties = properties.map((p) => (p.id === updatedProperty.id ? updatedWithSlug : p));
         setProperties(newProperties);
         localStorage.setItem("@carlao-imoveis:properties", JSON.stringify(newProperties));
+        toast.success("Sucesso", "Imóvel atualizado localmente.");
       }
-    } catch (e) {
+    } catch (e: any) {
       console.error("Error updating property:", e);
+      alert(`Erro ao atualizar no banco: ${e.message || "Erro desconhecido"}.`);
     }
   };
 

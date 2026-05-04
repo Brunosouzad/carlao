@@ -227,15 +227,15 @@ export default function PropertyCard({ id, code, title, location, price, beds, b
         <h3 className="text-lg font-bold text-primary mb-1 group-hover:text-secondary transition-colors line-clamp-1 leading-tight">
           {title}
         </h3>
-        <p className={`text-accent-blue font-bold text-2xl tracking-tighter ${!(condominium || iptu) ? 'mb-4' : ''}`}>
+        <p className={`text-accent-blue font-bold text-2xl tracking-tighter ${!(condominium && condominium !== "0" || iptu && iptu !== "0") ? 'mb-4' : ''}`}>
           {formatPrice(price)}
           {type === 'Aluguel' && formatPrice(price) !== "Consulte-nos" && <span className="text-sm font-normal text-slate-500">/mês</span>}
         </p>
-        {(condominium || iptu) && (
+        {(condominium && condominium !== "0" || iptu && iptu !== "0") && (
           <p className="text-xs text-slate-400 font-medium mb-4 mt-1">
             {[
-              condominium && `Cond. ${formatPrice(condominium)}`,
-              iptu && `IPTU ${formatPrice(iptu)}`
+              condominium && condominium !== "0" && `Cond. ${formatPrice(condominium)}`,
+              iptu && iptu !== "0" && `IPTU ${formatPrice(iptu)}`
             ].filter(Boolean).join(' • ')}
           </p>
         )}

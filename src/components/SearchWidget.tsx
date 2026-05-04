@@ -123,7 +123,7 @@ export default function SearchWidget({ compact }: SearchWidgetProps) {
 
   return (
     <div className={`w-full max-w-6xl mx-auto px-4 relative z-20 ${compact ? 'scale-95 origin-top' : ''}`}>
-      <div className={`bg-white shadow-[0_8px_30px_-10px_rgba(0,0,0,0.12)] transition-all duration-300 ${isAdvanced ? 'rounded-none p-6 lg:p-8' : 'rounded-none p-4 lg:p-6 lg:px-8'}`}>
+      <div className={`bg-white shadow-[0_8px_30px_-10px_rgba(0,0,0,0.12)] transition-all duration-300 ${isAdvanced ? 'rounded-[2rem] p-6 lg:p-8' : 'rounded-[1.5rem] p-4 lg:p-6 lg:px-8'}`}>
         <form onSubmit={handleSearch} className="flex flex-col gap-4">
           
           {/* Main Filters Row */}

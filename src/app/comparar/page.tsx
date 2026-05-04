@@ -3,12 +3,13 @@
 import Navbar from "@/components/Navbar";
 import { useProperties } from "@/store/PropertiesContext";
 import { useCompare } from "@/store/CompareContext";
-import { X, ArrowLeft, ArrowLeftRight, Check, BedDouble, Bath, Square, Car, Tag } from "lucide-react";
+import { X, ArrowLeft, ArrowLeftRight, Check, BedDouble, Bath, Square, Car, Tag, MapPin } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { formatPrice } from "@/utils/format";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
+import { generateSlug } from "@/utils/slug";
 
 export default function CompararPage() {
   const { properties } = useProperties();
@@ -20,7 +21,7 @@ export default function CompararPage() {
     <>
       <Navbar />
       <main className="min-h-screen bg-slate-50 pt-32 pb-20">
-        <div className="w-full max-w-7xl mx-auto mx-auto px-6">
+        <div className="w-full max-w-7xl mx-auto px-6">
           
           {/* Header */}
           <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
@@ -42,7 +43,7 @@ export default function CompararPage() {
           </div>
 
           {compareProperties.length > 0 ? (
-            <div className="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
+            <div className="bg-white rounded-none shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                   <thead>
@@ -61,8 +62,8 @@ export default function CompararPage() {
                           >
                             <X size={20} />
                           </button>
-                          <Link href={`/imovel/${p.id}`} className="block">
-                            <img src={p.image} alt={p.title} className="w-full h-48 object-cover rounded-2xl mb-4 group-hover:scale-[1.02] transition-transform" />
+                          <Link href={`/imovel/${generateSlug(p)}`} className="block">
+                            <img src={p.image} alt={p.title} className="w-full h-48 object-cover rounded-none mb-4 group-hover:scale-[1.02] transition-transform" />
                             <h3 className="font-bold text-primary line-clamp-1 mb-2 font-oswald uppercase tracking-tight">{p.title}</h3>
                             <p className="text-accent-blue font-bold text-xl font-oswald tracking-tighter">{formatPrice(p.price)}</p>
                           </Link>
@@ -117,9 +118,9 @@ export default function CompararPage() {
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-center py-24 bg-white rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/50 max-w-2xl mx-auto"
+              className="text-center py-24 bg-white rounded-none border border-slate-100 shadow-xl shadow-slate-200/50 max-w-2xl mx-auto"
             >
-              <div className="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-8">
+              <div className="w-24 h-24 bg-slate-50 rounded-none flex items-center justify-center mx-auto mb-8">
                 <ArrowLeftRight size={40} className="text-slate-200" />
               </div>
               <h2 className="text-2xl font-bold text-primary mb-4 font-oswald uppercase">Nada para comparar</h2>
@@ -128,7 +129,7 @@ export default function CompararPage() {
               </p>
               <Link 
                 href="/venda" 
-                className="inline-flex items-center gap-3 bg-primary text-white px-8 py-4 rounded-xl font-bold hover:bg-slate-900 transition-all font-oswald uppercase tracking-widest text-sm"
+                className="inline-flex items-center gap-3 bg-primary text-white px-8 py-4 rounded-none font-bold hover:bg-slate-900 transition-all font-oswald uppercase tracking-widest text-sm"
               >
                 Explorar Imóveis
                 <ArrowLeft size={18} />

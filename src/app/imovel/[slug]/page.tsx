@@ -20,7 +20,7 @@ import { useFavorites } from "@/store/FavoritesContext";
 import { useToast } from "@/store/ToastContext";
 
 export default function PropertyDetailsPage() {
-  const { id } = useParams();
+  const { slug } = useParams();
   const router = useRouter();
   const { properties, loading } = useProperties();
   
@@ -44,16 +44,17 @@ export default function PropertyDetailsPage() {
 
   const { toggleFavorite, isFavorite } = useFavorites();
   const { toggleCompare, isInCompare } = useCompare();
-  const isFav = isFavorite(id as string);
-  const isComparing = isInCompare(id as string);
+  const isFav = property ? isFavorite(property.id) : false;
+  const isComparing = property ? isInCompare(property.id) : false;
   const toast = useToast();
 
   const toggleFav = () => {
-    toggleFavorite(id as string);
+    if (property) toggleFavorite(property.id);
   };
 
   const handleCompare = () => {
-    const result = toggleCompare(id as string);
+    if (!property) return;
+    const result = toggleCompare(property.id);
     if (result === "limit") {
       toast.warning("Limite atingido", "Você pode comparar no máximo 4 imóveis por vez.");
     }
@@ -140,8 +141,8 @@ export default function PropertyDetailsPage() {
   };
 
   useEffect(() => {
-    if (id && !loading) {
-      const found = properties.find((p) => String(p.id) === String(id));
+    if (slug && !loading) {
+      const found = properties.find((p) => p.slug === slug || String(p.id) === String(slug));
       if (found) {
         setProperty(found);
         setFormData(prev => ({
@@ -150,7 +151,7 @@ export default function PropertyDetailsPage() {
         }));
       }
     }
-  }, [id, properties, loading]);
+  }, [slug, properties, loading]);
 
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
 
@@ -270,7 +271,7 @@ export default function PropertyDetailsPage() {
   };
 
   const similarProperties = properties
-    .filter(p => p.id !== id)
+    .filter(p => p.id !== property?.id)
     .filter(p => {
       if (recommendTab === 'tipo') return p.category === property.category;
       if (recommendTab === 'localizacao') return p.location.includes(property.location.split(',')[0]);

@@ -1,11 +1,12 @@
 import { MetadataRoute } from 'next';
 import { INITIAL_PROPERTIES } from '@/data/properties';
+import { generateSlug } from '@/utils/slug';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://www.carlaoimoveismg.com.br';
 
   const propertyUrls = INITIAL_PROPERTIES.map((property) => ({
-    url: `${baseUrl}/imovel/${property.id}`,
+    url: `${baseUrl}/imovel/${generateSlug(property)}`,
     lastModified: new Date(),
     changeFrequency: 'weekly' as const,
     priority: 0.8,

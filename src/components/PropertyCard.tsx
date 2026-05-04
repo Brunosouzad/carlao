@@ -122,15 +122,18 @@ interface PropertyCardProps {
   city?: string;
   neighborhood?: string;
   street?: string;
+  slug?: string;
 }
 
-export default function PropertyCard({ id, code, title, location, price, beds, baths, garages, area, image, images, type, tag, condominium, iptu, city, neighborhood, street }: PropertyCardProps) {
+export default function PropertyCard({ id, code, title, location, price, beds, baths, garages, area, image, images, type, tag, condominium, iptu, city, neighborhood, street, slug }: PropertyCardProps) {
   const router = useRouter();
   const [isMapOpen, setIsMapOpen] = useState(false);
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const cardImages = [image, ...(images || [])];
+  
+  const propertyUrl = slug ? `/imovel/${slug}` : `/imovel/${id}`;
 
   const nextImage = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -149,7 +152,7 @@ export default function PropertyCard({ id, code, title, location, price, beds, b
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       className="group bg-white rounded-none overflow-hidden border border-slate-200 lg:backdrop-blur-md lg:bg-white/70 hover:border-amber-500/30 transition-all duration-500 shadow-sm relative cursor-pointer"
-      onClick={() => router.push(`/imovel/${id}`)}
+      onClick={() => router.push(propertyUrl)}
     >
       {/* Image Container */}
       <div className="relative h-64 overflow-hidden">
@@ -204,8 +207,8 @@ export default function PropertyCard({ id, code, title, location, price, beds, b
           <FavoriteButton id={id} />
           <CompareButton id={id} />
           <div 
-            onClick={(e) => { e.stopPropagation(); router.push(`/imovel/${id}`); }}
-            className="w-12 h-12 bg-black/40 lg:bg-white/10 lg:backdrop-blur-md rounded-2xl flex items-center justify-center text-white hover:bg-amber-500 hover:text-slate-950 transition-all shadow-xl group-hover:translate-y-0 cursor-pointer"
+            onClick={(e) => { e.stopPropagation(); router.push(propertyUrl); }}
+            className="w-12 h-12 bg-black/40 lg:bg-white/10 lg:backdrop-blur-md rounded-none flex items-center justify-center text-white hover:bg-amber-500 hover:text-slate-950 transition-all shadow-xl group-hover:translate-y-0 cursor-pointer"
           >
             <ArrowUpRight size={24} />
           </div>

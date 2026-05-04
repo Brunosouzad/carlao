@@ -1,8 +1,9 @@
 import { Metadata, ResolvingMetadata } from 'next'
 import { INITIAL_PROPERTIES } from '@/data/properties'
+import { generateSlug } from '@/utils/slug'
 
 type Props = {
-  params: { id: string }
+  params: { slug: string }
 }
 
 function formatPriceSEO(price: string): string {
@@ -15,8 +16,11 @@ export async function generateMetadata(
   { params }: Props,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
-  const id = params.id
-  const property = INITIAL_PROPERTIES.find(p => p.id === id)
+  const slug = params.slug
+  const property = INITIAL_PROPERTIES.find(p => {
+    const pSlug = generateSlug(p);
+    return pSlug === slug || String(p.id) === String(slug);
+  })
 
   if (!property) {
     return {
@@ -25,6 +29,7 @@ export async function generateMetadata(
     }
   }
 
+  const pSlug = generateSlug(property);
   const priceFormatted = formatPriceSEO(property.price);
   const suffix = property.type === 'Aluguel' ? '/mês' : '';
   const specs = [
@@ -41,7 +46,7 @@ export async function generateMetadata(
     title,
     description: `${description.slice(0, 140)}... Confira fotos e detalhes na Carlão Imóveis.`,
     alternates: {
-      canonical: `/imovel/${property.id}`,
+      canonical: `/imovel/${pSlug}`,
     },
     openGraph: {
       title: `${property.title} | ${priceFormatted}${suffix}`,
@@ -55,7 +60,7 @@ export async function generateMetadata(
         }
       ],
       type: 'website',
-      url: `/imovel/${property.id}`,
+      url: `/imovel/${pSlug}`,
     },
     twitter: {
       card: 'summary_large_image',

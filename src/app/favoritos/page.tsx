@@ -32,8 +32,8 @@ export default function FavoritosPage() {
               </p>
             </div>
             {favoritedProperties.length > 0 && (
-              <div className="bg-white px-6 py-3 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-3">
-                <div className="w-10 h-10 bg-secondary/10 rounded-xl flex items-center justify-center text-secondary">
+              <div className="bg-white px-6 py-3 rounded-none border border-slate-200 shadow-sm flex items-center gap-3">
+                <div className="w-10 h-10 bg-secondary/10 rounded-none flex items-center justify-center text-secondary">
                   <Heart size={20} className="fill-current" />
                 </div>
                 <div>
@@ -55,9 +55,9 @@ export default function FavoritosPage() {
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-center py-24 bg-white rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/50 max-w-2xl mx-auto"
+              className="text-center py-24 bg-white rounded-none border border-slate-100 shadow-xl shadow-slate-200/50 max-w-2xl mx-auto"
             >
-              <div className="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-8">
+              <div className="w-24 h-24 bg-slate-50 rounded-none flex items-center justify-center mx-auto mb-8">
                 <Heart size={40} className="text-slate-200" />
               </div>
               <h2 className="text-2xl font-bold text-primary mb-4 font-oswald uppercase">Sua lista está vazia</h2>
@@ -66,7 +66,7 @@ export default function FavoritosPage() {
               </p>
               <Link 
                 href="/venda" 
-                className="inline-flex items-center gap-3 bg-primary text-white px-8 py-4 rounded-xl font-bold hover:bg-slate-900 transition-all font-oswald uppercase tracking-widest text-sm"
+                className="inline-flex items-center gap-3 bg-primary text-white px-8 py-4 rounded-none font-bold hover:bg-slate-900 transition-all font-oswald uppercase tracking-widest text-sm"
               >
                 Explorar Imóveis
                 <ArrowRight size={18} />
@@ -76,7 +76,7 @@ export default function FavoritosPage() {
 
           {/* Tips Section */}
           {favoritedProperties.length > 0 && (
-            <div className="mt-20 p-8 md:p-12 bg-primary rounded-[2.5rem] text-white relative overflow-hidden">
+            <div className="mt-20 p-8 md:p-12 bg-primary rounded-none text-white relative overflow-hidden">
               <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
                 <div className="max-w-xl">
                   <h3 className="text-2xl md:text-3xl font-bold mb-4 font-oswald uppercase tracking-tight">Dúvida entre as opções?</h3>
@@ -85,7 +85,7 @@ export default function FavoritosPage() {
                 <Link 
                   href="https://wa.me/553186003497" 
                   target="_blank"
-                  className="bg-secondary hover:bg-secondary/90 text-white px-8 py-4 rounded-xl font-bold flex items-center gap-3 transition-all font-oswald uppercase tracking-widest whitespace-nowrap"
+                  className="bg-secondary hover:bg-secondary/90 text-white px-8 py-4 rounded-none font-bold flex items-center gap-3 transition-all font-oswald uppercase tracking-widest whitespace-nowrap"
                 >
                   Falar com Especialista
                 </Link>

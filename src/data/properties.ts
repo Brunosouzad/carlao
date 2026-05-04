@@ -24,6 +24,7 @@ export interface Property {
   tag?: string;
   description?: string;
   videoUrl?: string;
+  slug?: string;
 }
 
 export const INITIAL_PROPERTIES: Property[] = [

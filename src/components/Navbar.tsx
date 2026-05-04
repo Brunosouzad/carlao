@@ -29,7 +29,7 @@ export default function Navbar() {
       animate={{ y: 0, opacity: 1 }}
       className="fixed top-6 left-1/2 -translate-x-1/2 w-[94%] lg:w-[95%] max-w-7xl z-50 flex justify-center"
     >
-      <div className="max-w-7xl w-full bg-white lg:bg-white/90 lg:backdrop-blur-md rounded-2xl shadow-xl px-4 lg:px-8 py-3 flex items-center justify-between border border-black/5">
+      <div className="max-w-7xl w-full bg-white lg:bg-white/90 lg:backdrop-blur-md rounded-none shadow-xl px-4 lg:px-8 py-3 flex items-center justify-between border border-black/5">
         <div className="flex-1 flex justify-start">
           <Link href="/" className="flex items-center group shrink-0">
             <div className="group-hover:scale-105 transition-transform origin-left">
@@ -136,7 +136,7 @@ export default function Navbar() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -10, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="absolute top-[calc(100%+0.5rem)] left-0 w-full bg-white rounded-2xl shadow-xl border border-black/5 p-5 flex flex-col gap-4 lg:hidden"
+            className="absolute top-[calc(100%+0.5rem)] left-0 w-full bg-white rounded-none shadow-xl border border-black/5 p-5 flex flex-col gap-4 lg:hidden"
           >
             <div className="flex flex-col gap-4 text-sm font-bold uppercase tracking-wider text-primary/80">
                <Link href="/" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-secondary transition-colors py-2 border-b border-slate-50">Home</Link>

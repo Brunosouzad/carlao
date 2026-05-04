@@ -123,7 +123,7 @@ export default function SearchWidget({ compact }: SearchWidgetProps) {
 
   return (
     <div className={`w-full max-w-6xl mx-auto px-4 relative z-20 ${compact ? 'scale-95 origin-top' : ''}`}>
-      <div className={`bg-white shadow-[0_8px_30px_-10px_rgba(0,0,0,0.12)] transition-all duration-300 ${isAdvanced ? 'rounded-[2rem] p-6 lg:p-8' : 'rounded-[1.5rem] p-4 lg:p-6 lg:px-8'}`}>
+      <div className={`bg-white shadow-[0_8px_30px_-10px_rgba(0,0,0,0.12)] transition-all duration-300 ${isAdvanced ? 'rounded-none p-6 lg:p-8' : 'rounded-none p-4 lg:p-6 lg:px-8'}`}>
         <form onSubmit={handleSearch} className="flex flex-col gap-4">
           
           {/* Main Filters Row */}
@@ -136,7 +136,7 @@ export default function SearchWidget({ compact }: SearchWidgetProps) {
                 <select 
                   value={finalidade}
                   onChange={(e) => setFinalidade(e.target.value)}
-                  className="w-full h-11 bg-[#F8F9FA] border border-[#E9ECEF] rounded-xl px-3 text-xs font-bold text-[#4C4D4F] focus:outline-none focus:ring-1 focus:ring-secondary/20 appearance-none cursor-pointer"
+                  className="w-full h-11 bg-[#F8F9FA] border border-[#E9ECEF] rounded-none px-3 text-xs font-bold text-[#4C4D4F] focus:outline-none focus:ring-1 focus:ring-secondary/20 appearance-none cursor-pointer"
                 >
                   <option value="Venda">Venda</option>
                   <option value="Aluguel">Aluguel</option>
@@ -152,7 +152,7 @@ export default function SearchWidget({ compact }: SearchWidgetProps) {
                 <select 
                   value={tipo}
                   onChange={(e) => setTipo(e.target.value)}
-                  className="w-full h-11 bg-[#F8F9FA] border border-[#E9ECEF] rounded-xl px-3 text-xs font-bold text-[#4C4D4F] focus:outline-none focus:ring-1 focus:ring-secondary/20 appearance-none cursor-pointer"
+                  className="w-full h-11 bg-[#F8F9FA] border border-[#E9ECEF] rounded-none px-3 text-xs font-bold text-[#4C4D4F] focus:outline-none focus:ring-1 focus:ring-secondary/20 appearance-none cursor-pointer"
                 >
                   <option value="Todos os tipos">Todos os tipos</option>
                   <option value="Apartamento">Apartamento</option>
@@ -181,7 +181,7 @@ export default function SearchWidget({ compact }: SearchWidgetProps) {
                 <select 
                   value={cidade}
                   onChange={(e) => setCidade(e.target.value)}
-                  className="w-full h-11 bg-[#F8F9FA] border border-[#E9ECEF] rounded-xl px-3 pr-8 text-xs font-bold text-[#4C4D4F] focus:outline-none focus:ring-1 focus:ring-secondary/20 appearance-none cursor-pointer"
+                  className="w-full h-11 bg-[#F8F9FA] border border-[#E9ECEF] rounded-none px-3 pr-8 text-xs font-bold text-[#4C4D4F] focus:outline-none focus:ring-1 focus:ring-secondary/20 appearance-none cursor-pointer"
                 >
                   <option value="">Todas cidades</option>
                   {availableCities.map(city => (
@@ -200,7 +200,7 @@ export default function SearchWidget({ compact }: SearchWidgetProps) {
                   value={bairro}
                   onChange={(e) => setBairro(e.target.value)}
                   disabled={!cidade}
-                  className="w-full h-11 bg-[#F8F9FA] border border-[#E9ECEF] rounded-xl px-3 pr-8 text-xs font-bold text-[#4C4D4F] focus:outline-none focus:ring-1 focus:ring-secondary/20 appearance-none cursor-pointer disabled:opacity-50"
+                  className="w-full h-11 bg-[#F8F9FA] border border-[#E9ECEF] rounded-none px-3 pr-8 text-xs font-bold text-[#4C4D4F] focus:outline-none focus:ring-1 focus:ring-secondary/20 appearance-none cursor-pointer disabled:opacity-50"
                 >
                   <option value="">Todos bairros</option>
                   {availableNeighborhoods.map(nb => (
@@ -215,7 +215,7 @@ export default function SearchWidget({ compact }: SearchWidgetProps) {
             <div className="flex flex-col gap-1.5">
               <label className="text-[9px] font-bold text-[#4C4D4F]/50 uppercase tracking-widest ml-1">Valor Máximo</label>
               {isAdvanced ? (
-                <div className="h-11 flex items-center px-4 bg-slate-50 border border-slate-100 rounded-xl text-[9px] font-bold text-secondary truncate">
+                <div className="h-11 flex items-center px-4 bg-slate-50 border border-slate-100 rounded-none text-[9px] font-bold text-secondary truncate">
                   {minPrice > 0 ? `R$ ${minPrice.toLocaleString()} - ` : ""} R$ {maxPrice.toLocaleString()}
                 </div>
               ) : (
@@ -226,7 +226,7 @@ export default function SearchWidget({ compact }: SearchWidgetProps) {
                     placeholder="0,00"
                     value={valorMax}
                     onChange={handlePriceChange}
-                    className="w-full h-11 bg-[#F8F9FA] border border-[#E9ECEF] rounded-xl pl-8 pr-4 text-xs font-bold text-[#4C4D4F] focus:outline-none focus:ring-1 focus:ring-secondary/20 placeholder:text-[#4C4D4F]/30"
+                    className="w-full h-11 bg-[#F8F9FA] border border-[#E9ECEF] rounded-none pl-8 pr-4 text-xs font-bold text-[#4C4D4F] focus:outline-none focus:ring-1 focus:ring-secondary/20 placeholder:text-[#4C4D4F]/30"
                   />
                 </div>
               )}
@@ -236,7 +236,7 @@ export default function SearchWidget({ compact }: SearchWidgetProps) {
             <div>
               <button 
                 type="submit"
-                className="w-full h-11 bg-secondary hover:bg-secondary/90 text-white rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all active:scale-[0.98] shadow-md shadow-secondary/10"
+                className="w-full h-11 bg-secondary hover:bg-secondary/90 text-white rounded-none font-bold text-xs flex items-center justify-center gap-2 transition-all active:scale-[0.98] shadow-md shadow-secondary/10"
               >
                 <Search size={16} strokeWidth={3} />
                 BUSCAR
@@ -298,7 +298,7 @@ export default function SearchWidget({ compact }: SearchWidgetProps) {
                       <div key={idx} className="flex flex-col gap-1.5">
                         <label className="text-[9px] font-bold text-[#4C4D4F]/50 uppercase tracking-widest ml-1">{item.label}</label>
                         <div className="relative">
-                          <select value={item.state} onChange={(e) => item.setState(e.target.value)} className="w-full h-10 bg-[#F8F9FA] border border-[#E9ECEF] rounded-lg px-3 text-[11px] font-bold text-[#4C4D4F] focus:outline-none appearance-none cursor-pointer">
+                          <select value={item.state} onChange={(e) => item.setState(e.target.value)} className="w-full h-10 bg-[#F8F9FA] border border-[#E9ECEF] rounded-none px-3 text-[11px] font-bold text-[#4C4D4F] focus:outline-none appearance-none cursor-pointer">
                             {item.options.map(opt => <option key={opt} value={opt}>{opt}{opt !== "Qualquer" ? "+" : ""}</option>)}
                           </select>
                           <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-[#4C4D4F]/30 pointer-events-none" size={12} />
@@ -308,13 +308,13 @@ export default function SearchWidget({ compact }: SearchWidgetProps) {
                     <div className="flex flex-col gap-1.5">
                       <label className="text-[9px] font-bold text-[#4C4D4F]/50 uppercase tracking-widest ml-1">Área (m²)</label>
                       <div className="flex gap-1.5">
-                        <input type="number" placeholder="Min" value={minArea} onChange={e => setMinArea(e.target.value)} className="w-full h-10 bg-[#F8F9FA] border border-[#E9ECEF] rounded-lg px-3 text-[11px] font-bold text-[#4C4D4F] focus:outline-none" />
-                        <input type="number" placeholder="Max" value={maxArea} onChange={e => setMaxArea(e.target.value)} className="w-full h-10 bg-[#F8F9FA] border border-[#E9ECEF] rounded-lg px-3 text-[11px] font-bold text-[#4C4D4F] focus:outline-none" />
+                        <input type="number" placeholder="Min" value={minArea} onChange={e => setMinArea(e.target.value)} className="w-full h-10 bg-[#F8F9FA] border border-[#E9ECEF] rounded-none px-3 text-[11px] font-bold text-[#4C4D4F] focus:outline-none" />
+                        <input type="number" placeholder="Max" value={maxArea} onChange={e => setMaxArea(e.target.value)} className="w-full h-10 bg-[#F8F9FA] border border-[#E9ECEF] rounded-none px-3 text-[11px] font-bold text-[#4C4D4F] focus:outline-none" />
                       </div>
                     </div>
                     <div className="flex flex-col gap-1.5">
                       <label className="text-[9px] font-bold text-[#4C4D4F]/50 uppercase tracking-widest ml-1">Código</label>
-                      <input type="text" placeholder="Ex: CV-123" value={propertyId} onChange={e => setPropertyId(e.target.value)} className="w-full h-10 bg-[#F8F9FA] border border-[#E9ECEF] rounded-lg px-3 text-[11px] font-bold text-[#4C4D4F] focus:outline-none" />
+                      <input type="text" placeholder="Ex: CV-123" value={propertyId} onChange={e => setPropertyId(e.target.value)} className="w-full h-10 bg-[#F8F9FA] border border-[#E9ECEF] rounded-none px-3 text-[11px] font-bold text-[#4C4D4F] focus:outline-none" />
                     </div>
                   </div>
                 </div>

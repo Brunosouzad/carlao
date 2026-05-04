@@ -4,6 +4,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { Property, INITIAL_PROPERTIES } from "../data/properties";
 import { supabase } from "../lib/supabase";
 import { useToast } from "@/store/ToastContext";
+import { generateSlug } from "@/utils/slug";
 
 interface PropertiesContextType {
   properties: Property[];
@@ -51,12 +52,14 @@ export function PropertiesProvider({ children }: { children: React.ReactNode }) 
           const mappedData = data.map((p: any) => {
             const { video_url, zip_code, images, ...rest } = p;
             // Garantir que images seja um array e videoUrl/zipCode sejam camelCase
-            return { 
+            const mapped = { 
               ...rest, 
               videoUrl: video_url, 
               zipCode: zip_code,
               images: Array.isArray(images) ? images : (typeof images === 'string' ? JSON.parse(images) : [])
-            };
+            } as Property;
+            
+            return { ...mapped, slug: generateSlug(mapped) };
           });
           setProperties(mappedData as Property[]);
         }
@@ -80,13 +83,16 @@ export function PropertiesProvider({ children }: { children: React.ReactNode }) 
     const stored = localStorage.getItem("@carlao-imoveis:properties");
     if (stored) {
       try {
-        setProperties(JSON.parse(stored));
+        const parsed = JSON.parse(stored).map((p: Property) => ({ ...p, slug: generateSlug(p) }));
+        setProperties(parsed);
       } catch (e) {
-        setProperties(INITIAL_PROPERTIES);
+        const local = INITIAL_PROPERTIES.map(p => ({ ...p, slug: generateSlug(p) }));
+        setProperties(local);
       }
     } else {
-      setProperties(INITIAL_PROPERTIES);
-      localStorage.setItem("@carlao-imoveis:properties", JSON.stringify(INITIAL_PROPERTIES));
+      const local = INITIAL_PROPERTIES.map(p => ({ ...p, slug: generateSlug(p) }));
+      setProperties(local);
+      localStorage.setItem("@carlao-imoveis:properties", JSON.stringify(local));
     }
   };
 

@@ -131,7 +131,7 @@ export default function LeadsPage() {
       </div>
 
       {/* Filters Bar */}
-      <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex flex-col md:flex-row gap-4 items-center">
+      <div className="bg-white p-4 rounded-none shadow-sm border border-slate-100 flex flex-col md:flex-row gap-4 items-center">
         <div className="relative flex-1 w-full">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
           <input 
@@ -139,7 +139,7 @@ export default function LeadsPage() {
             placeholder="Buscar por nome, email ou imóvel..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary/10 transition-all text-sm"
+            className="w-full pl-10 pr-4 py-2.5 rounded-none border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary/10 transition-all text-sm"
           />
         </div>
         
@@ -148,7 +148,7 @@ export default function LeadsPage() {
           <select 
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="flex-1 md:w-48 py-2.5 px-3 rounded-xl border border-slate-200 focus:outline-none text-sm font-medium text-slate-600 bg-slate-50"
+            className="flex-1 md:w-48 py-2.5 px-3 rounded-none border border-slate-200 focus:outline-none text-sm font-medium text-slate-600 bg-slate-50"
           >
             <option value="todos">Todos os Status</option>
             <option value="novo">Novo</option>
@@ -160,7 +160,7 @@ export default function LeadsPage() {
       </div>
 
       {/* Leads List */}
-      <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
+      <div className="bg-white rounded-none shadow-sm border border-slate-100 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead className="bg-slate-50 border-b border-slate-100">

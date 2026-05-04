@@ -21,7 +21,8 @@ import { useFavorites } from "@/store/FavoritesContext";
 import { useToast } from "@/store/ToastContext";
 
 export default function PropertyDetailsPage() {
-  const { slug } = useParams();
+  const params = useParams();
+  const id = params?.id as string;
   const router = useRouter();
   const { properties, loading } = useProperties();
   
@@ -142,8 +143,8 @@ export default function PropertyDetailsPage() {
   };
 
   useEffect(() => {
-    if (slug && !loading) {
-      const decodedSlug = decodeURIComponent(String(slug));
+    if (id && !loading) {
+      const decodedSlug = decodeURIComponent(String(id));
       const found = properties.find((p) => {
         const currentSlug = p.slug || generateSlug(p);
         
@@ -172,7 +173,7 @@ export default function PropertyDetailsPage() {
         }));
       }
     }
-  }, [slug, properties, loading]);
+  }, [id, properties, loading]);
 
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
 

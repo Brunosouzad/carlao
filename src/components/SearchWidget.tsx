@@ -88,8 +88,8 @@ export default function SearchWidget({ compact }: SearchWidgetProps) {
   const formatCurrency = (value: string) => {
     const numeric = value.replace(/\D/g, "");
     if (!numeric) return "";
-    const amount = parseInt(numeric);
-    return amount.toLocaleString('pt-BR');
+    const amount = parseInt(numeric) / 100;
+    return amount.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   };
 
   const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {

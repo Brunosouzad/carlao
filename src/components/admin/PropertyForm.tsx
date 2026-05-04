@@ -229,6 +229,21 @@ export default function PropertyForm({ property, mode, onSuccess }: PropertyForm
     e.target.value = "";
   };
 
+  const formatCurrency = (value: string) => {
+    const v = value.replace(/\D/g, "");
+    if (!v) return "";
+    const num = (Number(v) / 100).toLocaleString("pt-BR", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+    return num;
+  };
+
+  const handlePriceChange = (key: "price" | "condominium" | "iptu", value: string) => {
+    const formatted = formatCurrency(value);
+    set(key, formatted);
+  };
+
   const getYoutubeEmbedId = (url: string) => {
     const match = url.match(/(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/\s]{11})/);
     return match ? match[1] : null;
@@ -456,7 +471,17 @@ export default function PropertyForm({ property, mode, onSuccess }: PropertyForm
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="md:col-span-2">
                   <label className={labelClass}>Preço (R$) *</label>
-                  <input className={inputClass} type="number" placeholder="Ex: 1850000" value={form.price} onChange={e => set("price", e.target.value)} required />
+                  <div className="relative">
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">R$</span>
+                    <input 
+                      className={`${inputClass} pl-10 font-bold`} 
+                      type="text" 
+                      placeholder="0,00" 
+                      value={form.price} 
+                      onChange={e => handlePriceChange("price", e.target.value)} 
+                      required 
+                    />
+                  </div>
                 </div>
                 <div className="md:col-span-2">
                   <label className={labelClass}><Tag size={12} className="inline mr-1" />Tag de Destaque</label>
@@ -464,11 +489,29 @@ export default function PropertyForm({ property, mode, onSuccess }: PropertyForm
                 </div>
                 <div className="md:col-span-2">
                   <label className={labelClass}>Condomínio (R$)</label>
-                  <input className={inputClass} type="number" placeholder="Ex: 500" value={form.condominium || ""} onChange={e => set("condominium", e.target.value)} />
+                  <div className="relative">
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">R$</span>
+                    <input 
+                      className={`${inputClass} pl-10`} 
+                      type="text" 
+                      placeholder="0,00" 
+                      value={form.condominium || ""} 
+                      onChange={e => handlePriceChange("condominium", e.target.value)} 
+                    />
+                  </div>
                 </div>
                 <div className="md:col-span-2">
                   <label className={labelClass}>IPTU (R$)</label>
-                  <input className={inputClass} type="number" placeholder="Ex: 150" value={form.iptu || ""} onChange={e => set("iptu", e.target.value)} />
+                  <div className="relative">
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">R$</span>
+                    <input 
+                      className={`${inputClass} pl-10`} 
+                      type="text" 
+                      placeholder="0,00" 
+                      value={form.iptu || ""} 
+                      onChange={e => handlePriceChange("iptu", e.target.value)} 
+                    />
+                  </div>
                 </div>
               </div>
             </div>

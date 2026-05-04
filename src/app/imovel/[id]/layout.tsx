@@ -4,7 +4,7 @@ import { generateSlug } from '@/utils/slug'
 import { supabase } from '@/lib/supabase'
 
 type Props = {
-  params: { slug: string }
+  params: Promise<{ id: string }>
 }
 
 function formatPriceSEO(price: string): string {
@@ -17,13 +17,13 @@ export async function generateMetadata(
   { params }: Props,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
-  const slug = params.slug
+  const { id } = await params
   let property = INITIAL_PROPERTIES.find(p => {
     const pSlug = generateSlug(p);
     return (
-      pSlug.toLowerCase() === slug.toLowerCase() || 
-      String(p.id) === String(slug) ||
-      p.code?.toLowerCase() === slug.toLowerCase()
+      pSlug.toLowerCase() === id.toLowerCase() || 
+      String(p.id) === String(id) ||
+      p.code?.toLowerCase() === id.toLowerCase()
     );
   })
 
@@ -33,7 +33,7 @@ export async function generateMetadata(
       const { data } = await supabase
         .from('properties')
         .select('*')
-        .or(`code.ilike.${slug},id.eq.${slug}`);
+        .or(`code.ilike.${id},id.eq.${id}`);
       
       if (data && data.length > 0) {
         const p = data[0];
@@ -51,7 +51,7 @@ export async function generateMetadata(
 
   // Se ainda não encontrou, tenta extrair o código do slug
   if (!property) {
-    const slugCodeMatch = slug.match(/-([a-zA-Z0-9-]+)$/);
+    const slugCodeMatch = id.match(/-([a-zA-Z0-9-]+)$/);
     if (slugCodeMatch) {
       const extractedCode = slugCodeMatch[1];
       try {

@@ -1,9 +1,9 @@
 export const formatPrice = (price: string | number): string => {
-  const numericPrice = Number(String(price).replace(/\D/g, ''));
+  const numericPrice = Number(String(price).replace(/\D/g, '')) / 100;
   if (isNaN(numericPrice) || numericPrice === 0) return String(price);
   return new Intl.NumberFormat('pt-BR', { 
     style: 'currency', 
     currency: 'BRL', 
-    maximumFractionDigits: 0 
+    maximumFractionDigits: 2 
   }).format(numericPrice);
 };

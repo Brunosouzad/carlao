@@ -15,6 +15,7 @@ const PropertyMap = dynamic(() => import("@/components/PropertyMap"), { ssr: fal
 import NeighborhoodPOIs from "@/components/NeighborhoodPOIs";
 
 import { supabase } from "@/lib/supabase";
+import { generateSlug } from "@/utils/slug";
 import { useCompare } from "@/store/CompareContext";
 import { useFavorites } from "@/store/FavoritesContext";
 import { useToast } from "@/store/ToastContext";

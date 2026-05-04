@@ -372,7 +372,7 @@ export default function PropertyDetailsPage() {
                 </div>
               )}
 
-              <div className="w-full aspect-[4/3] md:aspect-[16/9] max-h-[70vh] rounded-none overflow-hidden shadow-lg relative group">
+              <div className="w-full aspect-[4/3] md:aspect-[16/9] max-h-[70vh] rounded-none overflow-hidden shadow-lg relative group bg-[#f8f9fa]">
                 {currentMedia.type === 'video' ? (
                   !isVideoPlaying ? (
                     <div 
@@ -407,7 +407,7 @@ export default function PropertyDetailsPage() {
                     <img 
                       src={currentMedia.url} 
                       alt={property.title} 
-                      className="w-full h-full object-cover transition-all duration-500 hover:scale-[1.02]" 
+                      className="w-full h-full object-contain transition-all duration-500 hover:scale-[1.02]" 
                     />
                   </div>
                 )}
@@ -436,11 +436,7 @@ export default function PropertyDetailsPage() {
                   )}
                 </div>
 
-                {currentMedia.type === 'image' && (
-                  <div className="absolute bottom-3 right-3 bg-black/40 lg:backdrop-blur-sm text-white text-xs px-2 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                    🔍 Clique para ampliar
-                  </div>
-                )}
+
               </div>
 
               {/* Thumbnails */}

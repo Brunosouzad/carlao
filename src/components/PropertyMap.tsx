@@ -62,18 +62,12 @@ export default function PropertyMap({ location, title, className = "h-[350px]", 
         }
 
         const fallbacks = [
-          location + ", Brasil"
-        ];
+          location + ", MG, Brasil",
+          `${extractedStreet}, ${extractedCity}, MG, Brasil`,
+          `${extractedNeighborhood}, ${extractedCity}, MG, Brasil`,
+          `${extractedCity}, MG, Brasil`
+        ].filter(q => q.length > 10); // Evita buscas muito genéricas
         
-        // Remove números da rua para melhorar geocoding em cidades menores
-        const streetWithoutNumber = extractedStreet ? extractedStreet.replace(/,\s*\d+.*$/, '') : '';
-        
-        if (extractedStreet && extractedCity) fallbacks.push(`${extractedStreet}, ${extractedCity}, Brasil`);
-        if (streetWithoutNumber && extractedCity) fallbacks.push(`${streetWithoutNumber}, ${extractedCity}, Brasil`);
-        if (extractedNeighborhood && extractedCity) fallbacks.push(`${extractedNeighborhood}, ${extractedCity}, Brasil`);
-        if (extractedCity) fallbacks.push(`${extractedCity}, Brasil`);
-        
-        // Filtra possíveis duplicatas
         const uniqueFallbacks = Array.from(new Set(fallbacks));
         
         for (const query of uniqueFallbacks) {
@@ -82,8 +76,7 @@ export default function PropertyMap({ location, title, className = "h-[350px]", 
               `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1`,
               { 
                 headers: { 
-                  "Accept-Language": "pt-BR",
-                  "User-Agent": "CarlaoImoveis/1.1 (carlaoimoveisva@gmail.com)"
+                  "User-Agent": "CarlaoImoveis-App"
                 } 
               }
             );
@@ -95,10 +88,8 @@ export default function PropertyMap({ location, title, className = "h-[350px]", 
               return;
             }
           } catch (fetchErr) {
-            console.warn(`Fetch failed for query: ${query}`, fetchErr);
+            console.error("Fetch error:", fetchErr);
           }
-          
-          // Small delay to respect Nominatim rate limits if we need to try next fallback
           await new Promise(r => setTimeout(r, 600));
         }
       } catch (err) {

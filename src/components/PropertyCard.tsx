@@ -330,7 +330,7 @@ export default function PropertyCard({ id, code, title, location, price, beds, b
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="relative w-full max-w-4xl bg-white rounded-3xl overflow-hidden shadow-2xl z-10 flex flex-col"
+            className="relative w-full max-w-4xl bg-white rounded-none overflow-hidden shadow-2xl z-10 flex flex-col"
           >
             <div className="flex justify-between items-center p-4 border-b border-slate-100">
               <h3 className="font-bold text-primary flex items-center gap-2">

@@ -72,14 +72,8 @@ export default function PropertyMap({ location, title, className = "h-[350px]", 
         
         for (const query of uniqueFallbacks) {
           try {
-            const res = await fetch(
-              `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1`,
-              { 
-                headers: { 
-                  "User-Agent": "CarlaoImoveis-App"
-                } 
-              }
-            );
+            const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1`;
+            const res = await fetch(url);
             if (!res.ok) continue;
             const data = await res.json();
             if (data && data.length > 0) {

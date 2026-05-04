@@ -597,7 +597,7 @@ export default function PropertyDetailsPage() {
                 <p className="text-slate-400 text-xs md:text-sm font-bold uppercase tracking-widest mb-2">Valor do Imóvel</p>
                 <h2 className={`text-3xl md:text-4xl font-bold text-accent-blue ${!(property.condominium || property.iptu) ? 'mb-4 pb-4 border-b border-slate-100' : 'mb-1'}`}>
                   {formatPrice(property.price)}
-                  {property.type === "Aluguel" && <span className="text-xl md:text-2xl font-normal text-slate-500">/mês</span>}
+                  {property.type === "Aluguel" && formatPrice(property.price) !== "Consulte-nos" && <span className="text-xl md:text-2xl font-normal text-slate-500">/mês</span>}
                 </h2>
                 {(property.condominium || property.iptu) && (
                   <div className="text-sm font-medium text-slate-400 mb-4 pb-4 border-b border-slate-100">

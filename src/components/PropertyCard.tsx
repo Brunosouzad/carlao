@@ -229,7 +229,7 @@ export default function PropertyCard({ id, code, title, location, price, beds, b
         </h3>
         <p className={`text-accent-blue font-bold text-2xl tracking-tighter ${!(condominium || iptu) ? 'mb-4' : ''}`}>
           {formatPrice(price)}
-          {type === 'Aluguel' && <span className="text-sm font-normal text-slate-500">/mês</span>}
+          {type === 'Aluguel' && formatPrice(price) !== "Consulte-nos" && <span className="text-sm font-normal text-slate-500">/mês</span>}
         </p>
         {(condominium || iptu) && (
           <p className="text-xs text-slate-400 font-medium mb-4 mt-1">

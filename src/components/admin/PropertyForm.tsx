@@ -206,22 +206,21 @@ export default function PropertyForm({ property, mode, onSuccess }: PropertyForm
 
     console.log(`Iniciando upload de ${files.length} arquivos para: ${target}`);
 
-    for (let i = 0; i < files.length; i++) {
-      const url = await uploadImage(files[i]);
-      console.log("Resultado do upload:", url);
+    if (target === "image") {
+      const url = await uploadImage(files[0]);
+      if (url) set("image", url);
+    } else {
+      // Upload múltiplo em paralelo para a galeria
+      const uploadPromises = Array.from(files).map(file => uploadImage(file));
+      const urls = await Promise.all(uploadPromises);
+      const validUrls = urls.filter((url): url is string => url !== null);
       
-      if (url) {
-        if (target === "image") {
-          console.log("Definindo foto de capa:", url);
-          set("image", url);
-          break; // Only one for cover
-        } else {
-          console.log("Adicionando à galeria:", url);
-          setForm(prev => ({
-            ...prev,
-            images: [...(prev.images || []), url]
-          }));
-        }
+      if (validUrls.length > 0) {
+        setForm(prev => ({
+          ...prev,
+          images: [...(prev.images || []), ...validUrls]
+        }));
+        toast.success("Upload concluído", `${validUrls.length} foto(s) adicionada(s) à galeria.`);
       }
     }
     
@@ -583,9 +582,14 @@ export default function PropertyForm({ property, mode, onSuccess }: PropertyForm
             </div>
 
             <div className="bg-white border border-slate-200 rounded-2xl p-6">
-              <h2 className="font-bold text-primary flex items-center gap-2 mb-2">
-                <ImageIcon size={18} /> Galeria de Imagens
-              </h2>
+              <div className="flex items-center justify-between mb-2">
+                <h2 className="font-bold text-primary flex items-center gap-2">
+                  <ImageIcon size={18} /> Galeria de Imagens
+                </h2>
+                <span className="text-[10px] font-bold bg-slate-100 text-slate-500 px-2 py-1 rounded-full uppercase tracking-widest">
+                  {(form.images || []).length} Fotos
+                </span>
+              </div>
               <p className="text-xs text-slate-400 mb-4">Adicione URLs das fotos que aparecerão na galeria com thumbnails.</p>
 
               <div className="flex gap-2 mb-4">

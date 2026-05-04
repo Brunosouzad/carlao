@@ -64,17 +64,17 @@ export default function Hero() {
         )}
       </div>
 
-      <div className="w-full max-w-7xl mx-auto mx-auto px-4 md:px-8 relative z-10 pb-20 lg:pb-16">
+      <div className="w-full max-w-7xl mx-auto px-8 md:px-8 relative z-10 pb-20 lg:pb-16">
         <div className="max-w-6xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-8"
+            className="mb-8 text-center lg:text-left"
           >
             <h1 className="text-3xl md:text-6xl font-bold text-white mb-4 drop-shadow-lg">
               {renderTitle(settings.heroTitle || "Encontre o seu **imóvel ideal**")}
             </h1>
-            <p className="text-base md:text-lg text-white/80 max-w-2xl drop-shadow-md">
+            <p className="text-base md:text-lg text-white/80 max-w-2xl mx-auto lg:mx-0 drop-shadow-md">
               {settings.heroSubtitle || "Mais de 15 anos de tradição em Governador Valadares e região. Sua segurança é nossa prioridade."}
             </p>
           </motion.div>

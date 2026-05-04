@@ -15,7 +15,7 @@ export default function VendaPage() {
       <Navbar />
       
       <div className="pt-32 pb-12 bg-slate-50">
-        <div className="w-full max-w-7xl mx-auto px-4 md:px-8">
+        <div className="w-full max-w-7xl mx-auto px-8 md:px-8">
           <div className="mb-12">
             <h1 className="text-4xl font-bold text-primary mb-4">Imóveis à Venda</h1>
             <p className="text-slate-500">Encontre a casa dos seus sonhos com as melhores condições.</p>

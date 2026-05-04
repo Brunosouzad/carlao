@@ -35,7 +35,7 @@ function HomeContent() {
       <>
         <Navbar />
         <div className="pt-48 pb-24 min-h-screen bg-slate-50">
-          <div className="w-full max-w-7xl mx-auto mx-auto px-4 md:px-8">
+          <div className="w-full max-w-7xl mx-auto px-8 md:px-8">
             <div className="flex items-center justify-between mb-8">
               <div>
                 <h1 className="text-3xl font-bold text-primary mb-2">Resultados da Busca</h1>
@@ -87,7 +87,7 @@ function HomeContent() {
       <Hero />
       
       <section id="imoveis" className="py-12 md:py-16 bg-white">
-        <div className="w-full max-w-7xl mx-auto px-4 md:px-8">
+        <div className="w-full max-w-7xl mx-auto px-8 md:px-8">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-4 md:gap-6">
             <div>
               <span className="text-secondary font-bold tracking-widest text-xs uppercase mb-2 block">{settings.homeVendaSubtitle || "Imóveis para Venda"}</span>

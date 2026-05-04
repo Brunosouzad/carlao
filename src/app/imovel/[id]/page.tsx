@@ -316,7 +316,7 @@ export default function PropertyDetailsPage() {
       />
       
       <div className="pt-44 md:pt-48 pb-24 bg-slate-50 min-h-screen overflow-x-hidden">
-        <div className="w-full max-w-7xl mx-auto mx-auto px-4 md:px-8">
+        <div className="w-full max-w-7xl mx-auto px-8 md:px-8">
           
           <button onClick={() => router.back()} className="flex items-center gap-2 text-slate-500 font-bold mb-6 hover:text-primary transition-colors cursor-pointer">
             <ArrowLeft size={20} /> Voltar

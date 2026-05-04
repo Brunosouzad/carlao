@@ -143,13 +143,25 @@ export default function PropertyDetailsPage() {
 
   useEffect(() => {
     if (slug && !loading) {
+      const decodedSlug = decodeURIComponent(String(slug));
       const found = properties.find((p) => {
         const currentSlug = p.slug || generateSlug(p);
-        return (
-          currentSlug.toLowerCase() === String(slug).toLowerCase() || 
-          String(p.id) === String(slug) ||
-          p.code?.toLowerCase() === String(slug).toLowerCase()
-        );
+        
+        // 1. Match exato de slug ou ID
+        if (currentSlug.toLowerCase() === decodedSlug.toLowerCase() || 
+            String(p.id) === decodedSlug ||
+            p.code?.toLowerCase() === decodedSlug.toLowerCase()) {
+          return true;
+        }
+
+        // 2. Tentar extrair o código do final do slug (ex: "...-im-992")
+        const slugCodeMatch = decodedSlug.match(/-([a-zA-Z0-9-]+)$/);
+        if (slugCodeMatch && p.code) {
+          const extractedCode = slugCodeMatch[1].toLowerCase();
+          if (p.code.toLowerCase() === extractedCode) return true;
+        }
+
+        return false;
       });
 
       if (found) {

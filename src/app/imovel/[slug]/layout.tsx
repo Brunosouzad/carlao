@@ -1,6 +1,7 @@
 import { Metadata, ResolvingMetadata } from 'next'
-import { INITIAL_PROPERTIES } from '@/data/properties'
+import { INITIAL_PROPERTIES, Property } from '@/data/properties'
 import { generateSlug } from '@/utils/slug'
+import { supabase } from '@/lib/supabase'
 
 type Props = {
   params: { slug: string }
@@ -17,7 +18,7 @@ export async function generateMetadata(
   parent: ResolvingMetadata
 ): Promise<Metadata> {
   const slug = params.slug
-  const property = INITIAL_PROPERTIES.find(p => {
+  let property = INITIAL_PROPERTIES.find(p => {
     const pSlug = generateSlug(p);
     return (
       pSlug.toLowerCase() === slug.toLowerCase() || 
@@ -25,6 +26,53 @@ export async function generateMetadata(
       p.code?.toLowerCase() === slug.toLowerCase()
     );
   })
+
+  // Se não encontrou nas estáticas, tenta no Supabase (para SEO dinâmico)
+  if (!property) {
+    try {
+      const { data } = await supabase
+        .from('properties')
+        .select('*')
+        .or(`code.ilike.${slug},id.eq.${slug}`);
+      
+      if (data && data.length > 0) {
+        const p = data[0];
+        property = {
+          ...p,
+          videoUrl: p.video_url,
+          zipCode: p.zip_code,
+          images: Array.isArray(p.images) ? p.images : (typeof p.images === 'string' ? JSON.parse(p.images) : [])
+        } as Property;
+      }
+    } catch (e) {
+      console.error("Erro ao buscar metadados dinâmicos:", e);
+    }
+  }
+
+  // Se ainda não encontrou, tenta extrair o código do slug
+  if (!property) {
+    const slugCodeMatch = slug.match(/-([a-zA-Z0-9-]+)$/);
+    if (slugCodeMatch) {
+      const extractedCode = slugCodeMatch[1];
+      try {
+        const { data } = await supabase
+          .from('properties')
+          .select('*')
+          .ilike('code', extractedCode);
+        
+        if (data && data.length > 0) {
+          const p = data[0];
+          property = {
+            ...p,
+            videoUrl: p.video_url,
+            zipCode: p.zip_code,
+            images: Array.isArray(p.images) ? p.images : (typeof p.images === 'string' ? JSON.parse(p.images) : [])
+          } as Property;
+        }
+      } catch (e) {}
+    }
+  }
+
 
   if (!property) {
     return {

@@ -62,32 +62,42 @@ export default function PropertyMap({ location, title, className = "h-[350px]", 
         }
 
         const fallbacks = [
-          location + ", MG, Brasil",
-          `${extractedStreet}, ${extractedCity}, MG, Brasil`,
-          `${extractedNeighborhood}, ${extractedCity}, MG, Brasil`,
-          `${extractedCity}, MG, Brasil`
-        ].filter(q => q.length > 10); // Evita buscas muito genéricas
+          location + ", Brasil"
+        ];
         
+        // Remove números da rua para melhorar geocoding em cidades menores
+        const streetWithoutNumber = extractedStreet ? extractedStreet.replace(/,\s*\d+.*$/, '') : '';
+        
+        if (extractedStreet && extractedCity) fallbacks.push(`${extractedStreet}, ${extractedCity}, Brasil`);
+        if (streetWithoutNumber && extractedCity) fallbacks.push(`${streetWithoutNumber}, ${extractedCity}, Brasil`);
+        if (extractedNeighborhood && extractedCity) fallbacks.push(`${extractedNeighborhood}, ${extractedCity}, Brasil`);
+        if (extractedCity) fallbacks.push(`${extractedCity}, Brasil`);
+        
+        // Filtra possíveis duplicatas
         const uniqueFallbacks = Array.from(new Set(fallbacks));
         
         for (const query of uniqueFallbacks) {
-          try {
-            const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1`;
-            const res = await fetch(url);
-            if (!res.ok) continue;
-            const data = await res.json();
-            if (data && data.length > 0) {
-              setCoords([parseFloat(data[0].lat), parseFloat(data[0].lon)]);
-              setLoading(false);
-              return;
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1`,
+            { 
+              headers: { 
+                "Accept-Language": "pt-BR",
+                "User-Agent": "CarlaoImoveis/1.0"
+              } 
             }
-          } catch (fetchErr) {
-            console.error("Fetch error:", fetchErr);
+          );
+          const data = await res.json();
+          if (data && data.length > 0) {
+            setCoords([parseFloat(data[0].lat), parseFloat(data[0].lon)]);
+            setLoading(false);
+            return;
           }
-          await new Promise(r => setTimeout(r, 600));
+          
+          // Small delay to respect Nominatim rate limits if we need to try next fallback
+          await new Promise(r => setTimeout(r, 500));
         }
       } catch (err) {
-        console.error("Outer geocoding error:", err);
+        console.error("Geocoding error:", err);
       } finally {
         setLoading(false);
       }

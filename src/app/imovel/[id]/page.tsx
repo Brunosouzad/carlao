@@ -22,7 +22,7 @@ import { useToast } from "@/store/ToastContext";
 export default function PropertyDetailsPage() {
   const { id } = useParams();
   const router = useRouter();
-  const { properties } = useProperties();
+  const { properties, loading } = useProperties();
   
   const [property, setProperty] = useState<Property | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -140,7 +140,7 @@ export default function PropertyDetailsPage() {
   };
 
   useEffect(() => {
-    if (id) {
+    if (id && !loading) {
       const found = properties.find((p) => String(p.id) === String(id));
       if (found) {
         setProperty(found);
@@ -150,7 +150,7 @@ export default function PropertyDetailsPage() {
         }));
       }
     }
-  }, [id, properties]);
+  }, [id, properties, loading]);
 
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
 
@@ -158,6 +158,18 @@ export default function PropertyDetailsPage() {
   useEffect(() => {
     setIsVideoPlaying(false);
   }, [currentImageIndex]);
+
+  if (loading) {
+    return (
+      <>
+        <Navbar />
+        <div className="pt-48 pb-24 min-h-[80vh] flex flex-col justify-center items-center">
+          <div className="w-16 h-16 border-4 border-slate-200 border-t-amber-500 rounded-full animate-spin mb-4" />
+          <p className="text-slate-500 font-medium animate-pulse">Carregando detalhes do imóvel...</p>
+        </div>
+      </>
+    );
+  }
 
   if (!property) {
     return (

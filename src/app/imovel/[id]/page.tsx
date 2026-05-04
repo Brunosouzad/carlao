@@ -349,7 +349,7 @@ export default function PropertyDetailsPage() {
                 </div>
               )}
 
-              <div className="w-full aspect-[4/3] md:aspect-[16/9] max-h-[70vh] rounded-3xl overflow-hidden shadow-lg relative group">
+              <div className="w-full aspect-[4/3] md:aspect-[16/9] max-h-[70vh] rounded-none overflow-hidden shadow-lg relative group">
                 {currentMedia.type === 'video' ? (
                   !isVideoPlaying ? (
                     <div 
@@ -391,23 +391,23 @@ export default function PropertyDetailsPage() {
                 
                 <button 
                   onClick={prevMedia} 
-                  className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 rounded-full bg-black/40 lg:backdrop-blur-sm text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/60 z-10 focus:outline-none cursor-pointer"
+                  className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 rounded-full bg-black/40 lg:backdrop-blur-sm text-white flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity hover:bg-black/60 z-10 focus:outline-none cursor-pointer"
                 >
                   <ChevronLeft size={24} className="md:w-8 md:h-8" />
                 </button>
                 <button 
                   onClick={nextMedia} 
-                  className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 rounded-full bg-black/40 lg:backdrop-blur-sm text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/60 z-10 focus:outline-none cursor-pointer"
+                  className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 rounded-full bg-black/40 lg:backdrop-blur-sm text-white flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity hover:bg-black/60 z-10 focus:outline-none cursor-pointer"
                 >
                   <ChevronRight size={24} className="md:w-8 md:h-8" />
                 </button>
  
                 <div className="absolute top-4 left-4 md:top-6 md:left-6 flex gap-2">
-                  <span className="px-3 py-1.5 md:px-4 md:py-2 bg-amber-500 text-slate-950 text-xs md:text-sm font-bold uppercase rounded-xl shadow-lg">
+                  <span className="px-3 py-1.5 md:px-4 md:py-2 bg-amber-500 text-slate-950 text-xs md:text-sm font-bold uppercase rounded-none shadow-lg">
                     {property.type}
                   </span>
                   {property.tag && (
-                    <span className="px-3 py-1.5 md:px-4 md:py-2 bg-slate-950/70 lg:backdrop-blur-md text-white text-xs md:text-sm font-bold uppercase rounded-xl shadow-lg">
+                    <span className="px-3 py-1.5 md:px-4 md:py-2 bg-slate-950/70 lg:backdrop-blur-md text-white text-xs md:text-sm font-bold uppercase rounded-none shadow-lg">
                       {property.tag}
                     </span>
                   )}
@@ -437,7 +437,7 @@ export default function PropertyDetailsPage() {
                     <button 
                       key={idx}
                       onClick={() => setCurrentImageIndex(idx)}
-                      className={`flex-shrink-0 w-28 h-20 rounded-xl snap-start transition-all cursor-pointer focus:outline-none relative overflow-hidden ${currentImageIndex === idx ? 'outline outline-4 outline-secondary outline-offset-2 opacity-100 scale-105' : 'opacity-60 hover:opacity-90 hover:scale-[1.02]'}`}
+                      className={`flex-shrink-0 w-28 h-20 rounded-none snap-start transition-all cursor-pointer focus:outline-none relative overflow-hidden ${currentImageIndex === idx ? 'outline outline-4 outline-secondary outline-offset-2 opacity-100 scale-105' : 'opacity-60 hover:opacity-90 hover:scale-[1.02]'}`}
                     >
                       <img src={item.thumb} alt={`Thumb ${idx}`} className="w-full h-full object-cover" />
                       {item.type === 'video' && (
@@ -459,7 +459,7 @@ export default function PropertyDetailsPage() {
                 </button>
               </div>
 
-              <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 relative">
+              <div className="bg-white p-8 rounded-none shadow-sm border border-slate-100 relative">
                 {showCopyToast && (
                   <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-3 py-2 rounded-lg z-20">
                     Link copiado!
@@ -505,7 +505,7 @@ export default function PropertyDetailsPage() {
                   {features.map((feature, idx) => {
                     const Icon = feature.icon;
                     return (
-                      <div key={idx} className="flex flex-col items-center justify-center p-3 md:p-4 bg-slate-50 rounded-2xl">
+                      <div key={idx} className="flex flex-col items-center justify-center p-3 md:p-4 bg-slate-50 rounded-none">
                         <Icon size={24} className="text-slate-400 mb-2 md:w-7 md:h-7" />
                         <span className="text-lg md:text-xl font-bold text-slate-800">{feature.value}</span>
                         <span className="text-[10px] md:text-xs uppercase font-bold text-slate-400 tracking-wider">{feature.label}</span>
@@ -570,7 +570,7 @@ export default function PropertyDetailsPage() {
 
             {/* Right Column (Sidebar) */}
             <div className="space-y-8">
-              <div className="bg-white p-6 md:p-8 rounded-3xl shadow-lg shadow-black/5 border border-slate-100 sticky top-32">
+              <div className="bg-white p-6 md:p-8 rounded-none shadow-lg shadow-black/5 border border-slate-100 sticky top-32">
                 <p className="text-slate-400 text-xs md:text-sm font-bold uppercase tracking-widest mb-2">Valor do Imóvel</p>
                 <h2 className={`text-3xl md:text-4xl font-bold text-accent-blue ${!(property.condominium || property.iptu) ? 'mb-4 pb-4 border-b border-slate-100' : 'mb-1'}`}>
                   {formatPrice(property.price)}
@@ -596,7 +596,7 @@ export default function PropertyDetailsPage() {
                 </p>
 
                 <form onSubmit={handleSubmit}>
-                  <div className="border border-slate-200 rounded-2xl overflow-hidden mb-6 bg-slate-50">
+                  <div className="border border-slate-200 rounded-none overflow-hidden mb-6 bg-slate-50">
                     <div className="p-4 border-b border-slate-200 focus-within:bg-white transition-colors">
                       <label className="text-[10px] font-bold text-slate-400 block mb-1 uppercase tracking-widest">Nome</label>
                       <input type="text" name="nome" value={formData.nome} onChange={handleInputChange} placeholder="Seu nome completo" className="w-full bg-transparent outline-none text-slate-700 text-sm font-medium placeholder:font-normal placeholder:text-slate-400" required />
@@ -625,14 +625,14 @@ export default function PropertyDetailsPage() {
                     <button 
                       type="button"
                       onClick={handleWhatsApp}
-                      className="btn-primary py-3.5 rounded-xl flex items-center justify-center gap-2 font-bold text-sm shadow-lg shadow-amber-500/20"
+                      className="btn-primary py-3.5 rounded-none flex items-center justify-center gap-2 font-bold text-sm shadow-lg shadow-amber-500/20"
                     >
                       <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
                       WhatsApp
                     </button>
                     <a 
                       href="tel:+553186003497"
-                      className="btn-secondary py-3.5 rounded-xl flex items-center justify-center gap-2 font-bold text-primary hover:bg-slate-50 text-sm"
+                      className="btn-secondary py-3.5 rounded-none flex items-center justify-center gap-2 font-bold text-primary hover:bg-slate-50 text-sm"
                     >
                       <Phone size={18} />
                       Ligue agora
@@ -640,7 +640,7 @@ export default function PropertyDetailsPage() {
                   </div>
                   
                   {submitSuccess ? (
-                    <div className="w-full bg-[#25D366]/10 border border-[#25D366]/30 text-[#25D366] py-4 rounded-xl flex items-center justify-center gap-2 font-bold text-sm mb-6">
+                    <div className="w-full bg-[#25D366]/10 border border-[#25D366]/30 text-[#25D366] py-4 rounded-none flex items-center justify-center gap-2 font-bold text-sm mb-6">
                       <CheckCircle size={18} />
                       Mensagem Enviada!
                     </div>
@@ -648,7 +648,7 @@ export default function PropertyDetailsPage() {
                     <button 
                       type="submit" 
                       disabled={isSubmitting}
-                      className="w-full bg-primary text-white py-4 rounded-xl flex items-center justify-center gap-2 font-bold hover:bg-slate-800 transition-all cursor-pointer text-sm mb-6 shadow-lg shadow-primary/20 disabled:opacity-70 disabled:cursor-not-allowed"
+                      className="w-full bg-primary text-white py-4 rounded-none flex items-center justify-center gap-2 font-bold hover:bg-slate-800 transition-all cursor-pointer text-sm mb-6 shadow-lg shadow-primary/20 disabled:opacity-70 disabled:cursor-not-allowed"
                     >
                       {isSubmitting ? (
                         <span className="animate-pulse flex items-center gap-2">Enviando...</span>
@@ -684,12 +684,12 @@ export default function PropertyDetailsPage() {
           <div className="mt-24 pt-16 border-t border-slate-200">
             <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-8">
               <div className="space-y-2">
-                <p className="text-primary font-bold uppercase tracking-[0.25em] text-[10px] bg-primary/5 w-fit px-3 py-1 rounded-full">Explore mais</p>
+                <p className="text-primary font-bold uppercase tracking-[0.25em] text-[10px] bg-primary/5 w-fit px-3 py-1 rounded-none">Explore mais</p>
                 <h2 className="text-4xl font-bold text-primary">Propriedades semelhantes</h2>
               </div>
               
               <div className="w-full md:w-fit overflow-x-auto no-scrollbar pb-2 md:pb-0">
-                <div className="flex gap-1.5 p-1.5 bg-white border border-slate-200 rounded-2xl w-fit shadow-sm">
+                <div className="flex gap-1.5 p-1.5 bg-white border border-slate-200 rounded-none w-fit shadow-sm">
                   {[
                     { id: 'recomendado', label: 'Recomendado' },
                     { id: 'tipo', label: 'Tipo De Imóvel' },
@@ -698,7 +698,7 @@ export default function PropertyDetailsPage() {
                     <button
                       key={tab.id}
                       onClick={() => setRecommendTab(tab.id as any)}
-                      className={`px-6 py-3 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+                      className={`px-6 py-3 rounded-none text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
                         recommendTab === tab.id 
                           ? 'bg-primary text-white shadow-lg shadow-primary/20' 
                           : 'text-slate-400 hover:text-primary hover:bg-slate-50'
@@ -716,7 +716,7 @@ export default function PropertyDetailsPage() {
                 <PropertyCard key={p.id} {...p} />
               ))}
               {similarProperties.length === 0 && (
-                <div className="col-span-full py-24 text-center bg-white rounded-3xl border border-dashed border-slate-200">
+                <div className="col-span-full py-24 text-center bg-white rounded-none border border-dashed border-slate-200">
                   <div className="text-4xl mb-4 opacity-20">🏘️</div>
                   <p className="text-slate-400 font-medium">Nenhum imóvel semelhante encontrado nesta categoria.</p>
                   <button onClick={() => setRecommendTab('recomendado')} className="mt-4 text-primary font-bold hover:underline cursor-pointer">Ver todos os recomendados</button>
@@ -731,14 +731,14 @@ export default function PropertyDetailsPage() {
       <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 p-4 z-50 shadow-[0_-10px_30px_rgba(0,0,0,0.1)] flex gap-3 pb-safe">
         <button 
           onClick={handleWhatsApp}
-          className="flex-1 bg-[#25D366] text-white py-4 rounded-2xl flex items-center justify-center gap-2 font-bold text-sm shadow-lg shadow-green-500/20 active:scale-95 transition-transform"
+          className="flex-1 bg-[#25D366] text-white py-4 rounded-none flex items-center justify-center gap-2 font-bold text-sm shadow-lg shadow-green-500/20 active:scale-95 transition-transform"
         >
           <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
           WhatsApp
         </button>
         <a 
           href="tel:+553186003497"
-          className="flex-1 border-2 border-primary text-primary py-4 rounded-2xl flex items-center justify-center gap-2 font-bold text-sm active:scale-95 transition-transform"
+          className="flex-1 border-2 border-primary text-primary py-4 rounded-none flex items-center justify-center gap-2 font-bold text-sm active:scale-95 transition-transform"
         >
           <Phone size={20} />
           Ligar

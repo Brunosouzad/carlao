@@ -77,28 +77,32 @@ export default function PropertyMap({ location, title, className = "h-[350px]", 
         const uniqueFallbacks = Array.from(new Set(fallbacks));
         
         for (const query of uniqueFallbacks) {
-          const res = await fetch(
-            `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1`,
-            { 
-              headers: { 
-                "Accept-Language": "pt-BR",
-                "User-Agent": "CarlaoImoveis/1.1"
-              } 
+          try {
+            const res = await fetch(
+              `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1`,
+              { 
+                headers: { 
+                  "Accept-Language": "pt-BR",
+                  "User-Agent": "CarlaoImoveis/1.1 (carlaoimoveisva@gmail.com)"
+                } 
+              }
+            );
+            if (!res.ok) continue;
+            const data = await res.json();
+            if (data && data.length > 0) {
+              setCoords([parseFloat(data[0].lat), parseFloat(data[0].lon)]);
+              setLoading(false);
+              return;
             }
-          );
-          if (!res.ok) continue;
-          const data = await res.json();
-          if (data && data.length > 0) {
-            setCoords([parseFloat(data[0].lat), parseFloat(data[0].lon)]);
-            setLoading(false);
-            return;
+          } catch (fetchErr) {
+            console.warn(`Fetch failed for query: ${query}`, fetchErr);
           }
           
           // Small delay to respect Nominatim rate limits if we need to try next fallback
-          await new Promise(r => setTimeout(r, 500));
+          await new Promise(r => setTimeout(r, 600));
         }
       } catch (err) {
-        console.error("Geocoding error:", err);
+        console.error("Outer geocoding error:", err);
       } finally {
         setLoading(false);
       }

@@ -30,13 +30,20 @@ export default function Navbar() {
       className="fixed top-6 left-1/2 -translate-x-1/2 w-[94%] lg:w-[95%] max-w-7xl z-50 flex justify-center"
     >
       <div className="max-w-7xl w-full bg-white lg:bg-white/90 lg:backdrop-blur-md rounded-2xl shadow-xl px-4 lg:px-8 py-5 lg:py-4 flex items-center justify-between border border-black/5">
-        <div className="flex-none w-[120px] sm:w-[180px] lg:w-[280px] flex justify-start overflow-hidden">
+        <div className="flex-none w-auto lg:w-[280px] flex justify-start">
           <Link href="/" className="flex items-center group shrink-0">
             <div className="group-hover:scale-105 transition-transform origin-left">
+              {/* Mobile logo - visível apenas abaixo de lg */}
               <img 
                 src="/logo-carlao.png" 
                 alt="Carlão Imóveis Logo" 
-                className="h-24 lg:h-26 w-auto scale-[1.6] lg:scale-[1.8] origin-left"
+                className="block lg:hidden h-10 w-auto"
+              />
+              {/* Desktop logo - visível apenas em lg+ (original intocado) */}
+              <img 
+                src="/logo-carlao.png" 
+                alt="Carlão Imóveis Logo" 
+                className="hidden lg:block h-24 lg:h-26 w-auto scale-[1.6] lg:scale-[1.8] origin-left"
               />
             </div>
           </Link>

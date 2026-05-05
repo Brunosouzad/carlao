@@ -344,8 +344,7 @@ export default function PropertyCard({ id, code, title, location, price, beds, b
                 alt={title}
                 loading="lazy"
                 decoding="async"
-                className={`max-w-full max-h-[90vh] object-contain select-none transition-opacity duration-300 ease-in-out ${imgLoaded[currentImageIndex + 100] || currentImageIndex === 0 ? 'opacity-100' : 'opacity-0'}`}
-                onLoad={() => setImgLoaded(prev => ({ ...prev, [currentImageIndex + 100]: true }))}
+                className="max-w-full max-h-[90vh] object-contain select-none"
               />
             </div>
             

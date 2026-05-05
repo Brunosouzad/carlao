@@ -609,7 +609,7 @@ export default function PropertyDetailsPage() {
                 <div className="space-y-4">
                   <h3 className="text-xl font-bold text-primary">Descrição do Imóvel</h3>
                   <p className="text-slate-600 leading-relaxed whitespace-pre-wrap">
-                    {formatDescription(property.description) || "Sem descrição detalhada para este imóvel."}
+                    {formatDescription(property.description ?? '') || "Sem descrição detalhada para este imóvel."}
                   </p>
                 </div>
 

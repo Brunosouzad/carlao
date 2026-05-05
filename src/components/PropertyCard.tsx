@@ -124,9 +124,10 @@ interface PropertyCardProps {
   neighborhood?: string;
   street?: string;
   slug?: string;
+  priority?: boolean;
 }
 
-export default function PropertyCard({ id, code, title, location, price, beds, baths, garages, area, image, images, type, tag, condominium, iptu, city, neighborhood, street, slug }: PropertyCardProps) {
+export default function PropertyCard({ id, code, title, location, price, beds, baths, garages, area, image, images, type, tag, condominium, iptu, city, neighborhood, street, slug, priority: isPriority = false }: PropertyCardProps) {
   const router = useRouter();
   const [isMapOpen, setIsMapOpen] = useState(false);
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
@@ -203,6 +204,8 @@ export default function PropertyCard({ id, code, title, location, price, beds, b
               alt={title} 
               fill
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              quality={70}
+              priority={isPriority && currentImageIndex === 0}
               className={`absolute inset-0 w-full h-full object-cover transition-all duration-500 group-hover:scale-110 ${imgLoaded[currentImageIndex] ? 'opacity-100' : (currentImageIndex === 0 ? 'opacity-100' : 'opacity-0')}`}
               onLoad={() => setImgLoaded(prev => ({ ...prev, [currentImageIndex]: true }))}
             />

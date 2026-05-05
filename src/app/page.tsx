@@ -105,8 +105,8 @@ function HomeContent() {
                 <PropertyCardSkeleton key={i} />
               ))
             ) : (
-              propertiesGroup1.map((property) => (
-                <PropertyCard key={property.id} {...property} />
+              propertiesGroup1.map((property, idx) => (
+                <PropertyCard key={property.id} {...property} priority={idx < 4} />
               ))
             )}
           </div>
@@ -127,8 +127,8 @@ function HomeContent() {
                 <PropertyCardSkeleton key={i} />
               ))
             ) : (
-              propertiesGroup2.map((property) => (
-                <PropertyCard key={property.id} {...property} />
+              propertiesGroup2.map((property, idx) => (
+                <PropertyCard key={property.id} {...property} priority={idx < 2} />
               ))
             )}
           </div>

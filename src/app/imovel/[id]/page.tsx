@@ -509,19 +509,18 @@ export default function PropertyDetailsPage() {
               </div>
 
               {/* Thumbnails */}
-              <div className="relative">
+              <div className="relative px-12 md:px-16">
                 <button 
                   onClick={() => scrollThumbnails('left')}
-                  className="absolute left-0 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white shadow-md text-slate-700 flex items-center justify-center hover:bg-slate-50 hover:text-primary z-10 cursor-pointer border border-slate-100"
+                  className="absolute left-0 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white shadow-md text-slate-700 flex items-center justify-center hover:bg-slate-50 hover:text-primary z-10 cursor-pointer border border-slate-100"
                 >
-                  <ChevronLeft size={20} />
+                  <ChevronLeft size={24} />
                 </button>
                 
                 <div 
                   ref={scrollContainerRef}
-                  className="flex gap-3 overflow-x-auto pb-4 pt-4 mx-8 snap-x [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] scroll-smooth items-center"
+                  className="flex gap-4 overflow-x-auto py-4 px-2 snap-x [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] scroll-smooth items-center"
                 >
-                  <div className="flex-shrink-0 w-2" /> {/* Spacer para a borda não cortar */}
                   {mediaItems.map((item, idx) => (
                     <button 
                       key={idx}
@@ -541,14 +540,13 @@ export default function PropertyDetailsPage() {
                       )}
                     </button>
                   ))}
-                  <div className="flex-shrink-0 w-2" /> {/* Spacer final */}
                 </div>
 
                 <button 
                   onClick={() => scrollThumbnails('right')}
-                  className="absolute right-0 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white shadow-md text-slate-700 flex items-center justify-center hover:bg-slate-50 hover:text-primary z-10 cursor-pointer border border-slate-100"
+                  className="absolute right-0 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white shadow-md text-slate-700 flex items-center justify-center hover:bg-slate-50 hover:text-primary z-10 cursor-pointer border border-slate-100"
                 >
-                  <ChevronRight size={20} />
+                  <ChevronRight size={24} />
                 </button>
               </div>
 

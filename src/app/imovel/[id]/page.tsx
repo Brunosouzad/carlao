@@ -458,21 +458,26 @@ export default function PropertyDetailsPage() {
                     className="w-full h-full cursor-zoom-in relative bg-[#f8f9fa]"
                     onClick={() => setLightboxOpen(true)}
                   >
-                    <img
-                      key={currentImageIndex}
-                      src={currentMedia?.url || undefined}
-                      onLoadStart={() => setIsImageLoading(true)}
-                      onLoad={() => setIsImageLoading(false)}
-                      decoding="async"
-                      className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-200 ease-in-out ${isImageLoading ? 'opacity-0' : 'opacity-100'}`}
-                      alt={property.title}
-                    />
-                    
-                    {isImageLoading && (
-                      <div className="absolute inset-0 flex items-center justify-center bg-white/10 backdrop-blur-sm z-20">
-                        <div className="w-10 h-10 border-4 border-slate-200 border-t-amber-500 rounded-full animate-spin" />
-                      </div>
-                    )}
+                    {mediaItems.map((item, idx) => {
+                      if (item.type !== 'image') return null;
+                      const isCurrent = idx === currentImageIndex;
+                      // Only render current, next, and previous to save DOM nodes
+                      const isAdjacent = 
+                        idx === (currentImageIndex + 1) % mediaItems.length || 
+                        idx === (currentImageIndex - 1 + mediaItems.length) % mediaItems.length;
+                      
+                      if (!isCurrent && !isAdjacent) return null;
+
+                      return (
+                        <img
+                          key={idx}
+                          src={item.url}
+                          decoding="async"
+                          className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-300 ease-in-out ${isCurrent ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
+                          alt={`${property.title} - Foto ${idx + 1}`}
+                        />
+                      );
+                    })}
                   </div>
                 )}
                 
@@ -614,9 +619,9 @@ export default function PropertyDetailsPage() {
                       <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" className="text-red-600"><path d="M21.543 6.498C22 8.28 22 12 22 12s0 3.72-.457 5.502c-.254.985-.997 1.76-1.938 2.022C17.896 20 12 20 12 20s-5.893 0-7.605-.476c-.945-.266-1.687-1.04-1.938-2.022C2 15.72 2 12 2 12s0-3.72.457-5.502c.254-.985.997-1.76 1.938-2.022C6.107 4 12 4 12 4s5.896 0 7.605.476c.945.266 1.687 1.04 1.938 2.022zM10 15.5l6-3.5-6-3.5v7z"/></svg>
                       Vídeo do Imóvel
                     </h3>
-                    <div className="w-full aspect-video rounded-none overflow-hidden shadow-md bg-black">
+                    <div className="min-h-[280px] sm:min-h-[320px] lg:min-h-0 lg:aspect-video w-full rounded-2xl overflow-hidden shadow-lg border border-slate-200">
                       <iframe
-                        className="w-full h-full"
+                        className="w-full h-full min-h-[280px] sm:min-h-[320px] lg:min-h-full"
                         src={`https://www.youtube.com/embed/${embedId}`}
                         title="Tour em Vídeo"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

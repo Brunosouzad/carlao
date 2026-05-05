@@ -457,12 +457,6 @@ export default function PropertyDetailsPage() {
                   <div 
                     className="w-full h-full cursor-zoom-in relative bg-[#f8f9fa]"
                     onClick={() => setLightboxOpen(true)}
-                    style={{
-                      backgroundImage: currentMedia.type === 'image' ? `url(${mediaItems[(currentImageIndex - 1 + mediaItems.length) % mediaItems.length].url})` : 'none',
-                      backgroundSize: 'contain',
-                      backgroundRepeat: 'no-repeat',
-                      backgroundPosition: 'center'
-                    }}
                   >
                     <img
                       key={currentImageIndex}

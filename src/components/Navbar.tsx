@@ -37,7 +37,7 @@ export default function Navbar() {
               <img 
                 src="/logo-carlao.png" 
                 alt="Carlão Imóveis Logo" 
-                className="block lg:hidden h-14 w-auto"
+                className="block lg:hidden h-20 w-auto"
               />
               {/* Desktop logo - visível apenas em lg+ (original intocado) */}
               <img 

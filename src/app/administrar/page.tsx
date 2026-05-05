@@ -109,7 +109,7 @@ export default function AdministrarPage() {
                 <a href="#contato" className="bg-secondary hover:bg-secondary/90 text-white font-bold px-8 py-3.5 rounded-xl transition-all shadow-xl shadow-secondary/10 flex items-center gap-3 active:scale-95 font-oswald uppercase tracking-wider text-sm">
                   Quero anunciar agora
                 </a>
-                <a href="https://wa.me/553186003497" target="_blank" className="bg-white text-slate-700 border border-slate-200 px-8 py-3.5 rounded-xl font-bold hover:bg-slate-50 hover:border-slate-300 transition-all flex items-center gap-3 active:scale-95 font-oswald uppercase tracking-wider text-sm shadow-sm">
+                <a href="https://wa.me/553384136800" target="_blank" className="bg-white text-slate-700 border border-slate-200 px-8 py-3.5 rounded-xl font-bold hover:bg-slate-50 hover:border-slate-300 transition-all flex items-center gap-3 active:scale-95 font-oswald uppercase tracking-wider text-sm shadow-sm">
                   <MessageSquare size={18} className="text-secondary" /> Consultor
                 </a>
               </div>

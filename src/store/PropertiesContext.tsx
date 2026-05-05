@@ -25,18 +25,18 @@ const PropertiesContext = createContext<PropertiesContextType>({
 });
 
 export function PropertiesProvider({ children }: { children: React.ReactNode }) {
+  // Inicializamos com o que houver no localStorage para ser instantâneo
   const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
   const toast = useToast();
 
-  // Consideramos configurado se não for o placeholder padrão
   const isSupabaseConfigured = 
     process.env.NEXT_PUBLIC_SUPABASE_URL && 
     process.env.NEXT_PUBLIC_SUPABASE_URL !== 'https://your-project.supabase.co' &&
     process.env.NEXT_PUBLIC_SUPABASE_URL !== 'https://placeholder.supabase.co';
 
-  const fetchProperties = async () => {
-    setLoading(true);
+  const fetchProperties = async (silent = false) => {
+    if (!silent) setLoading(true);
     try {
       if (isSupabaseConfigured) {
         const { data, error } = await supabase
@@ -45,13 +45,11 @@ export function PropertiesProvider({ children }: { children: React.ReactNode }) 
           .order('created_at', { ascending: false });
 
         if (error) {
-          console.warn("Supabase fetch error, falling back to local:", error.message);
-          toast.error("Erro ao carregar dados", "Não foi possível conectar ao banco de dados.");
-          loadLocalData();
+          console.warn("Supabase fetch error:", error.message);
+          if (!silent) loadLocalData();
         } else if (data) {
           const mappedData = data.map((p: any) => {
             const { video_url, zip_code, images, ...rest } = p;
-            // Garantir que images seja um array e videoUrl/zipCode sejam camelCase
             const mapped = { 
               ...rest, 
               videoUrl: video_url, 
@@ -62,42 +60,54 @@ export function PropertiesProvider({ children }: { children: React.ReactNode }) 
             return { ...mapped, slug: generateSlug(mapped) };
           });
           setProperties(mappedData as Property[]);
+          // Salva no localStorage para o próximo carregamento ser instantâneo
+          localStorage.setItem("@carlao-imoveis:properties", JSON.stringify(mappedData));
         }
       } else {
         loadLocalData();
       }
     } catch (e) {
       console.error("Error in fetchProperties:", e);
-      loadLocalData();
+      if (!silent) loadLocalData();
     } finally {
       setLoading(false);
     }
   };
 
   const loadLocalData = () => {
-    if (typeof window === 'undefined') {
-      setProperties(INITIAL_PROPERTIES);
-      return;
-    }
+    if (typeof window === 'undefined') return;
 
     const stored = localStorage.getItem("@carlao-imoveis:properties");
     if (stored) {
       try {
         const parsed = JSON.parse(stored).map((p: Property) => ({ ...p, slug: generateSlug(p) }));
         setProperties(parsed);
+        setLoading(false);
       } catch (e) {
-        const local = INITIAL_PROPERTIES.map(p => ({ ...p, slug: generateSlug(p) }));
-        setProperties(local);
+        setProperties(INITIAL_PROPERTIES);
       }
     } else {
-      const local = INITIAL_PROPERTIES.map(p => ({ ...p, slug: generateSlug(p) }));
-      setProperties(local);
-      localStorage.setItem("@carlao-imoveis:properties", JSON.stringify(local));
+      setProperties(INITIAL_PROPERTIES);
     }
   };
 
   useEffect(() => {
-    fetchProperties();
+    // 1. Tenta carregar local imediatamente (instantâneo)
+    const stored = typeof window !== 'undefined' ? localStorage.getItem("@carlao-imoveis:properties") : null;
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        setProperties(parsed);
+        setLoading(false); // Já temos dados para mostrar
+        // Busca novos dados em silêncio
+        fetchProperties(true);
+      } catch (e) {
+        fetchProperties();
+      }
+    } else {
+      // Primeira vez ou sem cache: busca normal
+      fetchProperties();
+    }
   }, []);
 
   const addProperty = async (propertyData: Omit<Property, "id">) => {

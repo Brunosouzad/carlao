@@ -13,7 +13,7 @@ export default function Footer() {
               <img 
                 src="/logo-carlao.png" 
                 alt="Carlão Imóveis" 
-                className="h-12 w-auto"
+                className="h-14 w-auto"
               />
             </div>
             <p className="text-white text-sm leading-relaxed max-w-xs">

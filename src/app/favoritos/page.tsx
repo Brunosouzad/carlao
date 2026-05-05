@@ -83,7 +83,7 @@ export default function FavoritosPage() {
                   <p className="text-slate-300 leading-relaxed">Nossos consultores podem te ajudar a comparar os detalhes técnicos e as vantagens de cada um desses imóveis favoritados.</p>
                 </div>
                 <Link 
-                  href="https://wa.me/553186003497" 
+                  href="https://wa.me/553384136800" 
                   target="_blank"
                   className="bg-secondary hover:bg-secondary/90 text-white px-8 py-4 rounded-none font-bold flex items-center gap-3 transition-all font-oswald uppercase tracking-widest whitespace-nowrap"
                 >

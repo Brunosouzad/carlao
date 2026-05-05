@@ -265,7 +265,7 @@ export default function ContatoPage() {
                         )}
                       </button>
                       <a
-                        href="https://wa.me/553186003497"
+                        href="https://wa.me/553384136800"
                         target="_blank"
                         className="flex-1 bg-[#25D366] hover:bg-[#128C7E] text-white py-4 rounded-none font-bold shadow-lg shadow-green-500/10 transition-all active:scale-[0.98] flex items-center justify-center gap-3 font-oswald uppercase tracking-wider"
                       >

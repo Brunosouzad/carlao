@@ -9,7 +9,7 @@ export default function WhatsAppButton() {
 
   return (
     <Link 
-      href="https://wa.me/553186003497" 
+      href="https://wa.me/553384136800" 
       target="_blank"
       className={`${isPropertyPage ? 'hidden lg:flex' : 'flex'} fixed bottom-8 right-8 z-50 w-16 h-16 bg-[#25D366] text-white rounded-full items-center justify-center shadow-2xl hover:scale-110 transition-transform cursor-pointer`}
     >

@@ -13,6 +13,17 @@ function str(v: unknown): string {
   return String(v).trim();
 }
 
+function cleanDescription(text: string): string {
+  if (!text) return "";
+  // Resolve literal "rn" and escaped versions that often haunt legacy XML exports
+  return text
+    .replace(/\\r\\n/g, '\n')
+    .replace(/\\n/g, '\n')
+    .replace(/rnrn/g, '\n\n')
+    .replace(/rn/g, '\n')
+    .trim();
+}
+
 // Helper: normaliza número
 function num(v: unknown): number {
   const n = Number(String(v).replace(/[^\d.]/g, ""));
@@ -71,7 +82,7 @@ function mapImovelToDb(imovel: Record<string, any>) {
   return {
     code: str(imovel.CodigoImovel),
     title: str(imovel.Titulo),
-    description: str(imovel.Descricao),
+    description: cleanDescription(str(imovel.Descricao)),
     type: isVenda ? "Venda" : "Aluguel",
     category: str(imovel.TipoImovel) || "Casa",
     price: String(num(precoRaw)),

@@ -144,7 +144,7 @@ export default function ProcuraPage() {
                     <h3 className="text-xl font-bold mb-4 font-oswald uppercase">Prefere falar agora?</h3>
                     <p className="text-sm text-slate-300 mb-6 leading-relaxed">Nossos consultores estão prontos para ouvir suas necessidades pelo WhatsApp.</p>
                     <a 
-                      href="https://wa.me/553186003497" 
+                      href="https://wa.me/553384136800" 
                       target="_blank" 
                       className="inline-flex items-center gap-2 bg-secondary text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-secondary/90 transition-all font-oswald uppercase tracking-wider"
                     >

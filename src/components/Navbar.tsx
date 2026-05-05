@@ -29,20 +29,20 @@ export default function Navbar() {
       animate={{ y: 0, opacity: 1 }}
       className="fixed top-6 left-1/2 -translate-x-1/2 w-[94%] lg:w-[95%] max-w-7xl z-50 flex justify-center"
     >
-      <div className="max-w-7xl w-full bg-white lg:bg-white/90 lg:backdrop-blur-md rounded-2xl shadow-xl px-4 lg:px-8 py-3 flex items-center justify-between border border-black/5">
-        <div className="flex-1 flex justify-start">
+      <div className="max-w-7xl w-full bg-white lg:bg-white/90 lg:backdrop-blur-md rounded-2xl shadow-xl px-4 lg:px-8 py-5 lg:py-4 flex items-center justify-between border border-black/5">
+        <div className="flex-none w-[280px] flex justify-start">
           <Link href="/" className="flex items-center group shrink-0">
             <div className="group-hover:scale-105 transition-transform origin-left">
               <img 
                 src="/logo-carlao.png" 
                 alt="Carlão Imóveis Logo" 
-                className="h-10 lg:h-14 w-auto scale-[1.35] lg:scale-[1.5] origin-left"
+                className="h-24 lg:h-26 w-auto scale-[1.6] lg:scale-[1.8] origin-left"
               />
             </div>
           </Link>
         </div>
 
-        <div className="hidden lg:flex items-center gap-5 text-[11px] font-bold uppercase tracking-wider text-primary/70 font-oswald">
+        <div className="hidden lg:flex items-center gap-4 text-[11px] font-bold uppercase tracking-wider text-primary/70 font-oswald mr-8">
           {[
             { name: "Home", href: "/" },
             { name: "A Empresa", href: "/a-empresa" },
@@ -52,13 +52,13 @@ export default function Navbar() {
             { name: "Aluguel", href: "/aluguel" },
             { name: "Contato", href: "/contato" },
           ].map((item) => (
-            <Link key={item.name} href={item.href} className="relative py-1 hover:text-secondary transition-colors group/link">
+            <Link key={item.name} href={item.href} className="relative py-1 hover:text-secondary transition-colors group/link whitespace-nowrap">
               {item.name}
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-secondary group-hover/link:w-full transition-all duration-300"></span>
             </Link>
           ))}
           
-          <Link href="/favoritos" className="relative py-1 flex items-center gap-1 hover:text-secondary transition-colors group/link">
+          <Link href="/favoritos" className="relative py-1 flex items-center gap-1 hover:text-secondary transition-colors group/link whitespace-nowrap">
             Favoritos
             {favorites.length > 0 && (
               <span className="flex items-center justify-center bg-secondary text-white text-[8px] w-4 h-4 rounded-full font-bold">
@@ -68,7 +68,7 @@ export default function Navbar() {
             <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-secondary group-hover/link:w-full transition-all duration-300"></span>
           </Link>
 
-          <Link href="/comparar" className="relative py-1 flex items-center gap-1 hover:text-secondary transition-colors group/link">
+          <Link href="/comparar" className="relative py-1 flex items-center gap-1 hover:text-secondary transition-colors group/link whitespace-nowrap">
             Comparar
             {compareList.length > 0 && (
               <span className="flex items-center justify-center bg-primary text-white text-[8px] w-4 h-4 rounded-full font-bold">
@@ -111,11 +111,11 @@ export default function Navbar() {
           </div>
           
           <Link 
-            href="https://wa.me/553186003497" 
+            href="https://wa.me/553384136800" 
             target="_blank"
-            className="btn-primary py-2 px-5 text-xs hidden sm:flex items-center gap-2"
+            className="bg-secondary hover:bg-secondary/90 text-white py-3 px-8 rounded-full text-[10px] font-bold tracking-widest hidden sm:flex items-center gap-2 shadow-lg shadow-secondary/20 transition-all active:scale-95"
           >
-            <Phone size={16} />
+            <Phone size={14} strokeWidth={3} />
             ATENDIMENTO
           </Link>
           
@@ -152,7 +152,7 @@ export default function Navbar() {
             </div>
             
             <Link 
-              href="https://wa.me/553186003497" 
+              href="https://wa.me/553384136800" 
               target="_blank"
               onClick={() => setIsMobileMenuOpen(false)}
               className="btn-primary py-3 mt-2 w-full flex items-center justify-center gap-2"

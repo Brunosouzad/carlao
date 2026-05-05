@@ -3,6 +3,7 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import PropertyCard from "@/components/PropertyCard";
+import PropertyCardSkeleton from "@/components/PropertyCardSkeleton";
 import { ArrowRight, Shield, Award, Handshake, Lightbulb, Phone } from "lucide-react";
 import { motion } from "framer-motion";
 import Link from "next/link";
@@ -14,7 +15,7 @@ import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 
 function HomeContent() {
-  const { properties } = useProperties();
+  const { properties, loading } = useProperties();
   const { settings } = useSiteSettings();
   const searchParams = useSearchParams();
   const query = searchParams.get('q');
@@ -99,9 +100,15 @@ function HomeContent() {
           </div>
           
           <div className={`grid ${gridClass} gap-4 sm:gap-8 mb-12 md:mb-16`}>
-            {propertiesGroup1.map((property) => (
-              <PropertyCard key={property.id} {...property} />
-            ))}
+            {loading ? (
+              Array.from({ length: settings.homeMaxVenda || 4 }).map((_, i) => (
+                <PropertyCardSkeleton key={i} />
+              ))
+            ) : (
+              propertiesGroup1.map((property) => (
+                <PropertyCard key={property.id} {...property} />
+              ))
+            )}
           </div>
 
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-4 md:gap-6">
@@ -115,9 +122,15 @@ function HomeContent() {
           </div>
           
           <div className={`grid ${gridClass} gap-4 sm:gap-8`}>
-            {propertiesGroup2.map((property) => (
-              <PropertyCard key={property.id} {...property} />
-            ))}
+            {loading ? (
+              Array.from({ length: settings.homeMaxAluguel || 4 }).map((_, i) => (
+                <PropertyCardSkeleton key={i} />
+              ))
+            ) : (
+              propertiesGroup2.map((property) => (
+                <PropertyCard key={property.id} {...property} />
+              ))
+            )}
           </div>
         </div>
       </section>
@@ -276,7 +289,7 @@ function HomeContent() {
                   
                   <div className="flex flex-col sm:flex-row gap-3 pt-2">
                     <Link 
-                      href="https://wa.me/553186003497" 
+                      href="https://wa.me/553384136800" 
                       target="_blank"
                       className="flex-1 bg-[#25D366] hover:bg-[#128C7E] text-white py-3 px-4 rounded-none text-[10px] font-bold uppercase tracking-widest flex items-center justify-center gap-2 transition-all shadow-md shadow-green-500/10"
                     >
@@ -319,7 +332,7 @@ function HomeContent() {
                   
                   <div className="flex flex-col sm:flex-row gap-3 pt-2">
                     <Link 
-                      href="https://wa.me/553186003497" 
+                      href="https://wa.me/553384136800" 
                       target="_blank"
                       className="flex-1 bg-[#25D366] hover:bg-[#128C7E] text-white py-3 px-4 rounded-none text-[10px] font-bold uppercase tracking-widest flex items-center justify-center gap-2 transition-all shadow-md shadow-green-500/10"
                     >
@@ -350,7 +363,7 @@ function HomeContent() {
             
             <div className="flex flex-col sm:flex-row items-center gap-4 w-full lg:w-auto">
               <Link 
-                href="https://wa.me/553186003497" 
+                href="https://wa.me/553384136800" 
                 target="_blank"
                 className="w-full sm:w-auto bg-primary hover:bg-black text-white flex items-center justify-center gap-3 px-10 py-5 font-bold transition-all uppercase tracking-widest text-sm"
               >

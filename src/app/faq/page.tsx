@@ -155,7 +155,7 @@ export default function FaqPage() {
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <a
-              href="https://wa.me/553186003497"
+              href="https://wa.me/553384136800"
               target="_blank"
               className="bg-[#25D366] hover:bg-[#128C7E] text-white px-8 py-4 rounded-xl font-bold flex items-center justify-center gap-3 transition-all font-oswald uppercase tracking-wider shadow-lg shadow-green-500/10"
             >

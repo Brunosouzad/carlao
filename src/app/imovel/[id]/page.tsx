@@ -8,8 +8,9 @@ import { BedDouble, Bath, Square, MapPin, CheckCircle, ArrowLeft, ChevronLeft, C
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
 import { Property } from "@/data/properties";
-import { formatPrice } from "@/utils/format";
+import { formatPrice, formatDescription } from "@/utils/format";
 import dynamic from "next/dynamic";
+import { motion, AnimatePresence } from "framer-motion";
 
 const PropertyMap = dynamic(() => import("@/components/PropertyMap"), { ssr: false });
 import NeighborhoodPOIs from "@/components/NeighborhoodPOIs";
@@ -28,6 +29,8 @@ export default function PropertyDetailsPage() {
   
   const [property, setProperty] = useState<Property | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [direction, setDirection] = useState(0); // -1 for prev, 1 for next
+  const [isImageLoading, setIsImageLoading] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [showCopyToast, setShowCopyToast] = useState(false);
   const [recommendTab, setRecommendTab] = useState<'recomendado' | 'tipo' | 'localizacao'>('recomendado');
@@ -182,6 +185,27 @@ export default function PropertyDetailsPage() {
     setIsVideoPlaying(false);
   }, [currentImageIndex]);
 
+  // Preload next image (must be before early returns to respect Rules of Hooks)
+  useEffect(() => {
+    if (!property) return;
+    const allImgs = Array.from(new Set([property.image, ...(property.images || [])])).filter(Boolean);
+    const vMatch = property.videoUrl?.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
+    const vId = vMatch ? vMatch[1] : null;
+    const items = [
+      ...allImgs.map(url => ({ type: 'image' as const, url })),
+      ...(vId ? [{ type: 'video' as const, url: '' }] : [])
+    ];
+    if (items.length > 0) {
+      const nextIdx = (currentImageIndex + 1) % items.length;
+      const nextItem = items[nextIdx];
+      if (nextItem.type === 'image') {
+        const img = new window.Image();
+        img.src = nextItem.url;
+      }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentImageIndex, property]);
+
   if (loading) {
     return (
       <>
@@ -222,15 +246,25 @@ export default function PropertyDetailsPage() {
   const allImages = Array.from(new Set([
     property.image,
     ...(property.images || [])
-  ])).filter(Boolean);
+  ])).filter(img => img && typeof img === 'string' && img.trim() !== "");
+
+  if (allImages.length === 0) {
+    allImages.push("https://images.unsplash.com/photo-1564013467402-9fef2662880e?q=80&w=1000&auto=format&fit=crop");
+  }
 
   const mediaItems = [
-    ...(embedId ? [{ type: 'video' as const, url: `https://www.youtube.com/embed/${embedId}`, thumb: `https://img.youtube.com/vi/${embedId}/0.jpg` }] : []),
-    ...allImages.map(url => ({ type: 'image' as const, url, thumb: url }))
+    ...allImages.map(url => ({ type: 'image' as const, url, thumb: url })),
+    ...(embedId ? [{ type: 'video' as const, url: `https://www.youtube.com/embed/${embedId}`, thumb: `https://img.youtube.com/vi/${embedId}/0.jpg` }] : [])
   ];
 
-  const nextMedia = () => setCurrentImageIndex((prev) => (prev + 1) % mediaItems.length);
-  const prevMedia = () => setCurrentImageIndex((prev) => (prev - 1 + mediaItems.length) % mediaItems.length);
+  const nextMedia = () => {
+    setDirection(1);
+    setCurrentImageIndex((prev) => (prev + 1) % mediaItems.length);
+  };
+  const prevMedia = () => {
+    setDirection(-1);
+    setCurrentImageIndex((prev) => (prev - 1 + mediaItems.length) % mediaItems.length);
+  };
 
   const scrollThumbnails = (direction: 'left' | 'right') => {
     if (scrollContainerRef.current) {
@@ -250,7 +284,7 @@ export default function PropertyDetailsPage() {
   const handleWhatsApp = (e: React.MouseEvent) => {
     e.preventDefault();
     const text = `${formData.mensagem}\n\n*Nome:* ${formData.nome}\n*Telefone:* ${formData.telefone}\n*E-mail:* ${formData.email}`;
-    window.open(`https://wa.me/553186003497?text=${encodeURIComponent(text)}`, '_blank');
+    window.open(`https://wa.me/553384136800?text=${encodeURIComponent(text)}`, '_blank');
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -330,6 +364,24 @@ export default function PropertyDetailsPage() {
     }
   };
 
+
+  const variants = {
+    enter: (direction: number) => ({
+      x: direction > 0 ? 50 : -50,
+      opacity: 0
+    }),
+    center: {
+      zIndex: 1,
+      x: 0,
+      opacity: 1
+    },
+    exit: (direction: number) => ({
+      zIndex: 0,
+      x: direction < 0 ? 50 : -50,
+      opacity: 0
+    })
+  };
+
   return (
     <>
       <Navbar />
@@ -360,8 +412,10 @@ export default function PropertyDetailsPage() {
                     <ChevronLeft size={28} />
                   </button>
                   <img 
-                    src={currentMedia.url} 
-                    alt={property.title} 
+                    src={currentMedia?.url || undefined} 
+                    alt={property.title}
+                    loading="lazy"
+                    decoding="async"
                     className="max-w-full max-h-[90vh] object-contain rounded-xl shadow-2xl"
                     onClick={(e) => e.stopPropagation()}
                   />
@@ -401,14 +455,30 @@ export default function PropertyDetailsPage() {
                   )
                 ) : (
                   <div 
-                    className="w-full h-full cursor-zoom-in"
+                    className="w-full h-full cursor-zoom-in relative bg-[#f8f9fa]"
                     onClick={() => setLightboxOpen(true)}
+                    style={{
+                      backgroundImage: currentMedia.type === 'image' ? `url(${mediaItems[(currentImageIndex - 1 + mediaItems.length) % mediaItems.length].url})` : 'none',
+                      backgroundSize: 'contain',
+                      backgroundRepeat: 'no-repeat',
+                      backgroundPosition: 'center'
+                    }}
                   >
-                    <img 
-                      src={currentMedia.url} 
-                      alt={property.title} 
-                      className="w-full h-full object-contain transition-all duration-500 hover:scale-[1.02]" 
+                    <img
+                      key={currentImageIndex}
+                      src={currentMedia?.url || undefined}
+                      onLoadStart={() => setIsImageLoading(true)}
+                      onLoad={() => setIsImageLoading(false)}
+                      decoding="async"
+                      className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-200 ease-in-out ${isImageLoading ? 'opacity-0' : 'opacity-100'}`}
+                      alt={property.title}
                     />
+                    
+                    {isImageLoading && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-white/10 backdrop-blur-sm z-20">
+                        <div className="w-10 h-10 border-4 border-slate-200 border-t-amber-500 rounded-full animate-spin" />
+                      </div>
+                    )}
                   </div>
                 )}
                 
@@ -455,10 +525,13 @@ export default function PropertyDetailsPage() {
                   {mediaItems.map((item, idx) => (
                     <button 
                       key={idx}
-                      onClick={() => setCurrentImageIndex(idx)}
+                      onClick={() => {
+                        setDirection(idx > currentImageIndex ? 1 : -1);
+                        setCurrentImageIndex(idx);
+                      }}
                       className={`flex-shrink-0 w-28 h-20 rounded-none snap-start transition-all cursor-pointer focus:outline-none relative overflow-hidden ${currentImageIndex === idx ? 'outline outline-4 outline-secondary outline-offset-2 opacity-100 scale-105' : 'opacity-60 hover:opacity-90 hover:scale-[1.02]'}`}
                     >
-                      <img src={item.thumb} alt={`Thumb ${idx}`} className="w-full h-full object-cover" />
+                      <img src={item.thumb} alt={`Thumb ${idx}`} loading="lazy" decoding="async" className="w-full h-full object-cover" />
                       {item.type === 'video' && (
                         <div className="absolute inset-0 flex items-center justify-center bg-black/20">
                            <div className="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center text-white">
@@ -536,9 +609,28 @@ export default function PropertyDetailsPage() {
                 <div className="space-y-4">
                   <h3 className="text-xl font-bold text-primary">Descrição do Imóvel</h3>
                   <p className="text-slate-600 leading-relaxed whitespace-pre-wrap">
-                    {property.description || "Sem descrição detalhada para este imóvel."}
+                    {formatDescription(property.description) || "Sem descrição detalhada para este imóvel."}
                   </p>
                 </div>
+
+                {/* Vídeo do Imóvel - logo abaixo da descrição */}
+                {embedId && (
+                  <div className="mt-8 pt-8 border-t border-slate-100">
+                    <h3 className="text-xl font-bold text-primary mb-4 flex items-center gap-2">
+                      <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" className="text-red-600"><path d="M21.543 6.498C22 8.28 22 12 22 12s0 3.72-.457 5.502c-.254.985-.997 1.76-1.938 2.022C17.896 20 12 20 12 20s-5.893 0-7.605-.476c-.945-.266-1.687-1.04-1.938-2.022C2 15.72 2 12 2 12s0-3.72.457-5.502c.254-.985.997-1.76 1.938-2.022C6.107 4 12 4 12 4s5.896 0 7.605.476c.945.266 1.687 1.04 1.938 2.022zM10 15.5l6-3.5-6-3.5v7z"/></svg>
+                      Vídeo do Imóvel
+                    </h3>
+                    <div className="w-full aspect-video rounded-none overflow-hidden shadow-md bg-black">
+                      <iframe
+                        className="w-full h-full"
+                        src={`https://www.youtube.com/embed/${embedId}`}
+                        title="Tour em Vídeo"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
+                    </div>
+                  </div>
+                )}
 
 
                 <div className="mt-8 pt-8 border-t border-slate-100">
@@ -650,7 +742,7 @@ export default function PropertyDetailsPage() {
                       WhatsApp
                     </button>
                     <a 
-                      href="tel:+553186003497"
+                      href="tel:+553384136800"
                       className="btn-secondary py-3.5 rounded-none flex items-center justify-center gap-2 font-bold text-primary hover:bg-slate-50 text-sm"
                     >
                       <Phone size={18} />
@@ -756,7 +848,7 @@ export default function PropertyDetailsPage() {
           WhatsApp
         </button>
         <a 
-          href="tel:+553186003497"
+          href="tel:+553384136800"
           className="flex-1 border-2 border-primary text-primary py-4 rounded-none flex items-center justify-center gap-2 font-bold text-sm active:scale-95 transition-transform"
         >
           <Phone size={20} />

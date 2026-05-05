@@ -3,6 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { BedDouble, Bath, Square, MapPin, ArrowUpRight, X, Camera, ChevronLeft, ChevronRight, Heart, ArrowLeftRight } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { useState, useEffect } from "react";
 import { formatPrice } from "@/utils/format";
 import dynamic from "next/dynamic";
@@ -130,20 +131,54 @@ export default function PropertyCard({ id, code, title, location, price, beds, b
   const [isMapOpen, setIsMapOpen] = useState(false);
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [direction, setDirection] = useState(0);
 
-  const cardImages = [image, ...(images || [])];
+  const cardImages = [image, ...(images || [])].filter(img => img && img.trim() !== "");
+  
+  // If no images, provide a fallback
+  if (cardImages.length === 0) {
+    cardImages.push("https://images.unsplash.com/photo-1564013467402-9fef2662880e?q=80&w=1000&auto=format&fit=crop");
+  }
+
   
   const propertyUrl = slug ? `/imovel/${slug}` : `/imovel/${id}`;
 
   const nextImage = (e: React.MouseEvent) => {
     e.preventDefault();
+    setDirection(1);
     setCurrentImageIndex((prev) => (prev + 1) % cardImages.length);
   };
 
   const prevImage = (e: React.MouseEvent) => {
     e.preventDefault();
+    setDirection(-1);
     setCurrentImageIndex((prev) => (prev - 1 + cardImages.length) % cardImages.length);
   };
+
+  const [isHovered, setIsHovered] = useState(false);
+
+  // Preload next and previous images only when hovered to save bandwidth
+  useEffect(() => {
+    if (isHovered && cardImages.length > 1) {
+      const nextIdx = (currentImageIndex + 1) % cardImages.length;
+      const prevIdx = (currentImageIndex - 1 + cardImages.length) % cardImages.length;
+      
+      [nextIdx, prevIdx].forEach(idx => {
+        if (cardImages[idx]) {
+          const img = new window.Image();
+          img.src = cardImages[idx];
+        }
+      });
+    }
+  }, [currentImageIndex, cardImages, isHovered]);
+
+  const variants = {
+    enter: { opacity: 0 },
+    center: { zIndex: 1, opacity: 1 },
+    exit: { zIndex: 0, opacity: 0 }
+  };
+
+  const [imgLoaded, setImgLoaded] = useState<Record<number, boolean>>({});
 
   return (
     <>
@@ -151,21 +186,27 @@ export default function PropertyCard({ id, code, title, location, price, beds, b
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       className="group bg-white rounded-none overflow-hidden border border-slate-200 lg:backdrop-blur-md lg:bg-white/70 hover:border-amber-500/30 transition-all duration-500 shadow-sm relative cursor-pointer"
       onClick={() => router.push(propertyUrl)}
     >
       {/* Image Container */}
       <div className="relative h-64 overflow-hidden">
         <div 
-          className="absolute inset-0 z-0 w-full h-full cursor-zoom-in"
+          className="absolute inset-0 z-0 w-full h-full cursor-zoom-in relative overflow-hidden bg-slate-100"
           onClick={(e) => { e.stopPropagation(); setIsGalleryOpen(true); }}
         >
-          <img 
-            src={cardImages[currentImageIndex]} 
-            alt={title} 
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 to-transparent opacity-80" />
+          <Image
+              key={currentImageIndex}
+              src={cardImages[currentImageIndex] || "https://images.unsplash.com/photo-1564013467402-9fef2662880e?q=80&w=1000&auto=format&fit=crop"} 
+              alt={title} 
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              className={`absolute inset-0 w-full h-full object-cover transition-all duration-500 group-hover:scale-110 ${imgLoaded[currentImageIndex] ? 'opacity-100' : (currentImageIndex === 0 ? 'opacity-100' : 'opacity-0')}`}
+              onLoad={() => setImgLoaded(prev => ({ ...prev, [currentImageIndex]: true }))}
+            />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 to-transparent opacity-80 z-10 pointer-events-none" />
         </div>
         
         {/* Navigation Arrows */}
@@ -283,11 +324,19 @@ export default function PropertyCard({ id, code, title, location, price, beds, b
             exit={{ opacity: 0, scale: 0.95 }}
             className="relative w-auto h-auto max-w-[95vw] max-h-[90vh] rounded-2xl overflow-hidden shadow-2xl z-10 flex items-center justify-center bg-black/20"
           >
-            <img 
-              src={cardImages[currentImageIndex]} 
-              alt={title} 
-              className="max-w-full max-h-[90vh] object-contain select-none"
-            />
+            <div 
+              className="relative w-full max-w-5xl max-h-[90vh] flex items-center justify-center overflow-hidden"
+            >
+              <img 
+                key={currentImageIndex}
+                src={cardImages[currentImageIndex] || undefined} 
+                alt={title}
+                loading="lazy"
+                decoding="async"
+                className={`max-w-full max-h-[90vh] object-contain select-none transition-opacity duration-300 ease-in-out ${imgLoaded[currentImageIndex + 100] || currentImageIndex === 0 ? 'opacity-100' : 'opacity-0'}`}
+                onLoad={() => setImgLoaded(prev => ({ ...prev, [currentImageIndex + 100]: true }))}
+              />
+            </div>
             
             <button 
               onClick={() => setIsGalleryOpen(false)}

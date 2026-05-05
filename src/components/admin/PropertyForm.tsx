@@ -173,6 +173,55 @@ export default function PropertyForm({ property, mode, onSuccess }: PropertyForm
     setCustomFeature("");
   };
 
+  const resizeImage = (file: File): Promise<Blob | File> => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+
+          // Max dimensions
+          const MAX_WIDTH = 1920;
+          const MAX_HEIGHT = 1080;
+
+          if (width > height) {
+            if (width > MAX_WIDTH) {
+              height *= MAX_WIDTH / width;
+              width = MAX_WIDTH;
+            }
+          } else {
+            if (height > MAX_HEIGHT) {
+              width *= MAX_HEIGHT / height;
+              height = MAX_HEIGHT;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx?.drawImage(img, 0, 0, width, height);
+
+          canvas.toBlob(
+            (blob) => {
+              if (blob) {
+                resolve(new File([blob], file.name, { type: 'image/jpeg', lastModified: Date.now() }));
+              } else {
+                resolve(file);
+              }
+            },
+            'image/jpeg',
+            0.8 // Quality
+          );
+        };
+        img.src = e.target?.result as string;
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
   const uploadImage = async (file: File) => {
     try {
       setUploading(true);
@@ -207,11 +256,15 @@ export default function PropertyForm({ property, mode, onSuccess }: PropertyForm
     console.log(`Iniciando upload de ${files.length} arquivos para: ${target}`);
 
     if (target === "image") {
-      const url = await uploadImage(files[0]);
+      const optimizedFile = await resizeImage(files[0]) as File;
+      const url = await uploadImage(optimizedFile);
       if (url) set("image", url);
     } else {
       // Upload múltiplo em paralelo para a galeria
-      const uploadPromises = Array.from(files).map(file => uploadImage(file));
+      const uploadPromises = Array.from(files).map(async (file) => {
+        const optimizedFile = await resizeImage(file) as File;
+        return uploadImage(optimizedFile);
+      });
       const urls = await Promise.all(uploadPromises);
       const validUrls = urls.filter((url): url is string => url !== null);
       

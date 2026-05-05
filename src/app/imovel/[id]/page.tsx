@@ -494,7 +494,7 @@ export default function PropertyDetailsPage() {
                   <ChevronRight size={24} className="md:w-8 md:h-8" />
                 </button>
  
-                <div className="absolute top-4 left-4 md:top-6 md:left-6 flex gap-2">
+                <div className="absolute top-4 left-4 md:top-6 md:left-6 flex gap-2 z-20">
                   <span className="px-3 py-1.5 md:px-4 md:py-2 bg-amber-500 text-slate-950 text-xs md:text-sm font-bold uppercase rounded-none shadow-lg">
                     {property.type}
                   </span>

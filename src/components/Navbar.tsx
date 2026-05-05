@@ -36,7 +36,7 @@ export default function Navbar() {
               <img 
                 src="/logo-carlao.png" 
                 alt="Carlão Imóveis Logo" 
-                className="h-16 sm:h-20 lg:h-24 w-auto scale-[1.2] sm:scale-[1.4] lg:scale-[1.8] origin-left max-w-[160px] sm:max-w-[200px] lg:max-w-none"
+                className="h-14 sm:h-18 lg:h-24 w-auto scale-[1.1] sm:scale-[1.3] lg:scale-[1.8] origin-left max-w-[130px] sm:max-w-[180px] lg:max-w-none"
               />
             </div>
           </Link>

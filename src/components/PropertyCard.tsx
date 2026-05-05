@@ -157,21 +157,25 @@ export default function PropertyCard({ id, code, title, location, price, beds, b
   };
 
   const [isHovered, setIsHovered] = useState(false);
+  const [renderedIndexes, setRenderedIndexes] = useState<number[]>([0]);
 
-  // Preload next and previous images only when hovered to save bandwidth
+  // Preload next and previous images via Next.js when hovered to eliminate gallery delay
   useEffect(() => {
-    if (isHovered && cardImages.length > 1) {
-      const nextIdx = (currentImageIndex + 1) % cardImages.length;
-      const prevIdx = (currentImageIndex - 1 + cardImages.length) % cardImages.length;
+    setRenderedIndexes(prev => {
+      const nextSet = new Set(prev);
+      nextSet.add(currentImageIndex);
       
-      [nextIdx, prevIdx].forEach(idx => {
-        if (cardImages[idx]) {
-          const img = new window.Image();
-          img.src = cardImages[idx];
-        }
-      });
-    }
-  }, [currentImageIndex, cardImages, isHovered]);
+      if (isHovered && cardImages.length > 1) {
+        nextSet.add((currentImageIndex + 1) % cardImages.length);
+        nextSet.add((currentImageIndex - 1 + cardImages.length) % cardImages.length);
+      }
+      
+      if (nextSet.size !== prev.length) {
+        return Array.from(nextSet);
+      }
+      return prev;
+    });
+  }, [currentImageIndex, isHovered, cardImages.length]);
 
   const variants = {
     enter: { opacity: 0 },
@@ -179,7 +183,6 @@ export default function PropertyCard({ id, code, title, location, price, beds, b
     exit: { zIndex: 0, opacity: 0 }
   };
 
-  const [imgLoaded, setImgLoaded] = useState<Record<number, boolean>>({});
 
   return (
     <>
@@ -195,21 +198,26 @@ export default function PropertyCard({ id, code, title, location, price, beds, b
       {/* Image Container */}
       <div className="relative h-64 overflow-hidden">
         <div 
-          className="absolute inset-0 z-0 w-full h-full cursor-zoom-in relative overflow-hidden bg-slate-100"
+          className="absolute inset-0 z-0 w-full h-full cursor-zoom-in relative overflow-hidden bg-slate-200"
           onClick={(e) => { e.stopPropagation(); setIsGalleryOpen(true); }}
         >
-          <Image
-              key={currentImageIndex}
-              src={cardImages[currentImageIndex] || "https://images.unsplash.com/photo-1564013467402-9fef2662880e?q=80&w=1000&auto=format&fit=crop"} 
-              alt={title} 
-              fill
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              quality={70}
-              priority={isPriority && currentImageIndex === 0}
-              className={`absolute inset-0 w-full h-full object-cover transition-all duration-500 group-hover:scale-110 ${imgLoaded[currentImageIndex] ? 'opacity-100' : (currentImageIndex === 0 ? 'opacity-100' : 'opacity-0')}`}
-              onLoad={() => setImgLoaded(prev => ({ ...prev, [currentImageIndex]: true }))}
-            />
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 to-transparent opacity-80 z-10 pointer-events-none" />
+          {cardImages.map((src, idx) => {
+            if (!renderedIndexes.includes(idx)) return null;
+            const isCurrent = idx === currentImageIndex;
+            return (
+              <Image
+                key={idx}
+                src={src || "https://images.unsplash.com/photo-1564013467402-9fef2662880e?q=80&w=1000&auto=format&fit=crop"} 
+                alt={`${title} - Foto ${idx + 1}`}
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                quality={70}
+                priority={isPriority && idx === 0}
+                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ease-in-out group-hover:scale-110 ${isCurrent ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
+              />
+            );
+          })}
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 to-transparent opacity-80 z-20 pointer-events-none" />
         </div>
         
         {/* Navigation Arrows */}

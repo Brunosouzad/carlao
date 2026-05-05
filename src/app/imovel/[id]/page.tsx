@@ -519,7 +519,7 @@ export default function PropertyDetailsPage() {
                 
                 <div 
                   ref={scrollContainerRef}
-                  className="flex gap-3 overflow-x-auto pb-3 pt-2 px-12 snap-x [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] scroll-smooth"
+                  className="flex gap-3 overflow-x-auto pb-3 pt-2 mx-10 px-2 snap-x [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] scroll-smooth"
                 >
                   {mediaItems.map((item, idx) => (
                     <button 

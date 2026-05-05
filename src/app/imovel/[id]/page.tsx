@@ -519,8 +519,9 @@ export default function PropertyDetailsPage() {
                 
                 <div 
                   ref={scrollContainerRef}
-                  className="flex gap-3 overflow-x-auto pb-3 pt-2 mx-10 px-2 snap-x [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] scroll-smooth"
+                  className="flex gap-3 overflow-x-auto pb-4 pt-4 mx-8 snap-x [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] scroll-smooth items-center"
                 >
+                  <div className="flex-shrink-0 w-2" /> {/* Spacer para a borda não cortar */}
                   {mediaItems.map((item, idx) => (
                     <button 
                       key={idx}
@@ -540,6 +541,7 @@ export default function PropertyDetailsPage() {
                       )}
                     </button>
                   ))}
+                  <div className="flex-shrink-0 w-2" /> {/* Spacer final */}
                 </div>
 
                 <button 

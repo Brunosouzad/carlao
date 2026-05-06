@@ -74,20 +74,7 @@ const SiteSettingsContext = createContext<SiteSettingsContextType>({
 });
 
 export function SiteSettingsProvider({ children }: { children: React.ReactNode }) {
-  const [settings, setSettings] = useState<SiteSettings>(() => {
-    if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem("@carlao-imoveis:site-settings");
-      if (stored) {
-        try {
-          return { ...DEFAULT_SETTINGS, ...JSON.parse(stored) };
-        } catch (e) {
-          console.warn("Error parsing stored settings");
-        }
-      }
-    }
-    return DEFAULT_SETTINGS;
-  });
-
+  const [settings, setSettings] = useState<SiteSettings>(DEFAULT_SETTINGS);
   const [isLoaded, setIsLoaded] = useState(false);
 
   const fetchSettings = async () => {
@@ -115,6 +102,15 @@ export function SiteSettingsProvider({ children }: { children: React.ReactNode }
   };
 
   useEffect(() => {
+    // 1. Carrega do localStorage no client-side mount para evitar erro de hidratação
+    const stored = localStorage.getItem("@carlao-imoveis:site-settings");
+    if (stored) {
+      try {
+        setSettings({ ...DEFAULT_SETTINGS, ...JSON.parse(stored) });
+      } catch (e) {
+        console.warn("Error parsing stored settings");
+      }
+    }
     fetchSettings();
   }, []);
 

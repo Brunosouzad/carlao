@@ -17,6 +17,11 @@ import WhatsAppButton from "@/components/WhatsAppButton";
 function HomeContent() {
   const { properties, loading } = useProperties();
   const { settings } = useSiteSettings();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   const searchParams = useSearchParams();
   const query = searchParams.get('q');
 
@@ -90,14 +95,18 @@ function HomeContent() {
       <section id="imoveis" className="py-12 md:py-16 bg-white">
         <div className="w-full max-w-7xl mx-auto px-8 md:px-8">
           <motion.div 
-            key={settings.homeVendaTitle}
+            key={mounted ? settings.homeVendaTitle : "default-venda"}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-4 md:gap-6"
           >
             <div>
-              <span className="text-secondary font-bold tracking-widest text-xs uppercase mb-2 block">{settings.homeVendaSubtitle || "Imóveis para Venda"}</span>
-              <h2 className="text-4xl font-bold text-primary">{settings.homeVendaTitle || "Melhores Oportunidades"}</h2>
+              <span className="text-secondary font-bold tracking-widest text-xs uppercase mb-2 block">
+                {mounted ? (settings.homeVendaSubtitle || "Imóveis para Venda") : "Imóveis para Venda"}
+              </span>
+              <h2 className="text-4xl font-bold text-primary">
+                {mounted ? (settings.homeVendaTitle || "Melhores Oportunidades") : "Melhores Oportunidades"}
+              </h2>
             </div>
             <Link href="/venda" className="text-primary font-bold flex items-center gap-2 hover:text-secondary transition-colors group">
               Ver todos <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
@@ -117,14 +126,18 @@ function HomeContent() {
           </div>
 
           <motion.div 
-            key={settings.homeAluguelTitle}
+            key={mounted ? settings.homeAluguelTitle : "default-aluguel"}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-4 md:gap-6"
           >
             <div>
-              <span className="text-secondary font-bold tracking-widest text-xs uppercase mb-2 block">{settings.homeAluguelSubtitle || "Imóveis para Alugar"}</span>
-              <h2 className="text-4xl font-bold text-primary">{settings.homeAluguelTitle || "Destaques de Locação"}</h2>
+              <span className="text-secondary font-bold tracking-widest text-xs uppercase mb-2 block">
+                {mounted ? (settings.homeAluguelSubtitle || "Imóveis para Alugar") : "Imóveis para Alugar"}
+              </span>
+              <h2 className="text-4xl font-bold text-primary">
+                {mounted ? (settings.homeAluguelTitle || "Destaques de Locação") : "Destaques de Locação"}
+              </h2>
             </div>
             <Link href="/aluguel" className="text-primary font-bold flex items-center gap-2 hover:text-secondary transition-colors group">
               Ver todas as locações <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />

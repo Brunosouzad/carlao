@@ -193,8 +193,8 @@ export default function PropertyCard({ id, code, title, location, price, beds, b
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       className="group bg-white rounded-none overflow-hidden border border-slate-200 lg:backdrop-blur-md lg:bg-white/70 hover:border-amber-500/30 transition-all duration-500 shadow-sm relative cursor-pointer"
-      onClick={() => router.push(propertyUrl)}
     >
+      <Link href={propertyUrl} className="block h-full">
       {/* Image Container */}
       <div className="relative h-64 overflow-hidden">
         <div 
@@ -259,7 +259,6 @@ export default function PropertyCard({ id, code, title, location, price, beds, b
           <FavoriteButton id={id} />
           <CompareButton id={id} />
           <div 
-            onClick={(e) => { e.stopPropagation(); router.push(propertyUrl); }}
             className="w-12 h-12 bg-black/40 lg:bg-white/10 lg:backdrop-blur-md rounded-none flex items-center justify-center text-white hover:bg-amber-500 hover:text-slate-950 transition-all shadow-xl group-hover:translate-y-0 cursor-pointer"
           >
             <ArrowUpRight size={24} />
@@ -316,6 +315,7 @@ export default function PropertyCard({ id, code, title, location, price, beds, b
           <span className="text-[9px] font-bold uppercase tracking-tighter">{area} m²</span>
         </div>
       </div>
+    </Link>
     </motion.div>
 
     {/* Gallery Modal */}

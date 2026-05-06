@@ -6,7 +6,7 @@ import PropertyCard from "@/components/PropertyCard";
 import { useParams, useRouter } from "next/navigation";
 import { BedDouble, Bath, Square, MapPin, CheckCircle, ArrowLeft, ChevronLeft, ChevronRight, Share2, Heart, Printer, ArrowLeftRight, Check, Phone, Mail } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState, useRef } from "react";
+import { Suspense, useState, useEffect, useRef, useMemo } from "react";
 import { Property } from "@/data/properties";
 import { formatPrice, formatDescription } from "@/utils/format";
 import dynamic from "next/dynamic";
@@ -27,7 +27,44 @@ export default function PropertyDetailsPage() {
   const router = useRouter();
   const { properties, loading } = useProperties();
   
-  const [property, setProperty] = useState<Property | null>(null);
+  const [propertyState, setPropertyState] = useState<Property | null>(null);
+  
+  // 1. Tentar encontrar o imóvel imediatamente se os dados já estiverem carregados
+  const property = useMemo(() => {
+    if (propertyState) return propertyState;
+    if (!id || loading) return null;
+    const decodedSlug = decodeURIComponent(String(id));
+    return properties.find((p) => {
+      const currentSlug = p.slug || generateSlug(p);
+      
+      // Match exato de slug ou ID
+      if (currentSlug.toLowerCase() === decodedSlug.toLowerCase() || 
+          String(p.id) === decodedSlug ||
+          p.code?.toLowerCase() === decodedSlug.toLowerCase()) {
+        return true;
+      }
+
+      // Tentar extrair o código do final do slug
+      const slugCodeMatch = decodedSlug.match(/-([a-zA-Z0-9-]+)$/);
+      if (slugCodeMatch && p.code) {
+        const extractedCode = slugCodeMatch[1].toLowerCase();
+        if (p.code.toLowerCase() === extractedCode) return true;
+      }
+
+      return false;
+    });
+  }, [id, properties, loading, propertyState]);
+
+  // 2. Sincronizar o estado local com o imóvel encontrado
+  useEffect(() => {
+    if (property && !propertyState) {
+      setPropertyState(property);
+      setFormData(prev => ({
+        ...prev,
+        mensagem: `Olá, estou interessado no imóvel código ${property.code} - ${property.title}.`
+      }));
+    }
+  }, [property, propertyState]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [direction, setDirection] = useState(0); // -1 for prev, 1 for next
   const [isImageLoading, setIsImageLoading] = useState(false);
@@ -145,38 +182,7 @@ export default function PropertyDetailsPage() {
     printWindow.document.close();
   };
 
-  useEffect(() => {
-    if (id && !loading) {
-      const decodedSlug = decodeURIComponent(String(id));
-      const found = properties.find((p) => {
-        const currentSlug = p.slug || generateSlug(p);
-        
-        // 1. Match exato de slug ou ID
-        if (currentSlug.toLowerCase() === decodedSlug.toLowerCase() || 
-            String(p.id) === decodedSlug ||
-            p.code?.toLowerCase() === decodedSlug.toLowerCase()) {
-          return true;
-        }
 
-        // 2. Tentar extrair o código do final do slug (ex: "...-im-992")
-        const slugCodeMatch = decodedSlug.match(/-([a-zA-Z0-9-]+)$/);
-        if (slugCodeMatch && p.code) {
-          const extractedCode = slugCodeMatch[1].toLowerCase();
-          if (p.code.toLowerCase() === extractedCode) return true;
-        }
-
-        return false;
-      });
-
-      if (found) {
-        setProperty(found);
-        setFormData(prev => ({
-          ...prev,
-          mensagem: `Olá, estou interessado no imóvel código ${found.code} - ${found.title}.`
-        }));
-      }
-    }
-  }, [id, properties, loading]);
 
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
 

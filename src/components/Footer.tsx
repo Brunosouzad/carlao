@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Phone, Mail } from "lucide-react";
 
 export default function Footer() {
@@ -9,11 +10,13 @@ export default function Footer() {
       <div className="w-full max-w-7xl mx-auto mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-24 mb-16">
           <div className="space-y-8">
-            <div className="bg-white p-4 rounded-none w-fit">
-              <img 
+            <div className="bg-white p-6 rounded-2xl w-fit shadow-lg">
+              <Image 
                 src="/logo-carlao.png" 
                 alt="Carlão Imóveis" 
-                className="h-14 w-auto"
+                width={200}
+                height={80}
+                className="h-20 w-auto object-contain"
               />
             </div>
             <p className="text-white text-sm leading-relaxed max-w-xs">

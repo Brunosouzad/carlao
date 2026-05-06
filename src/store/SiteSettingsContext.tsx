@@ -69,8 +69,8 @@ interface SiteSettingsContextType {
 
 const SiteSettingsContext = createContext<SiteSettingsContextType>({
   settings: DEFAULT_SETTINGS,
-  updateSettings: async () => {},
-  resetSettings: async () => {},
+  updateSettings: async () => { },
+  resetSettings: async () => { },
 });
 
 export function SiteSettingsProvider({ children }: { children: React.ReactNode }) {
@@ -84,7 +84,7 @@ export function SiteSettingsProvider({ children }: { children: React.ReactNode }
         .select('settings')
         .eq('key', 'singleton')
         .single();
-      
+
       if (data && data.settings) {
         const mergedSettings = { ...DEFAULT_SETTINGS, ...data.settings };
         setSettings(mergedSettings);
@@ -118,7 +118,7 @@ export function SiteSettingsProvider({ children }: { children: React.ReactNode }
     const updated = { ...settings, ...patch };
     setSettings(updated);
     localStorage.setItem("@carlao-imoveis:site-settings", JSON.stringify(updated));
-    
+
     try {
       const { error } = await supabase
         .from('site_settings')
@@ -126,7 +126,7 @@ export function SiteSettingsProvider({ children }: { children: React.ReactNode }
           [{ key: 'singleton', settings: updated }],
           { onConflict: 'key' }
         );
-      
+
       if (error) {
         console.error("Error saving settings:", error);
         throw error;

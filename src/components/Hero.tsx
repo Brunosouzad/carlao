@@ -12,10 +12,7 @@ export default function Hero() {
     "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=1600&auto=format&fit=crop",
   ];
 
-  const [mounted, setMounted] = useState(false);
-
   useEffect(() => {
-    setMounted(true);
     if (slides.length <= 1) return;
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
@@ -70,21 +67,17 @@ export default function Hero() {
       <div className="w-full max-w-7xl mx-auto px-8 md:px-8 relative z-10 pb-20 lg:pb-16">
         <div className="max-w-6xl mx-auto">
           <motion.div
-            key={mounted ? settings.heroTitle : "default"}
+            key={settings.heroTitle}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
             className="mb-8 text-center lg:text-left"
           >
-            <h1 className="text-3xl md:text-6xl font-bold text-white mb-4 drop-shadow-lg">
-              {mounted 
-                ? renderTitle(settings.heroTitle || "Encontre o seu **imóvel ideal**")
-                : renderTitle("Encontre o seu **imóvel ideal**")}
+            <h1 suppressHydrationWarning className="text-3xl md:text-6xl font-bold text-white mb-4 drop-shadow-lg">
+              {renderTitle(settings.heroTitle || "Encontre o seu **imóvel ideal**")}
             </h1>
-            <p className="text-base md:text-lg text-white/80 max-w-2xl mx-auto lg:mx-0 drop-shadow-md">
-              {mounted
-                ? (settings.heroSubtitle || "Mais de 15 anos de tradição em Governador Valadares e região. Sua segurança é nossa prioridade.")
-                : "Mais de 15 anos de tradição em Governador Valadares e região. Sua segurança é nossa prioridade."}
+            <p suppressHydrationWarning className="text-base md:text-lg text-white/80 max-w-2xl mx-auto lg:mx-0 drop-shadow-md">
+              {settings.heroSubtitle || "Mais de 15 anos de tradição em Governador Valadares e região. Sua segurança é nossa prioridade."}
             </p>
           </motion.div>
 

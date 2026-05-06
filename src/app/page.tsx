@@ -89,7 +89,12 @@ function HomeContent() {
       
       <section id="imoveis" className="py-12 md:py-16 bg-white">
         <div className="w-full max-w-7xl mx-auto px-8 md:px-8">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-4 md:gap-6">
+          <motion.div 
+            key={settings.homeVendaTitle}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-4 md:gap-6"
+          >
             <div>
               <span className="text-secondary font-bold tracking-widest text-xs uppercase mb-2 block">{settings.homeVendaSubtitle || "Imóveis para Venda"}</span>
               <h2 className="text-4xl font-bold text-primary">{settings.homeVendaTitle || "Melhores Oportunidades"}</h2>
@@ -97,7 +102,7 @@ function HomeContent() {
             <Link href="/venda" className="text-primary font-bold flex items-center gap-2 hover:text-secondary transition-colors group">
               Ver todos <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
             </Link>
-          </div>
+          </motion.div>
           
           <div className={`grid ${gridClass} gap-4 sm:gap-8 mb-12 md:mb-16`}>
             {loading ? (
@@ -111,7 +116,12 @@ function HomeContent() {
             )}
           </div>
 
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-4 md:gap-6">
+          <motion.div 
+            key={settings.homeAluguelTitle}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-4 md:gap-6"
+          >
             <div>
               <span className="text-secondary font-bold tracking-widest text-xs uppercase mb-2 block">{settings.homeAluguelSubtitle || "Imóveis para Alugar"}</span>
               <h2 className="text-4xl font-bold text-primary">{settings.homeAluguelTitle || "Destaques de Locação"}</h2>
@@ -119,7 +129,7 @@ function HomeContent() {
             <Link href="/aluguel" className="text-primary font-bold flex items-center gap-2 hover:text-secondary transition-colors group">
               Ver todas as locações <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
             </Link>
-          </div>
+          </motion.div>
           
           <div className={`grid ${gridClass} gap-4 sm:gap-8`}>
             {loading ? (

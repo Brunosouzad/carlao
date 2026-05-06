@@ -67,8 +67,10 @@ export default function Hero() {
       <div className="w-full max-w-7xl mx-auto px-8 md:px-8 relative z-10 pb-20 lg:pb-16">
         <div className="max-w-6xl mx-auto">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            key={settings.heroTitle}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
             className="mb-8 text-center lg:text-left"
           >
             <h1 className="text-3xl md:text-6xl font-bold text-white mb-4 drop-shadow-lg">

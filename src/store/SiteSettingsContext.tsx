@@ -74,7 +74,21 @@ const SiteSettingsContext = createContext<SiteSettingsContextType>({
 });
 
 export function SiteSettingsProvider({ children }: { children: React.ReactNode }) {
-  const [settings, setSettings] = useState<SiteSettings>(DEFAULT_SETTINGS);
+  const [settings, setSettings] = useState<SiteSettings>(() => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem("@carlao-imoveis:site-settings");
+      if (stored) {
+        try {
+          return { ...DEFAULT_SETTINGS, ...JSON.parse(stored) };
+        } catch (e) {
+          console.warn("Error parsing stored settings");
+        }
+      }
+    }
+    return DEFAULT_SETTINGS;
+  });
+
+  const [isLoaded, setIsLoaded] = useState(false);
 
   const fetchSettings = async () => {
     try {
@@ -85,12 +99,15 @@ export function SiteSettingsProvider({ children }: { children: React.ReactNode }
         .single();
       
       if (data && data.settings) {
-        setSettings({ ...DEFAULT_SETTINGS, ...data.settings });
+        const mergedSettings = { ...DEFAULT_SETTINGS, ...data.settings };
+        setSettings(mergedSettings);
+        setIsLoaded(true);
+        localStorage.setItem("@carlao-imoveis:site-settings", JSON.stringify(mergedSettings));
       } else if (error && (error.code === 'PGRST116' || error.message?.includes('No rows'))) {
-        // Nenhuma linha encontrada, cria a primeira
         await supabase
           .from('site_settings')
           .insert([{ key: 'singleton', settings: DEFAULT_SETTINGS }]);
+        setIsLoaded(true);
       }
     } catch (err) {
       console.error("Error fetching settings from Supabase:", err);
@@ -104,6 +121,7 @@ export function SiteSettingsProvider({ children }: { children: React.ReactNode }
   const updateSettings = async (patch: Partial<SiteSettings>) => {
     const updated = { ...settings, ...patch };
     setSettings(updated);
+    localStorage.setItem("@carlao-imoveis:site-settings", JSON.stringify(updated));
     
     try {
       const { error } = await supabase
@@ -124,6 +142,7 @@ export function SiteSettingsProvider({ children }: { children: React.ReactNode }
 
   const resetSettings = async () => {
     setSettings(DEFAULT_SETTINGS);
+    localStorage.setItem("@carlao-imoveis:site-settings", JSON.stringify(DEFAULT_SETTINGS));
     try {
       await supabase
         .from('site_settings')

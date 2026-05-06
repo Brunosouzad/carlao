@@ -1,17 +1,19 @@
 "use client";
 
 import { useSearchParams, useRouter } from "next/navigation";
-import { Suspense } from "react";
+import { Suspense, useState, useMemo } from "react";
 import Navbar from "@/components/Navbar";
 import PropertyCard from "@/components/PropertyCard";
 import SearchFilter from "@/components/SearchFilter";
+import SortFilter, { SortOption } from "@/components/SortFilter";
 import { useProperties } from "@/store/PropertiesContext";
 import { X } from "lucide-react";
 
 function PesquisaContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const { properties } = useProperties();
+  const { properties, loading } = useProperties();
+  const [sortBy, setSortBy] = useState<SortOption>("newest");
 
   // Parâmetros de busca
   const typeParam     = searchParams.get("type") || "";
@@ -28,75 +30,90 @@ function PesquisaContent() {
   const qParam        = searchParams.get("q") || ""; // tag search from property detail
 
   // Filtro completo
-  const filteredProperties = properties.filter((p) => {
-    // Texto livre (tag ou q)
-    if (qParam) {
-      const q = qParam.toLowerCase();
-      const inTitle    = p.title.toLowerCase().includes(q);
-      const inLocation = p.location.toLowerCase().includes(q);
-      const inDesc     = p.description?.toLowerCase().includes(q) ?? false;
-      const inFeature  = (p.features || []).some(f => f.toLowerCase() === q);
-      const inTag      = (p.tag || "").toLowerCase() === q;
-      const inType     = p.type.toLowerCase() === q;
-      if (!inTitle && !inLocation && !inDesc && !inFeature && !inTag && !inType) return false;
+  const filteredProperties = useMemo(() => {
+    const filtered = properties.filter((p) => {
+      // Texto livre (tag ou q)
+      if (qParam) {
+        const q = qParam.toLowerCase();
+        const inTitle    = p.title.toLowerCase().includes(q);
+        const inLocation = p.location.toLowerCase().includes(q);
+        const inDesc     = p.description?.toLowerCase().includes(q) ?? false;
+        const inFeature  = (p.features || []).some(f => f.toLowerCase() === q);
+        const inTag      = (p.tag || "").toLowerCase() === q;
+        const inType     = p.type.toLowerCase() === q;
+        if (!inTitle && !inLocation && !inDesc && !inFeature && !inTag && !inType) return false;
+      }
+
+      // Código exato
+      if (codeParam && !p.code.toLowerCase().includes(codeParam.toLowerCase())) return false;
+
+      // Tipo (Venda / Aluguel)
+      if (typeParam && p.type !== typeParam) return false;
+
+      // Categoria (Casa, Apartamento...)
+      if (categoryParam && p.category !== categoryParam) return false;
+
+      // Localização (substring)
+      if (locationParam && !p.location.toLowerCase().includes(locationParam.toLowerCase())) return false;
+
+      // Quartos mínimos
+      if (bedsParam) {
+        const min = parseInt(bedsParam, 10);
+        if (!isNaN(min) && p.beds < min) return false;
+      }
+
+      // Banheiros mínimos
+      if (bathsParam) {
+        const min = parseInt(bathsParam, 10);
+        if (!isNaN(min) && p.baths < min) return false;
+      }
+
+      // Garagens mínimas
+      if (garagesParam) {
+        const min = parseInt(garagesParam, 10);
+        if (!isNaN(min) && p.garages < min) return false;
+      }
+
+      // Área mínima
+      if (minAreaParam) {
+        const min = parseFloat(minAreaParam);
+        if (!isNaN(min) && p.area < min) return false;
+      }
+
+      // Área máxima
+      if (maxAreaParam) {
+        const max = parseFloat(maxAreaParam);
+        if (!isNaN(max) && p.area > max) return false;
+      }
+
+      // Preço mínimo
+      if (minPriceParam) {
+        const min = parseFloat(minPriceParam);
+        if (!isNaN(min) && parseFloat(p.price) < min) return false;
+      }
+
+      // Preço máximo
+      if (maxPriceParam) {
+        const max = parseFloat(maxPriceParam);
+        if (!isNaN(max) && parseFloat(p.price) > max) return false;
+      }
+
+      return true;
+    });
+
+    // Apply sorting
+    switch (sortBy) {
+      case "price_asc":
+        return [...filtered].sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
+      case "price_desc":
+        return [...filtered].sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
+      case "area_desc":
+        return [...filtered].sort((a, b) => b.area - a.area);
+      case "newest":
+      default:
+        return filtered;
     }
-
-    // Código exato
-    if (codeParam && !p.code.toLowerCase().includes(codeParam.toLowerCase())) return false;
-
-    // Tipo (Venda / Aluguel)
-    if (typeParam && p.type !== typeParam) return false;
-
-    // Categoria (Casa, Apartamento...)
-    if (categoryParam && p.category !== categoryParam) return false;
-
-    // Localização (substring)
-    if (locationParam && !p.location.toLowerCase().includes(locationParam.toLowerCase())) return false;
-
-    // Quartos mínimos
-    if (bedsParam) {
-      const min = parseInt(bedsParam, 10);
-      if (!isNaN(min) && p.beds < min) return false;
-    }
-
-    // Banheiros mínimos
-    if (bathsParam) {
-      const min = parseInt(bathsParam, 10);
-      if (!isNaN(min) && p.baths < min) return false;
-    }
-
-    // Garagens mínimas
-    if (garagesParam) {
-      const min = parseInt(garagesParam, 10);
-      if (!isNaN(min) && p.garages < min) return false;
-    }
-
-    // Área mínima
-    if (minAreaParam) {
-      const min = parseFloat(minAreaParam);
-      if (!isNaN(min) && p.area < min) return false;
-    }
-
-    // Área máxima
-    if (maxAreaParam) {
-      const max = parseFloat(maxAreaParam);
-      if (!isNaN(max) && p.area > max) return false;
-    }
-
-    // Preço mínimo
-    if (minPriceParam) {
-      const min = parseFloat(minPriceParam);
-      if (!isNaN(min) && parseFloat(p.price) < min) return false;
-    }
-
-    // Preço máximo
-    if (maxPriceParam) {
-      const max = parseFloat(maxPriceParam);
-      if (!isNaN(max) && parseFloat(p.price) > max) return false;
-    }
-
-    return true;
-  });
+  }, [properties, qParam, codeParam, typeParam, categoryParam, locationParam, bedsParam, bathsParam, garagesParam, minAreaParam, maxAreaParam, minPriceParam, maxPriceParam, sortBy]);
 
   // Chips de filtros ativos
   const activeFilters: { label: string; param: string }[] = [];
@@ -124,7 +141,7 @@ function PesquisaContent() {
       <Navbar />
 
       <div className="pt-32 pb-12 bg-slate-50 min-h-screen">
-        <div className="w-full max-w-7xl mx-auto mx-auto px-6">
+        <div className="w-full max-w-7xl mx-auto px-6">
           {/* Header */}
           <div className="mb-8">
             <h1 className="text-4xl font-bold text-primary mb-2">Resultados da Pesquisa</h1>
@@ -166,6 +183,14 @@ function PesquisaContent() {
           <div className="mb-12">
             <SearchFilter compact />
           </div>
+
+          {!loading && filteredProperties.length > 0 && (
+            <SortFilter 
+              currentSort={sortBy} 
+              onSortChange={setSortBy} 
+              totalResults={filteredProperties.length} 
+            />
+          )}
 
           {/* Grid de resultados */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">

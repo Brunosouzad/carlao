@@ -6,6 +6,7 @@ import Navbar from "@/components/Navbar";
 import PropertyCard from "@/components/PropertyCard";
 import SearchFilter from "@/components/SearchFilter";
 import SortFilter, { SortOption } from "@/components/SortFilter";
+import Pagination from "@/components/Pagination";
 import { useProperties } from "@/store/PropertiesContext";
 import { X } from "lucide-react";
 
@@ -14,6 +15,8 @@ function PesquisaContent() {
   const router = useRouter();
   const { properties, loading } = useProperties();
   const [sortBy, setSortBy] = useState<SortOption>("newest");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 12;
 
   // Parâmetros de busca
   const typeParam     = searchParams.get("type") || "";
@@ -194,7 +197,7 @@ function PesquisaContent() {
 
           {/* Grid de resultados */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-            {filteredProperties.map((property) => (
+            {filteredProperties.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((property) => (
               <PropertyCard key={property.id} {...property} />
             ))}
 
@@ -212,6 +215,17 @@ function PesquisaContent() {
               </div>
             )}
           </div>
+
+          {!loading && filteredProperties.length > itemsPerPage && (
+            <Pagination 
+              currentPage={currentPage}
+              totalPages={Math.ceil(filteredProperties.length / itemsPerPage)}
+              onPageChange={(page) => {
+                setCurrentPage(page);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+            />
+          )}
         </div>
       </div>
     </>

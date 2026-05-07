@@ -9,16 +9,20 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { useProperties } from "@/store/PropertiesContext";
 import { useSearchParams } from "next/navigation";
-import { Suspense } from "react";
+import { Suspense, useState, useMemo } from "react";
 import { useSiteSettings } from "@/store/SiteSettingsContext";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
+import Pagination from "@/components/Pagination";
 
 function HomeContent() {
   const { properties, loading } = useProperties();
   const { settings } = useSiteSettings();
   const searchParams = useSearchParams();
   const query = searchParams.get('q');
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 12;
 
   let filteredProperties = properties;
   if (query) {
@@ -46,11 +50,23 @@ function HomeContent() {
             </div>
 
             {filteredProperties.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                {filteredProperties.map(property => (
-                  <PropertyCard key={property.id} {...property} />
-                ))}
-              </div>
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                  {filteredProperties.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(property => (
+                    <PropertyCard key={property.id} {...property} />
+                  ))}
+                </div>
+                {filteredProperties.length > itemsPerPage && (
+                  <Pagination 
+                    currentPage={currentPage}
+                    totalPages={Math.ceil(filteredProperties.length / itemsPerPage)}
+                    onPageChange={(page) => {
+                      setCurrentPage(page);
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                  />
+                )}
+              </>
             ) : (
               <div className="text-center py-20 bg-white rounded-none border border-slate-100 shadow-sm">
                 <p className="text-xl text-slate-500 font-medium mb-4">Nenhum imóvel encontrado para essa característica.</p>
@@ -170,10 +186,12 @@ function HomeContent() {
                 className="relative z-10"
               >
                 <div className="relative rounded-none overflow-hidden shadow-2xl aspect-square ring-1 ring-black/5">
-                  <img
+                  <Image
                     src="/fachada-carlao.png"
                     alt="Carlão Imóveis - Fachada"
-                    className="w-full h-full object-cover"
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, 600px"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-primary/40 via-transparent to-transparent" />
                 </div>

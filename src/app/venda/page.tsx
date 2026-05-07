@@ -6,11 +6,14 @@ import PropertyCard from "@/components/PropertyCard";
 import PropertyCardSkeleton from "@/components/PropertyCardSkeleton";
 import SearchFilter from "@/components/SearchFilter";
 import SortFilter, { SortOption } from "@/components/SortFilter";
+import Pagination from "@/components/Pagination";
 import { useProperties } from "@/store/PropertiesContext";
 
 export default function VendaPage() {
   const { properties, loading } = useProperties();
   const [sortBy, setSortBy] = useState<SortOption>("newest");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 12;
   
   const propertiesForSale = useMemo(() => {
     const filtered = properties.filter((p) => p.type === "Venda");
@@ -60,7 +63,7 @@ export default function VendaPage() {
               ))
             ) : (
               <>
-                {propertiesForSale.map((property) => (
+                {propertiesForSale.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((property) => (
                   <PropertyCard key={property.id} {...property} />
                 ))}
                 {propertiesForSale.length === 0 && (
@@ -73,6 +76,17 @@ export default function VendaPage() {
               </>
             )}
           </div>
+
+          {!loading && propertiesForSale.length > itemsPerPage && (
+            <Pagination 
+              currentPage={currentPage}
+              totalPages={Math.ceil(propertiesForSale.length / itemsPerPage)}
+              onPageChange={(page) => {
+                setCurrentPage(page);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+            />
+          )}
         </div>
       </div>
     </>

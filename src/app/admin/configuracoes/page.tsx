@@ -8,6 +8,7 @@ import { supabase } from "@/lib/supabase";
 import { formatPrice } from "@/utils/format";
 import { useToast } from "@/store/ToastContext";
 import ConfirmModal from "@/components/admin/ConfirmModal";
+import { compressAndConvertToWebP } from "@/utils/image";
 
 export default function AdminConfiguracoes() {
   const { settings, updateSettings, resetSettings } = useSiteSettings();
@@ -68,13 +69,13 @@ export default function AdminConfiguracoes() {
     try {
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
-        const fileExt = file.name.split('.').pop();
-        const fileName = `banner-${Math.random().toString(36).substring(2)}.${fileExt}`;
+        const optimizedFile = await compressAndConvertToWebP(file);
+        const fileName = `banner-${Math.random().toString(36).substring(2)}.webp`;
         const filePath = `banners/${fileName}`;
 
         const { error: uploadError } = await supabase.storage
           .from('properties')
-          .upload(filePath, file);
+          .upload(filePath, optimizedFile);
 
         if (uploadError) throw uploadError;
 

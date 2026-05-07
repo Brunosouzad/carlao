@@ -20,6 +20,7 @@ import { generateSlug } from "@/utils/slug";
 import { useCompare } from "@/store/CompareContext";
 import { useFavorites } from "@/store/FavoritesContext";
 import { useToast } from "@/store/ToastContext";
+import { getOptimizedImageUrl } from "@/utils/image";
 
 export default function PropertyDetailsPage() {
   const params = useParams();
@@ -477,7 +478,7 @@ export default function PropertyDetailsPage() {
                       return (
                         <img
                           key={idx}
-                          src={item.url}
+                          src={getOptimizedImageUrl(item.url, 1200, 80) || ""}
                           decoding="async"
                           className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-300 ease-in-out ${isCurrent ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
                           alt={`${property.title} - Foto ${idx + 1}`}

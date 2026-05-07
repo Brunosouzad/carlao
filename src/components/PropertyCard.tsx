@@ -8,6 +8,8 @@ import { useState, useEffect } from "react";
 import { formatPrice } from "@/utils/format";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
+import { memo } from "react";
+import { getOptimizedImageUrl } from "@/utils/image";
 
 const PropertyMap = dynamic(() => import("./PropertyMap"), { ssr: false });
 
@@ -127,7 +129,7 @@ interface PropertyCardProps {
   priority?: boolean;
 }
 
-export default function PropertyCard({ id, code, title, location, price, beds, baths, garages, area, image, images, type, tag, condominium, iptu, city, neighborhood, street, slug, priority: isPriority = false }: PropertyCardProps) {
+export default memo(function PropertyCard({ id, code, title, location, price, beds, baths, garages, area, image, images, type, tag, condominium, iptu, city, neighborhood, street, slug, priority: isPriority = false }: PropertyCardProps) {
   const router = useRouter();
   const [isMapOpen, setIsMapOpen] = useState(false);
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
@@ -207,7 +209,7 @@ export default function PropertyCard({ id, code, title, location, price, beds, b
             return (
               <Image
                 key={idx}
-                src={src || "https://images.unsplash.com/photo-1564013467402-9fef2662880e?q=80&w=1000&auto=format&fit=crop"} 
+                src={getOptimizedImageUrl(src, 600, 75) || "https://images.unsplash.com/photo-1564013467402-9fef2662880e?q=80&w=1000&auto=format&fit=crop"} 
                 alt={`${title} - Foto ${idx + 1}`}
                 fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"

@@ -19,7 +19,7 @@ export default function Navbar() {
       setIsScrolled(window.scrollY > 20);
       if (window.scrollY > 100) setIsMobileMenuOpen(false);
     };
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -34,17 +34,27 @@ export default function Navbar() {
           <Link href="/" className="flex items-center group shrink-0">
             <div className="group-hover:scale-105 transition-transform origin-left">
               {/* Mobile logo - visível apenas abaixo de lg */}
-              <img 
-                src="/logo-carlao.png" 
-                alt="Carlão Imóveis Logo" 
-                className="block lg:hidden h-24 w-auto"
-              />
-              {/* Desktop logo - visível apenas em lg+ (original intocado) */}
-              <img 
-                src="/logo-carlao.png" 
-                alt="Carlão Imóveis Logo" 
-                className="hidden lg:block h-24 lg:h-26 w-auto scale-[1.6] lg:scale-[1.8] origin-left"
-              />
+              <div className="block lg:hidden relative h-20 w-32">
+                <Image 
+                  src="/logo-carlao.png" 
+                  alt="Carlão Imóveis Logo" 
+                  fill
+                  priority
+                  className="object-contain"
+                  sizes="128px"
+                />
+              </div>
+              {/* Desktop logo - visível apenas em lg+ */}
+              <div className="hidden lg:block relative h-24 lg:h-26 w-40 scale-[1.6] lg:scale-[1.8] origin-left">
+                <Image 
+                  src="/logo-carlao.png" 
+                  alt="Carlão Imóveis Logo" 
+                  fill
+                  priority
+                  className="object-contain"
+                  sizes="200px"
+                />
+              </div>
             </div>
           </Link>
         </div>

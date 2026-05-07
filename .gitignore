@@ -39,3 +39,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local data and backups
+*.sql
+*.sql.gz
+/public/galeria/
+/scratch/
+server.js
+*.ps1

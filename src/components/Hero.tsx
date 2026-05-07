@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import SearchWidget from "./SearchWidget";
 import { useSiteSettings } from "@/store/SiteSettingsContext";
+import Image from "next/image";
 
 export default function Hero() {
   const { settings } = useSiteSettings();
@@ -36,15 +37,24 @@ export default function Hero() {
       {/* Background Slider */}
       <div className="absolute inset-0 z-0">
         <AnimatePresence mode="wait">
-          <motion.img
+          <motion.div
             key={`${currentSlide}-${slides[currentSlide]}`}
-            src={slides[currentSlide]}
             initial={{ opacity: 0, scale: 1.1 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 1.5 }}
-            className="absolute inset-0 w-full h-full object-cover"
-          />
+            className="absolute inset-0 w-full h-full"
+          >
+            <Image
+              src={slides[currentSlide]}
+              alt="Hero Slide"
+              fill
+              priority
+              className="object-cover"
+              sizes="100vw"
+              quality={80}
+            />
+          </motion.div>
         </AnimatePresence>
         <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/70 to-black/50" />
 

@@ -192,11 +192,11 @@ export default memo(function PropertyCard({ id, code, title, location, price, be
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
+      viewport={{ once: true, amount: 0.1 }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={() => router.push(propertyUrl)}
-      className="group bg-white rounded-none overflow-hidden border border-slate-200 lg:backdrop-blur-md lg:bg-white/70 hover:border-amber-500/30 transition-all duration-500 shadow-sm relative cursor-pointer"
+      className="group bg-white rounded-none overflow-hidden border border-slate-200 lg:backdrop-blur-md lg:bg-white/70 hover:border-amber-500/30 transition-all duration-500 shadow-sm relative cursor-pointer sm:hover:translate-y-[-4px]"
     >
       <div className="block h-full">
       {/* Image Container */}
@@ -211,13 +211,13 @@ export default memo(function PropertyCard({ id, code, title, location, price, be
             return (
               <Image
                 key={idx}
-                src={getOptimizedImageUrl(src, 400, 60) || "https://images.unsplash.com/photo-1564013467402-9fef2662880e?q=80&w=1000&auto=format&fit=crop"} 
+                src={getOptimizedImageUrl(src, 400, 50) || "https://images.unsplash.com/photo-1564013467402-9fef2662880e?q=80&w=1000&auto=format&fit=crop"} 
                 alt={`${title} - Foto ${idx + 1}`}
                 fill
                 sizes="(max-width: 768px) 100vw, 400px"
-                quality={60}
+                quality={50}
                 priority={isPriority && idx === 0}
-                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ease-in-out group-hover:scale-110 ${isCurrent ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
+                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ease-in-out lg:group-hover:scale-110 ${isCurrent ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
               />
             );
           })}

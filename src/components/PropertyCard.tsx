@@ -423,4 +423,4 @@ export default memo(function PropertyCard({ id, code, title, location, price, be
     </AnimatePresence>
     </>
   );
-}
+});

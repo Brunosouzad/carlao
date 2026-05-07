@@ -14,6 +14,7 @@ import { useSiteSettings } from "@/store/SiteSettingsContext";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import Pagination from "@/components/Pagination";
+import Image from "next/image";
 
 function HomeContent() {
   const { properties, loading } = useProperties();

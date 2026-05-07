@@ -6,6 +6,7 @@ import PropertyCard from "@/components/PropertyCard";
 import { useParams, useRouter } from "next/navigation";
 import { BedDouble, Bath, Square, MapPin, CheckCircle, ArrowLeft, ChevronLeft, ChevronRight, Share2, Heart, Printer, ArrowLeftRight, Check, Phone, Mail } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { Suspense, useState, useEffect, useRef, useMemo } from "react";
 import { Property } from "@/data/properties";
 import { formatPrice, formatDescription } from "@/utils/format";

@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useFavorites } from "@/store/FavoritesContext";
 import { useCompare } from "@/store/CompareContext";
 import { Phone, Menu, X, Heart, ArrowLeftRight } from "lucide-react";
+import Image from "next/image";
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);

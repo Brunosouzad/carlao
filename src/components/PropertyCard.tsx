@@ -194,9 +194,10 @@ export default memo(function PropertyCard({ id, code, title, location, price, be
       viewport={{ once: true }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      onClick={() => router.push(propertyUrl)}
       className="group bg-white rounded-none overflow-hidden border border-slate-200 lg:backdrop-blur-md lg:bg-white/70 hover:border-amber-500/30 transition-all duration-500 shadow-sm relative cursor-pointer"
     >
-      <Link href={propertyUrl} className="block h-full">
+      <div className="block h-full">
       {/* Image Container */}
       <div className="relative h-64 overflow-hidden">
         <div 
@@ -317,7 +318,7 @@ export default memo(function PropertyCard({ id, code, title, location, price, be
           <span className="text-[9px] font-bold uppercase tracking-tighter">{area} m²</span>
         </div>
       </div>
-    </Link>
+      </div>
     </motion.div>
 
     {/* Gallery Modal */}

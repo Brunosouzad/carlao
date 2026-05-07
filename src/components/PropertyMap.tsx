@@ -134,7 +134,6 @@ export default function PropertyMap({ location, title, className = "h-[350px]", 
   return (
     <div className={`${className} rounded-none overflow-hidden border border-slate-200 shadow-sm relative z-0`}>
       <MapContainer
-        key={`${coords[0]}-${coords[1]}`}
         center={coords}
         zoom={15}
         scrollWheelZoom={false}

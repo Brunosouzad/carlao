@@ -86,7 +86,7 @@ export default function Footer() {
               <Link href="#" className="text-white/80 hover:text-secondary text-xs uppercase tracking-wider font-bold transition-colors">Termos</Link>
             </div>
             
-            <a href="https://wa.me/5511997852477?text=Olá,%20gostaria%20de%20saber%20mais%20sobre%20a%20criação%20de%20sites" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 group bg-white hover:bg-slate-50 px-4 py-1.5 rounded-none transition-all shadow-xl border border-transparent hover:border-slate-200">
+            <a href="https://www.webcria.com.br" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 group bg-white hover:bg-slate-50 px-4 py-1.5 rounded-none transition-all shadow-xl border border-transparent hover:border-slate-200">
               <span className="text-slate-500 text-[9px] uppercase tracking-wider font-bold">Desenvolvido por</span>
               <div className="flex items-center gap-0.5">
                 <img src="/webcrialogo.png" alt="Webcria Logo" className="h-5 sm:h-6 -mx-1 group-hover:scale-105 transition-transform" />

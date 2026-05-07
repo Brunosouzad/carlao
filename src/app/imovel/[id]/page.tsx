@@ -742,7 +742,7 @@ export default function PropertyDetailsPage() {
                 
                 <h1 className="text-2xl md:text-4xl font-bold text-primary mb-6">{property.title}</h1>
                 
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 py-6 border-y border-slate-100 mb-8">
+                <div className="hidden md:grid md:grid-cols-4 gap-3 md:gap-4 py-6 border-y border-slate-100 mb-8">
                   {features.map((feature, idx) => {
                     const Icon = feature.icon;
                     return (

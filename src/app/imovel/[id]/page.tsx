@@ -398,43 +398,168 @@ export default function PropertyDetailsPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       
-      <div className="pt-44 md:pt-48 pb-24 bg-slate-50 min-h-screen overflow-x-hidden">
-        <div className="w-full max-w-7xl mx-auto px-8 md:px-8">
-          
-          <button onClick={() => router.back()} className="flex items-center gap-2 text-slate-500 font-bold mb-6 hover:text-primary transition-colors cursor-pointer">
+      {/* Lightbox - Shared between mobile and desktop */}
+      {lightboxOpen && currentMedia.type === 'image' && (
+        <div 
+          className="fixed inset-0 z-[9999] bg-black/95 flex items-center justify-center p-4"
+          onClick={() => setLightboxOpen(false)}
+        >
+          <button className="absolute top-4 right-4 text-white/80 hover:text-white text-4xl font-thin leading-none z-10" onClick={() => setLightboxOpen(false)}>✕</button>
+          <button onClick={(e) => { e.stopPropagation(); prevMedia(); }} className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center z-10">
+            <ChevronLeft size={28} />
+          </button>
+          <img 
+            src={currentMedia?.url || undefined} 
+            alt={property.title}
+            loading="lazy"
+            decoding="async"
+            className="max-w-full max-h-[90vh] object-contain rounded-xl shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          />
+          <button onClick={(e) => { e.stopPropagation(); nextMedia(); }} className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center z-10">
+            <ChevronRight size={28} />
+          </button>
+          <span className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white/60 text-sm">{currentImageIndex + 1} / {mediaItems.length}</span>
+        </div>
+      )}
+
+      {/* Mobile-only Header & Gallery */}
+      <div className="md:hidden pt-[116px] bg-slate-50">
+        <div className="relative w-full bg-black" style={{ paddingTop: '75%' }}>
+          {/* Back button overlay */}
+          <button
+            onClick={() => router.back()}
+            className="absolute top-4 left-4 z-20 w-10 h-10 rounded-full bg-white/90 shadow-md flex items-center justify-center text-slate-700"
+          >
+            <ArrowLeft size={20} />
+          </button>
+
+          {/* Action buttons overlay top-right */}
+          <div className="absolute top-4 right-4 z-20 flex gap-2">
+            <button onClick={handleShare} className="w-10 h-10 rounded-full bg-white/90 shadow-md flex items-center justify-center text-slate-700">
+              <Share2 size={18} />
+            </button>
+            <button onClick={toggleFav} className={`w-10 h-10 rounded-full bg-white/90 shadow-md flex items-center justify-center transition-colors ${isFav ? 'text-red-500' : 'text-slate-700'}`}>
+              <Heart size={18} fill={isFav ? 'currentColor' : 'none'} />
+            </button>
+          </div>
+
+          {/* Main image */}
+          <div className="absolute inset-0 overflow-hidden">
+            {currentMedia.type === 'video' ? (
+              <iframe
+                key="video"
+                src={currentMedia.url}
+                className="absolute inset-0 w-full h-full"
+                allow="autoplay"
+              />
+            ) : (
+              <div 
+                className="w-full h-full cursor-zoom-in relative bg-black"
+                onClick={() => setLightboxOpen(true)}
+              >
+                {mediaItems.map((item, idx) => {
+                  if (item.type !== 'image') return null;
+                  const isCurrent = idx === currentImageIndex;
+                  const isAdjacent = 
+                    idx === (currentImageIndex + 1) % mediaItems.length || 
+                    idx === (currentImageIndex - 1 + mediaItems.length) % mediaItems.length;
+                  
+                  if (!isCurrent && !isAdjacent) return null;
+
+                  return (
+                    <img
+                      key={idx}
+                      src={getOptimizedImageUrl(item.url, 800, 75) || ""}
+                      decoding="async"
+                      className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ease-in-out ${isCurrent ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
+                      alt={`${property.title} - Foto ${idx + 1}`}
+                    />
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          {/* Nav arrows */}
+          {mediaItems.length > 1 && (
+            <>
+              <button onClick={prevMedia} className="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white/80 flex items-center justify-center shadow text-slate-700">
+                <ChevronLeft size={22} />
+              </button>
+              <button onClick={nextMedia} className="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white/80 flex items-center justify-center shadow text-slate-700">
+                <ChevronRight size={22} />
+              </button>
+            </>
+          )}
+
+          {/* Photo count + Ver todos bottom bar */}
+          <div className="absolute bottom-0 inset-x-0 z-10 flex items-center justify-between px-4 py-3 bg-gradient-to-t from-black/70 to-transparent">
+            <span className="text-white text-sm font-semibold flex items-center gap-1.5">
+              <span className="text-base">📷</span> {mediaItems.filter(m => m.type === 'image').length} fotos
+            </span>
+            <button onClick={() => setLightboxOpen(true)} className="text-white text-sm font-bold underline underline-offset-2">
+              Ver todos →
+            </button>
+          </div>
+
+          {/* Slide dots */}
+          {mediaItems.length > 1 && mediaItems.length <= 10 && (
+            <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 flex gap-1">
+              {mediaItems.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setCurrentImageIndex(i)}
+                  className={`w-1.5 h-1.5 rounded-full transition-all ${i === currentImageIndex ? 'bg-white w-4' : 'bg-white/50'}`}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Mobile property info card */}
+        <div className="px-4 pt-4 pb-2 bg-white border-b border-slate-100">
+          <div className="flex items-center gap-2 mb-2 flex-wrap">
+            <span className="px-2 py-0.5 text-[10px] font-bold uppercase bg-red-600 text-white rounded">{property.type}</span>
+            {property.tag && <span className="px-2 py-0.5 text-[10px] font-bold uppercase bg-amber-500 text-white rounded">{property.tag}</span>}
+            <span className="text-[10px] text-slate-400 font-mono ml-auto">CÓD: {property.code}</span>
+          </div>
+          <h1 className="text-xl font-bold text-primary mb-1 leading-tight">{property.title}</h1>
+          <p className="text-slate-500 text-sm flex items-center gap-1 mb-3">
+            <MapPin size={13} className="text-secondary shrink-0" />
+            {property.location}
+          </p>
+          <p className="text-2xl font-black text-accent-blue tracking-tight">
+            {formatPrice(property.price)}
+            {property.type === 'Aluguel' && formatPrice(property.price) !== 'Consulte-nos' && <span className="text-sm font-normal text-slate-400">/mês</span>}
+          </p>
+        </div>
+
+        {/* Mobile quick specs */}
+        <div className="grid grid-cols-4 bg-slate-50 border-b border-slate-100">
+          {features.map(({ label, value, icon: Icon }) => (
+            <div key={label} className="flex flex-col items-center py-3 gap-1">
+              <Icon size={18} className="text-slate-400" />
+              <span className="text-xs font-bold text-primary">{value}</span>
+              <span className="text-[9px] uppercase tracking-wide text-slate-400">{label}</span>
+            </div>
+          ))}
+        </div>
+
+      </div>
+
+      {/* Main Desktop Layout + Shared Content Below Gallery */}
+      <div className="pt-0 md:pt-48 pb-24 bg-slate-50 min-h-screen overflow-x-hidden">
+        <div className="w-full max-w-7xl mx-auto px-4 md:px-8">
+          <button onClick={() => router.back()} className="hidden md:flex items-center gap-2 text-slate-500 font-bold mb-6 hover:text-primary transition-colors cursor-pointer">
             <ArrowLeft size={20} /> Voltar
           </button>
- 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start mt-6 md:mt-0">
             {/* Left Column (Images & Details) */}
             <div className="lg:col-span-2 space-y-8">
-              
-              {/* Lightbox */}
-              {lightboxOpen && currentMedia.type === 'image' && (
-                <div 
-                  className="fixed inset-0 z-[9999] bg-black/95 flex items-center justify-center p-4"
-                  onClick={() => setLightboxOpen(false)}
-                >
-                  <button className="absolute top-4 right-4 text-white/80 hover:text-white text-4xl font-thin leading-none z-10" onClick={() => setLightboxOpen(false)}>✕</button>
-                  <button onClick={(e) => { e.stopPropagation(); prevMedia(); }} className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center z-10">
-                    <ChevronLeft size={28} />
-                  </button>
-                  <img 
-                    src={currentMedia?.url || undefined} 
-                    alt={property.title}
-                    loading="lazy"
-                    decoding="async"
-                    className="max-w-full max-h-[90vh] object-contain rounded-xl shadow-2xl"
-                    onClick={(e) => e.stopPropagation()}
-                  />
-                  <button onClick={(e) => { e.stopPropagation(); nextMedia(); }} className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center z-10">
-                    <ChevronRight size={28} />
-                  </button>
-                  <span className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white/60 text-sm">{currentImageIndex + 1} / {mediaItems.length}</span>
-                </div>
-              )}
 
-              <div className="w-full aspect-[4/3] md:aspect-[16/9] max-h-[70vh] rounded-none overflow-hidden shadow-lg relative group bg-[#f8f9fa]">
+              {/* Desktop-only Gallery */}
+              <div className="hidden md:block w-full aspect-[4/3] md:aspect-[16/9] max-h-[70vh] rounded-none overflow-hidden shadow-lg relative group bg-[#f8f9fa]">
                 {currentMedia.type === 'video' ? (
                   !isVideoPlaying ? (
                     <div 
@@ -516,8 +641,8 @@ export default function PropertyDetailsPage() {
 
               </div>
 
-              {/* Thumbnails */}
-              <div className="relative px-12 md:px-16">
+              {/* Desktop Thumbnails */}
+              <div className="hidden md:block relative px-12 md:px-16">
                 <button 
                   onClick={() => scrollThumbnails('left')}
                   className="absolute left-0 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white shadow-md text-slate-700 flex items-center justify-center hover:bg-slate-50 hover:text-primary z-10 cursor-pointer border border-slate-100"
@@ -862,6 +987,7 @@ export default function PropertyDetailsPage() {
           Ligar
         </a>
       </div>
+
     </>
   );
 }

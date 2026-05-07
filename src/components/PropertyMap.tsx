@@ -34,8 +34,10 @@ export default function PropertyMap({ location, title, className = "h-[350px]", 
   const [coords, setCoords] = useState<[number, number] | null>(null);
   const [loading, setLoading] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
+    setIsMounted(true);
     setIsMobile(window.innerWidth < 768);
     
     // Geocode the address using Nominatim (OpenStreetMap free geocoder)
@@ -107,6 +109,8 @@ export default function PropertyMap({ location, title, className = "h-[350px]", 
     };
     geocode();
   }, [location, street, neighborhood, city]);
+
+  if (!isMounted) return null;
 
   if (loading) {
     return (

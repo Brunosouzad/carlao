@@ -18,12 +18,14 @@ export async function generateMetadata(
   parent: ResolvingMetadata
 ): Promise<Metadata> {
   const { id } = await params
+  const decodedId = decodeURIComponent(id);
+
   let property = INITIAL_PROPERTIES.find(p => {
     const pSlug = generateSlug(p);
     return (
-      pSlug.toLowerCase() === id.toLowerCase() || 
-      String(p.id) === String(id) ||
-      p.code?.toLowerCase() === id.toLowerCase()
+      pSlug.toLowerCase() === decodedId.toLowerCase() || 
+      String(p.id) === String(decodedId) ||
+      p.code?.toLowerCase() === decodedId.toLowerCase()
     );
   })
 
@@ -33,7 +35,7 @@ export async function generateMetadata(
       const { data } = await supabase
         .from('properties')
         .select('*')
-        .or(`code.ilike.${id},id.eq.${id}`);
+        .or(`code.ilike.${decodedId},id.eq.${decodedId}`);
       
       if (data && data.length > 0) {
         const p = data[0];
@@ -51,7 +53,7 @@ export async function generateMetadata(
 
   // Se ainda não encontrou, tenta extrair o código do slug
   if (!property) {
-    const slugCodeMatch = id.match(/-([a-zA-Z0-9-]+)$/);
+    const slugCodeMatch = decodedId.match(/-([a-zA-Z0-9-]+)$/);
     if (slugCodeMatch) {
       const extractedCode = slugCodeMatch[1];
       try {
@@ -72,7 +74,6 @@ export async function generateMetadata(
       } catch (e) {}
     }
   }
-
 
   if (!property) {
     return {

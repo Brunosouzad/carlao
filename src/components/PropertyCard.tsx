@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { BedDouble, Bath, Square, MapPin, ArrowUpRight, X, Camera, ChevronLeft, ChevronRight, Heart, ArrowLeftRight } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { formatPrice } from "@/utils/format";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
@@ -159,32 +159,15 @@ export default memo(function PropertyCard({ id, code, title, location, price, be
     setCurrentImageIndex((prev) => (prev - 1 + cardImages.length) % cardImages.length);
   };
 
-  const [isHovered, setIsHovered] = useState(false);
-  const [renderedIndexes, setRenderedIndexes] = useState<number[]>([0]);
-
-  // Preload next and previous images via Next.js when hovered to eliminate gallery delay
-  useEffect(() => {
-    setRenderedIndexes(prev => {
-      const nextSet = new Set(prev);
-      nextSet.add(currentImageIndex);
-      
-      if (isHovered && cardImages.length > 1) {
-        nextSet.add((currentImageIndex + 1) % cardImages.length);
-        nextSet.add((currentImageIndex - 1 + cardImages.length) % cardImages.length);
-      }
-      
-      if (nextSet.size !== prev.length) {
-        return Array.from(nextSet);
-      }
-      return prev;
-    });
-  }, [currentImageIndex, isHovered, cardImages.length]);
+  // Cap card images at 5 to avoid downloading the entire gallery upfront
+  const previewImages = useMemo(() => cardImages.slice(0, 5), [cardImages]);
 
   const variants = {
     enter: { opacity: 0 },
     center: { zIndex: 1, opacity: 1 },
     exit: { zIndex: 0, opacity: 0 }
   };
+
 
 
   return (
@@ -205,28 +188,23 @@ export default memo(function PropertyCard({ id, code, title, location, price, be
           className="absolute inset-0 z-0 w-full h-full cursor-zoom-in relative overflow-hidden bg-slate-200"
           onClick={(e) => { e.stopPropagation(); setIsGalleryOpen(true); }}
         >
-          {cardImages.map((src, idx) => {
-            if (!renderedIndexes.includes(idx)) return null;
+          {/* Render all images eagerly - hidden by opacity, instant switching like ZAP/VivaReal */}
+          {previewImages.map((src, idx) => {
             const isCurrent = idx === currentImageIndex;
             return (
               <Image
-                key={idx}
+                key={src}
                 src={getOptimizedImageUrl(src, 400, 50) || "https://images.unsplash.com/photo-1564013467402-9fef2662880e?q=80&w=1000&auto=format&fit=crop"} 
                 alt={`${title} - Foto ${idx + 1}`}
                 fill
                 sizes="(max-width: 768px) 100vw, 400px"
                 quality={50}
                 priority={isPriority && idx === 0}
-                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ease-in-out lg:group-hover:scale-110 ${isCurrent ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
+                className={`absolute inset-0 w-full h-full object-cover lg:group-hover:scale-110 transition-all duration-300 ease-in-out ${isCurrent ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
               />
             );
           })}
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 to-transparent opacity-80 z-20 pointer-events-none" />
-          
-          {/* Loading Indicator for Gallery */}
-          <div className="absolute inset-0 flex items-center justify-center z-0 opacity-20">
-            <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-          </div>
         </div>
         
         {/* Navigation Arrows */}

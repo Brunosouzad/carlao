@@ -74,6 +74,8 @@ export default function PropertyDetailsPage() {
   const [showCopyToast, setShowCopyToast] = useState(false);
   const [recommendTab, setRecommendTab] = useState<'recomendado' | 'tipo' | 'localizacao'>('recomendado');
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
 
   // Form State
   const [formData, setFormData] = useState({
@@ -274,6 +276,28 @@ export default function PropertyDetailsPage() {
     setCurrentImageIndex((prev) => (prev - 1 + mediaItems.length) % mediaItems.length);
   };
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > 50;
+    const isRightSwipe = distance < -50;
+    
+    if (isLeftSwipe) {
+      nextMedia();
+    } else if (isRightSwipe) {
+      prevMedia();
+    }
+  };
+
   const scrollThumbnails = (direction: 'left' | 'right') => {
     if (scrollContainerRef.current) {
       const scrollAmount = 200;
@@ -424,7 +448,7 @@ export default function PropertyDetailsPage() {
       )}
 
       {/* Mobile-only Header & Gallery */}
-      <div className="md:hidden pt-[116px] bg-slate-50">
+      <div className="md:hidden pt-[136px] bg-slate-50">
         <div className="relative w-full bg-black" style={{ paddingTop: '75%' }}>
           {/* Back button overlay */}
           <button
@@ -457,6 +481,9 @@ export default function PropertyDetailsPage() {
               <div 
                 className="w-full h-full cursor-zoom-in relative bg-black"
                 onClick={() => setLightboxOpen(true)}
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
               >
                 {mediaItems.map((item, idx) => {
                   if (item.type !== 'image') return null;

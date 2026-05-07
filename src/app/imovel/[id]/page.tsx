@@ -488,11 +488,6 @@ export default function PropertyDetailsPage() {
                 {mediaItems.map((item, idx) => {
                   if (item.type !== 'image') return null;
                   const isCurrent = idx === currentImageIndex;
-                  const isAdjacent = 
-                    idx === (currentImageIndex + 1) % mediaItems.length || 
-                    idx === (currentImageIndex - 1 + mediaItems.length) % mediaItems.length;
-                  
-                  if (!isCurrent && !isAdjacent) return null;
 
                   return (
                     <img
@@ -586,7 +581,7 @@ export default function PropertyDetailsPage() {
             <div className="lg:col-span-2 space-y-8">
 
               {/* Desktop-only Gallery */}
-              <div className="hidden md:block w-full aspect-[4/3] md:aspect-[16/9] max-h-[70vh] rounded-none overflow-hidden shadow-lg relative group bg-[#f8f9fa]">
+              <div className="hidden md:block w-full aspect-[4/3] md:aspect-[16/9] max-h-[70vh] rounded-none overflow-hidden shadow-lg relative group bg-black">
                 {currentMedia.type === 'video' ? (
                   !isVideoPlaying ? (
                     <div 
@@ -615,25 +610,20 @@ export default function PropertyDetailsPage() {
                   )
                 ) : (
                   <div 
-                    className="w-full h-full cursor-zoom-in relative bg-[#f8f9fa]"
+                    className="w-full h-full cursor-zoom-in relative bg-black"
                     onClick={() => setLightboxOpen(true)}
                   >
                     {mediaItems.map((item, idx) => {
                       if (item.type !== 'image') return null;
                       const isCurrent = idx === currentImageIndex;
-                      // Only render current, next, and previous to save DOM nodes
-                      const isAdjacent = 
-                        idx === (currentImageIndex + 1) % mediaItems.length || 
-                        idx === (currentImageIndex - 1 + mediaItems.length) % mediaItems.length;
-                      
-                      if (!isCurrent && !isAdjacent) return null;
 
                       return (
                         <img
                           key={idx}
                           src={getOptimizedImageUrl(item.url, 1200, 80) || ""}
                           decoding="async"
-                          className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-300 ease-in-out ${isCurrent ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
+                          loading="lazy"
+                          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ease-in-out ${isCurrent ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
                           alt={`${property.title} - Foto ${idx + 1}`}
                         />
                       );

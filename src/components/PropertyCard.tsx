@@ -136,12 +136,13 @@ export default memo(function PropertyCard({ id, code, title, location, price, be
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [direction, setDirection] = useState(0);
 
-  const cardImages = [image, ...(images || [])].filter(img => img && img.trim() !== "");
-  
-  // If no images, provide a fallback
-  if (cardImages.length === 0) {
-    cardImages.push("https://images.unsplash.com/photo-1564013467402-9fef2662880e?q=80&w=1000&auto=format&fit=crop");
-  }
+  const cardImages = useMemo(() => {
+    const imgs = [image, ...(images || [])].filter(img => img && img.trim() !== "");
+    if (imgs.length === 0) {
+      return ["https://images.unsplash.com/photo-1564013467402-9fef2662880e?q=80&w=1000&auto=format&fit=crop"];
+    }
+    return imgs;
+  }, [image, images]);
 
   
   const propertyUrl = slug ? `/imovel/${slug}` : `/imovel/${id}`;
@@ -210,17 +211,22 @@ export default memo(function PropertyCard({ id, code, title, location, price, be
             return (
               <Image
                 key={idx}
-                src={getOptimizedImageUrl(src, 600, 75) || "https://images.unsplash.com/photo-1564013467402-9fef2662880e?q=80&w=1000&auto=format&fit=crop"} 
+                src={getOptimizedImageUrl(src, 400, 60) || "https://images.unsplash.com/photo-1564013467402-9fef2662880e?q=80&w=1000&auto=format&fit=crop"} 
                 alt={`${title} - Foto ${idx + 1}`}
                 fill
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                quality={70}
+                sizes="(max-width: 768px) 100vw, 400px"
+                quality={60}
                 priority={isPriority && idx === 0}
                 className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ease-in-out group-hover:scale-110 ${isCurrent ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
               />
             );
           })}
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 to-transparent opacity-80 z-20 pointer-events-none" />
+          
+          {/* Loading Indicator for Gallery */}
+          <div className="absolute inset-0 flex items-center justify-center z-0 opacity-20">
+            <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+          </div>
         </div>
         
         {/* Navigation Arrows */}

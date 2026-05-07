@@ -132,9 +132,7 @@ interface PropertyCardProps {
 export default memo(function PropertyCard({ id, code, title, location, price, beds, baths, garages, area, image, images, type, tag, condominium, iptu, city, neighborhood, street, slug, priority: isPriority = false }: PropertyCardProps) {
   const router = useRouter();
   const [isMapOpen, setIsMapOpen] = useState(false);
-  const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [direction, setDirection] = useState(0);
 
   const cardImages = useMemo(() => {
     const imgs = [image, ...(images || [])].filter(img => img && img.trim() !== "");
@@ -148,26 +146,20 @@ export default memo(function PropertyCard({ id, code, title, location, price, be
   const propertyUrl = slug ? `/imovel/${slug}` : `/imovel/${id}`;
 
   const nextImage = (e: React.MouseEvent) => {
+    e.stopPropagation();
     e.preventDefault();
-    setDirection(1);
-    setCurrentImageIndex((prev) => (prev + 1) % cardImages.length);
+    setCurrentImageIndex((prev) => Math.min(prev + 1, previewImages.length - 1));
   };
 
   const prevImage = (e: React.MouseEvent) => {
+    e.stopPropagation();
     e.preventDefault();
-    setDirection(-1);
-    setCurrentImageIndex((prev) => (prev - 1 + cardImages.length) % cardImages.length);
+    setCurrentImageIndex((prev) => Math.max(prev - 1, 0));
   };
+
 
   // Cap card images at 5 to avoid downloading the entire gallery upfront
   const previewImages = useMemo(() => cardImages.slice(0, 5), [cardImages]);
-
-  const variants = {
-    enter: { opacity: 0 },
-    center: { zIndex: 1, opacity: 1 },
-    exit: { zIndex: 0, opacity: 0 }
-  };
-
 
 
   return (
@@ -183,10 +175,9 @@ export default memo(function PropertyCard({ id, code, title, location, price, be
       {/* Image Container */}
       <div className="relative h-64 overflow-hidden">
         <div 
-          className="absolute inset-0 z-0 w-full h-full cursor-zoom-in relative overflow-hidden bg-slate-200"
-          onClick={(e) => { e.stopPropagation(); setIsGalleryOpen(true); }}
+          className="absolute inset-0 z-0 w-full h-full cursor-pointer relative overflow-hidden bg-slate-200"
         >
-          {/* Render all images eagerly - hidden by opacity, instant switching like ZAP/VivaReal */}
+          {/* Render all 5 images eagerly - instant switching like ZAP/VivaReal */}
           {previewImages.map((src, idx) => {
             const isCurrent = idx === currentImageIndex;
             return (
@@ -203,6 +194,17 @@ export default memo(function PropertyCard({ id, code, title, location, price, be
             );
           })}
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 to-transparent opacity-80 z-20 pointer-events-none" />
+
+          {/* "Ver mais" overlay on last slide when there are more than 5 images */}
+          {cardImages.length > 5 && currentImageIndex === previewImages.length - 1 && (
+            <div className="absolute inset-0 z-30 flex items-center justify-center bg-black/60 backdrop-blur-[2px]">
+              <div className="text-white text-center">
+                <Camera size={28} className="mx-auto mb-2 opacity-80" />
+                <p className="font-bold text-base">Ver +{cardImages.length - 5} fotos</p>
+                <p className="text-xs text-white/70 mt-1">Clique para abrir o imóvel</p>
+              </div>
+            </div>
+          )}
         </div>
         
         {/* Navigation Arrows */}
@@ -303,64 +305,6 @@ export default memo(function PropertyCard({ id, code, title, location, price, be
       </div>
     </motion.div>
 
-    {/* Gallery Modal */}
-    <AnimatePresence>
-      {isGalleryOpen && (
-        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setIsGalleryOpen(false)}
-            className="absolute inset-0 bg-slate-950/95 cursor-pointer backdrop-blur-sm"
-          />
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            className="relative w-auto h-auto max-w-[95vw] max-h-[90vh] rounded-2xl overflow-hidden shadow-2xl z-10 flex items-center justify-center bg-black/20"
-          >
-            <div 
-              className="relative w-full max-w-5xl max-h-[90vh] flex items-center justify-center overflow-hidden"
-            >
-              <img 
-                key={currentImageIndex}
-                src={cardImages[currentImageIndex] || undefined} 
-                alt={title}
-                loading="lazy"
-                decoding="async"
-                className="max-w-full max-h-[90vh] object-contain select-none"
-              />
-            </div>
-            
-            <button 
-              onClick={() => setIsGalleryOpen(false)}
-              className="absolute top-4 right-4 w-10 h-10 flex items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/80 transition-colors z-20 cursor-pointer"
-            >
-              <X size={24} />
-            </button>
-
-            <button 
-              onClick={prevImage} 
-              className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/80 transition-colors z-20 cursor-pointer"
-            >
-              <ChevronLeft size={32} />
-            </button>
-
-            <button 
-              onClick={nextImage} 
-              className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/80 transition-colors z-20 cursor-pointer"
-            >
-              <ChevronRight size={32} />
-            </button>
-
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 bg-black/50 backdrop-blur-md rounded-full text-white text-sm font-bold tracking-widest z-20 pointer-events-none">
-              {currentImageIndex + 1} / {cardImages.length}
-            </div>
-          </motion.div>
-        </div>
-      )}
-    </AnimatePresence>
 
     {/* Map Modal */}
     <AnimatePresence>

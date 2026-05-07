@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { BedDouble, Bath, Square, MapPin, ArrowUpRight, X, Camera, ChevronLeft, ChevronRight, Heart, ArrowLeftRight } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { formatPrice } from "@/utils/format";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";

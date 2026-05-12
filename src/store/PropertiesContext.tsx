@@ -8,6 +8,7 @@ import { generateSlug } from "@/utils/slug";
 
 interface PropertiesContextType {
   properties: Property[];
+  activeProperties: Property[];
   loading: boolean;
   addProperty: (property: Omit<Property, "id">) => Promise<void>;
   updateProperty: (property: Property) => Promise<void>;
@@ -17,6 +18,7 @@ interface PropertiesContextType {
 
 const PropertiesContext = createContext<PropertiesContextType>({
   properties: INITIAL_PROPERTIES,
+  activeProperties: INITIAL_PROPERTIES.filter(p => p.active !== false),
   loading: false,
   addProperty: async () => {},
   updateProperty: async () => {},
@@ -27,6 +29,7 @@ const PropertiesContext = createContext<PropertiesContextType>({
 export function PropertiesProvider({ children }: { children: React.ReactNode }) {
   // Inicializamos com o que houver no localStorage para ser instantâneo
   const [properties, setProperties] = useState<Property[]>([]);
+  const [activeProperties, setActiveProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
   const toast = useToast();
 
@@ -60,6 +63,7 @@ export function PropertiesProvider({ children }: { children: React.ReactNode }) 
             return { ...mapped, slug: generateSlug(mapped) };
           });
           setProperties(mappedData as Property[]);
+          setActiveProperties(mappedData.filter((p: Property) => p.active !== false) as Property[]);
           // Salva no localStorage para o próximo carregamento ser instantâneo
           localStorage.setItem("@carlao-imoveis:properties", JSON.stringify(mappedData));
         }
@@ -82,6 +86,7 @@ export function PropertiesProvider({ children }: { children: React.ReactNode }) 
       try {
         const parsed = JSON.parse(stored).map((p: Property) => ({ ...p, slug: generateSlug(p) }));
         setProperties(parsed);
+        setActiveProperties(parsed.filter((p: Property) => p.active !== false));
         setLoading(false);
       } catch (e) {
         setProperties(INITIAL_PROPERTIES);
@@ -98,6 +103,7 @@ export function PropertiesProvider({ children }: { children: React.ReactNode }) 
       try {
         const parsed = JSON.parse(stored);
         setProperties(parsed);
+        setActiveProperties(parsed.filter((p: Property) => p.active !== false));
         setLoading(false); // Já temos dados para mostrar
         // Busca novos dados em silêncio
         fetchProperties(true);
@@ -150,6 +156,9 @@ export function PropertiesProvider({ children }: { children: React.ReactNode }) 
 
           const newPropWithSlug = { ...mappedProp, slug: generateSlug(mappedProp) };
           setProperties(prev => [newPropWithSlug, ...prev]);
+          if (newPropWithSlug.active !== false) {
+            setActiveProperties(prev => [newPropWithSlug, ...prev]);
+          }
           toast.success("Sucesso", "Imóvel cadastrado com sucesso!");
         }
       } else {
@@ -157,6 +166,7 @@ export function PropertiesProvider({ children }: { children: React.ReactNode }) 
         const newPropertyWithSlug = { ...newProperty, slug: generateSlug(newProperty) };
         const newProperties = [newPropertyWithSlug, ...properties];
         setProperties(newProperties);
+        setActiveProperties(newProperties.filter(p => p.active !== false));
         localStorage.setItem("@carlao-imoveis:properties", JSON.stringify(newProperties));
         toast.success("Sucesso", "Imóvel salvo localmente (Supabase não configurado).");
       }
@@ -193,12 +203,15 @@ export function PropertiesProvider({ children }: { children: React.ReactNode }) 
           throw new Error(error.message);
         }
         
-        setProperties(prev => prev.map(p => p.id === updatedProperty.id ? updatedProperty : p));
+        const updatedList = properties.map(p => p.id === updatedProperty.id ? updatedProperty : p);
+        setProperties(updatedList);
+        setActiveProperties(updatedList.filter(p => p.active !== false));
         toast.success("Sucesso", "Imóvel atualizado com sucesso!");
       } else {
         const updatedWithSlug = { ...updatedProperty, slug: generateSlug(updatedProperty) };
         const newProperties = properties.map((p) => (p.id === updatedProperty.id ? updatedWithSlug : p));
         setProperties(newProperties);
+        setActiveProperties(newProperties.filter(p => p.active !== false));
         localStorage.setItem("@carlao-imoveis:properties", JSON.stringify(newProperties));
         toast.success("Sucesso", "Imóvel atualizado localmente.");
       }
@@ -217,10 +230,13 @@ export function PropertiesProvider({ children }: { children: React.ReactNode }) 
           .eq('id', id);
 
         if (error) throw error;
-        setProperties(prev => prev.filter(p => p.id !== id));
+        const filtered = properties.filter(p => p.id !== id);
+        setProperties(filtered);
+        setActiveProperties(filtered.filter(p => p.active !== false));
       } else {
         const newProperties = properties.filter((p) => (p.id !== id));
         setProperties(newProperties);
+        setActiveProperties(newProperties.filter(p => p.active !== false));
         localStorage.setItem("@carlao-imoveis:properties", JSON.stringify(newProperties));
       }
     } catch (e) {
@@ -232,6 +248,7 @@ export function PropertiesProvider({ children }: { children: React.ReactNode }) 
     <PropertiesContext.Provider
       value={{ 
         properties, 
+        activeProperties,
         loading, 
         addProperty, 
         updateProperty, 

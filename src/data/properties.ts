@@ -25,6 +25,7 @@ export interface Property {
   tag?: string;
   description?: string;
   videoUrl?: string;
+  active?: boolean;
   slug?: string;
 }
 

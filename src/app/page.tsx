@@ -17,7 +17,7 @@ import Pagination from "@/components/Pagination";
 import Image from "next/image";
 
 function HomeContent() {
-  const { properties, loading } = useProperties();
+  const { activeProperties: properties, loading } = useProperties();
   const { settings } = useSiteSettings();
   const searchParams = useSearchParams();
   const query = searchParams.get('q');

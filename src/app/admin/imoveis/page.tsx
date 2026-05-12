@@ -104,6 +104,7 @@ export default function AdminImoveis() {
               <th className="px-6 py-4 text-sm font-semibold text-slate-600">Foto</th>
               <th className="px-6 py-4 text-sm font-semibold text-slate-600">Código / Título</th>
               <th className="px-6 py-4 text-sm font-semibold text-slate-600">Tipo</th>
+              <th className="px-6 py-4 text-sm font-semibold text-slate-600 text-center">Status</th>
               <th className="px-6 py-4 text-sm font-semibold text-slate-600">Preço</th>
               <th className="px-6 py-4 text-sm font-semibold text-slate-600 text-right">Ações</th>
             </tr>
@@ -125,6 +126,13 @@ export default function AdminImoveis() {
                     prop.type === 'Venda' ? 'bg-amber-100 text-amber-800' : 'bg-blue-100 text-blue-800'
                   }`}>
                     {prop.type}
+                  </span>
+                </td>
+                <td className="px-6 py-4 text-center">
+                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                    prop.active !== false ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+                  }`}>
+                    {prop.active !== false ? 'Ativo' : 'Inativo'}
                   </span>
                 </td>
                 <td className="px-6 py-4 text-sm text-slate-600 font-medium">

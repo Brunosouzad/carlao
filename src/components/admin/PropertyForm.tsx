@@ -115,6 +115,7 @@ export default function PropertyForm({ property, mode, onSuccess }: PropertyForm
     tag: property?.tag || "",
     description: property?.description || "",
     videoUrl: property?.videoUrl || "",
+    active: property?.active ?? true,
   });
 
   const [newImageUrl, setNewImageUrl] = useState("");
@@ -350,6 +351,21 @@ export default function PropertyForm({ property, mode, onSuccess }: PropertyForm
                     <option value="Venda">Venda</option>
                     <option value="Aluguel">Aluguel</option>
                   </select>
+                </div>
+                <div>
+                  <label className={labelClass}>Status de Exibição</label>
+                  <button
+                    type="button"
+                    onClick={() => set("active", !form.active)}
+                    className={`w-full h-[46px] rounded-xl flex items-center justify-center gap-2 font-bold text-xs uppercase tracking-widest transition-all border ${
+                      form.active 
+                        ? "bg-green-50 border-green-200 text-green-700" 
+                        : "bg-red-50 border-red-200 text-red-700"
+                    }`}
+                  >
+                    <div className={`w-2 h-2 rounded-full ${form.active ? "bg-green-500 animate-pulse" : "bg-red-500"}`} />
+                    {form.active ? "Imóvel Ativo" : "Imóvel Inativo"}
+                  </button>
                 </div>
                 <div>
                   <label className={labelClass}>Categoria *</label>

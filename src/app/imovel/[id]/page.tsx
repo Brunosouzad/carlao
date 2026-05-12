@@ -229,14 +229,16 @@ export default function PropertyDetailsPage() {
     );
   }
 
-  if (!property) {
+  if (!property || property.active === false) {
     return (
       <>
         <Navbar />
         <div className="pt-32 pb-24 text-center min-h-[60vh] flex flex-col justify-center items-center">
-          <h2 className="text-2xl font-bold text-primary mb-4">Imóvel não encontrado.</h2>
-          <button onClick={() => router.back()} className="text-secondary font-bold hover:underline">
-            Voltar
+          <h2 className="text-2xl font-bold text-primary mb-4">
+            {!property ? "Imóvel não encontrado." : "Este imóvel não está mais disponível."}
+          </h2>
+          <button onClick={() => router.push('/')} className="text-secondary font-bold hover:underline">
+            Voltar para a página inicial
           </button>
         </div>
       </>

@@ -13,7 +13,7 @@ import { X } from "lucide-react";
 function PesquisaContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const { properties, loading } = useProperties();
+  const { activeProperties: properties, loading } = useProperties();
   const [sortBy, setSortBy] = useState<SortOption>("newest");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 12;

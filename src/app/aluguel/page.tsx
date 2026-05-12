@@ -10,7 +10,7 @@ import Pagination from "@/components/Pagination";
 import { useProperties } from "@/store/PropertiesContext";
 
 export default function AluguelPage() {
-  const { properties, loading } = useProperties();
+  const { activeProperties: properties, loading } = useProperties();
   const [sortBy, setSortBy] = useState<SortOption>("newest");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 12;

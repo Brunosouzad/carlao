@@ -10,10 +10,31 @@ import { useState } from "react";
 export default function AdminImoveis() {
   const { properties, deleteProperty } = useProperties();
   const [confirmModal, setConfirmModal] = useState<{isOpen: boolean, id: string | null}>({ isOpen: false, id: null });
+  
+  // Estados dos filtros
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterType, setFilterType] = useState("Todos");
+  const [filterCategory, setFilterCategory] = useState("Todas");
 
   const handleDelete = (id: string) => {
     deleteProperty(id);
   };
+
+  // Lógica de filtragem
+  const filteredProperties = properties.filter(prop => {
+    const matchesSearch = 
+      prop.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      prop.code?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      prop.location.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesType = filterType === "Todos" || prop.type === filterType;
+    const matchesCategory = filterCategory === "Todas" || prop.category === filterCategory;
+
+    return matchesSearch && matchesType && matchesCategory;
+  });
+
+  // Lista de categorias únicas presentes nos imóveis
+  const categories = ["Todas", ...Array.from(new Set(properties.map(p => p.category)))].sort();
 
   return (
     <div>
@@ -27,15 +48,53 @@ export default function AdminImoveis() {
         onCancel={() => setConfirmModal({ isOpen: false, id: null })}
       />
       
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-primary">Gerenciar Imóveis</h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold text-primary font-oswald uppercase tracking-tight">Gerenciar <span className="text-secondary">Imóveis</span></h1>
         <Link 
           href="/admin/imoveis/novo" 
-          className="bg-primary text-white px-4 py-2 rounded-xl flex items-center gap-2 hover:bg-primary/90 transition-colors font-medium"
+          className="bg-primary text-white px-5 py-2.5 rounded-none flex items-center gap-2 hover:bg-slate-900 transition-all font-bold font-oswald uppercase tracking-widest text-sm shadow-lg shadow-slate-200"
         >
           <Plus size={20} />
           Novo Imóvel
         </Link>
+      </div>
+
+      {/* Barra de Filtros */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8 bg-white p-4 border border-slate-100 shadow-sm">
+        <div className="md:col-span-2">
+          <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 block">Buscar por Título, Código ou Local</label>
+          <input 
+            type="text" 
+            placeholder="Ex: IMOV 123 ou Centro..."
+            className="w-full border border-slate-200 px-4 py-2 text-sm outline-none focus:border-primary transition-colors"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+        <div>
+          <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 block">Tipo</label>
+          <select 
+            className="w-full border border-slate-200 px-3 py-2 text-sm outline-none focus:border-primary transition-colors cursor-pointer"
+            value={filterType}
+            onChange={(e) => setFilterType(e.target.value)}
+          >
+            <option value="Todos">Todos os tipos</option>
+            <option value="Venda">Venda</option>
+            <option value="Aluguel">Aluguel</option>
+          </select>
+        </div>
+        <div>
+          <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 block">Categoria</label>
+          <select 
+            className="w-full border border-slate-200 px-3 py-2 text-sm outline-none focus:border-primary transition-colors cursor-pointer"
+            value={filterCategory}
+            onChange={(e) => setFilterCategory(e.target.value)}
+          >
+            {categories.map(cat => (
+              <option key={cat} value={cat}>{cat === "Todas" ? "Todas categorias" : cat}</option>
+            ))}
+          </select>
+        </div>
       </div>
 
       <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
@@ -50,7 +109,7 @@ export default function AdminImoveis() {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
-            {properties.map((prop) => (
+            {filteredProperties.map((prop) => (
               <tr key={prop.id} className="hover:bg-slate-50 transition-colors">
                 <td className="px-6 py-4">
                   <div className="w-16 h-12 rounded-lg overflow-hidden bg-slate-200">
@@ -90,10 +149,19 @@ export default function AdminImoveis() {
                 </td>
               </tr>
             ))}
-            {properties.length === 0 && (
+            {filteredProperties.length === 0 && (
               <tr>
-                <td colSpan={5} className="px-6 py-12 text-center text-slate-500">
-                  Nenhum imóvel encontrado.
+                <td colSpan={5} className="px-6 py-20 text-center">
+                  <div className="text-4xl mb-3">🔍</div>
+                  <p className="text-slate-500 font-medium">Nenhum imóvel encontrado para os filtros aplicados.</p>
+                  {(searchTerm || filterType !== "Todos" || filterCategory !== "Todas") && (
+                    <button 
+                      onClick={() => { setSearchTerm(""); setFilterType("Todos"); setFilterCategory("Todas"); }}
+                      className="text-secondary font-bold text-xs uppercase tracking-widest mt-4 hover:underline"
+                    >
+                      Limpar Filtros
+                    </button>
+                  )}
                 </td>
               </tr>
             )}

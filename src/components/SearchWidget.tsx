@@ -130,7 +130,7 @@ export default function SearchWidget({ compact }: SearchWidgetProps) {
         <form onSubmit={handleSearch} className="flex flex-col gap-4">
           
           {/* Main Filters Row */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-3 items-end">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-7 gap-3 items-end">
             
             {/* Finalidade */}
             <div className="flex flex-col gap-1.5">
@@ -211,6 +211,20 @@ export default function SearchWidget({ compact }: SearchWidgetProps) {
                   ))}
                 </select>
                 <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-[#4C4D4F]/30 pointer-events-none" size={14} />
+              </div>
+            </div>
+            
+            {/* Código */}
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[9px] font-bold text-[#4C4D4F] uppercase tracking-widest ml-1">Código</label>
+              <div className="relative">
+                <input 
+                  type="text"
+                  placeholder="Ex: IMOV-01"
+                  value={propertyId}
+                  onChange={(e) => setPropertyId(e.target.value)}
+                  className="w-full h-11 bg-[#F8F9FA] border border-[#E9ECEF] rounded-none px-3 text-xs font-bold text-[#4C4D4F] focus:outline-none focus:ring-1 focus:ring-secondary/20 placeholder:text-[#4C4D4F]/30"
+                />
               </div>
             </div>
 
@@ -316,10 +330,6 @@ export default function SearchWidget({ compact }: SearchWidgetProps) {
                         <input type="number" placeholder="Max" value={maxArea} onChange={e => setMaxArea(e.target.value)} className="w-full h-10 bg-[#F8F9FA] border border-[#E9ECEF] rounded-none px-3 text-[11px] font-bold text-[#4C4D4F] focus:outline-none" />
                       </div>
                     </div>
-                    <div className="flex flex-col gap-1.5">
-                      <label className="text-[9px] font-bold text-[#4C4D4F] uppercase tracking-widest ml-1">Código</label>
-                      <input type="text" placeholder="Ex: CV-123" value={propertyId} onChange={e => setPropertyId(e.target.value)} className="w-full h-10 bg-[#F8F9FA] border border-[#E9ECEF] rounded-none px-3 text-[11px] font-bold text-[#4C4D4F] focus:outline-none" />
-                    </div>
                   </div>
                 </div>
               </motion.div>
@@ -328,15 +338,6 @@ export default function SearchWidget({ compact }: SearchWidgetProps) {
 
           {/* Secondary Links Row */}
           <div className="flex items-center gap-4 mt-1 ml-1">
-            <button 
-              type="button"
-              onClick={() => { setIsAdvanced(true); setTimeout(() => document.querySelector<HTMLInputElement>('input[placeholder="Ex: CV-123"]')?.focus(), 300); }}
-              className="text-[9px] font-bold text-[#4C4D4F] hover:text-secondary uppercase tracking-[0.1em] flex items-center gap-1.5 transition-colors"
-            >
-              <Search size={10} strokeWidth={3} />
-              Busca por código
-            </button>
-            <div className="w-1 h-1 bg-slate-100 rounded-full"></div>
             <button 
               type="button"
               onClick={() => setIsAdvanced(!isAdvanced)}

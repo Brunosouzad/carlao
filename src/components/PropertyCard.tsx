@@ -113,6 +113,7 @@ interface PropertyCardProps {
   location: string;
   price: string;
   beds: number;
+  suites?: number;
   baths: number;
   garages: number;
   area: number;
@@ -129,7 +130,7 @@ interface PropertyCardProps {
   priority?: boolean;
 }
 
-export default memo(function PropertyCard({ id, code, title, location, price, beds, baths, garages, area, image, images, type, tag, condominium, iptu, city, neighborhood, street, slug, priority: isPriority = false }: PropertyCardProps) {
+export default memo(function PropertyCard({ id, code, title, location, price, beds, suites, baths, garages, area, image, images, type, tag, condominium, iptu, city, neighborhood, street, slug, priority: isPriority = false }: PropertyCardProps) {
   const router = useRouter();
   const [isMapOpen, setIsMapOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -279,10 +280,14 @@ export default memo(function PropertyCard({ id, code, title, location, price, be
         )}
 
       </div>
-      <div className="bg-slate-50 px-4 sm:px-6 py-3 sm:py-4 grid grid-cols-4 gap-1 sm:gap-2 border-t border-slate-100">
+      <div className="bg-slate-50 px-4 sm:px-6 py-3 sm:py-4 grid grid-cols-5 gap-1 sm:gap-2 border-t border-slate-100">
         <div className="flex flex-col items-center gap-1 text-slate-500">
           <BedDouble size={18} className="text-slate-400" />
           <span className="text-[9px] font-bold uppercase tracking-tighter">{beds} Qtos</span>
+        </div>
+        <div className="flex flex-col items-center gap-1 text-slate-500">
+          <Bath size={18} className="text-slate-400" />
+          <span className="text-[9px] font-bold uppercase tracking-tighter">{suites || 0} Suítes</span>
         </div>
         <div className="flex flex-col items-center gap-1 text-slate-500">
           <Bath size={18} className="text-slate-400" />

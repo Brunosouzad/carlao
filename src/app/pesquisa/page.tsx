@@ -24,6 +24,7 @@ function PesquisaContent() {
   const locationParam = searchParams.get("location") || "";
   const bedsParam     = searchParams.get("beds") || "";
   const bathsParam    = searchParams.get("baths") || "";
+  const suitesParam   = searchParams.get("suites") || "";
   const garagesParam  = searchParams.get("garages") || "";
   const codeParam     = (searchParams.get("code") || "").trim();
   const minAreaParam  = searchParams.get("minArea") || "";
@@ -90,6 +91,12 @@ function PesquisaContent() {
         const min = parseInt(bathsParam, 10);
         if (!isNaN(min) && p.baths < min) return false;
       }
+      
+      // Suítes mínimas
+      if (suitesParam) {
+        const min = parseInt(suitesParam, 10);
+        if (!isNaN(min) && (p.suites || 0) < min) return false;
+      }
 
       // Garagens mínimas
       if (garagesParam) {
@@ -146,6 +153,7 @@ function PesquisaContent() {
   if (locationParam)  activeFilters.push({ label: `Local: ${locationParam}`, param: "location" });
   if (bedsParam)      activeFilters.push({ label: `${bedsParam}+ quartos`, param: "beds" });
   if (bathsParam)     activeFilters.push({ label: `${bathsParam}+ banheiros`, param: "baths" });
+  if (suitesParam)    activeFilters.push({ label: `${suitesParam}+ suítes`, param: "suites" });
   if (garagesParam)   activeFilters.push({ label: `${garagesParam}+ vagas`, param: "garages" });
   if (minAreaParam)   activeFilters.push({ label: `Área mín. ${minAreaParam}m²`, param: "minArea" });
   if (maxAreaParam)   activeFilters.push({ label: `Área máx. ${maxAreaParam}m²`, param: "maxArea" });

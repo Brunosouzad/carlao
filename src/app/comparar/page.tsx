@@ -77,6 +77,7 @@ export default function CompararPage() {
                       { label: "Tipo", key: "type", icon: <Check size={16} /> },
                       { label: "Categoria", key: "category", icon: <Check size={16} /> },
                       { label: "Quartos", key: "beds", icon: <BedDouble size={16} /> },
+                      { label: "Suítes", key: "suites", icon: <Bath size={16} /> },
                       { label: "Banheiros", key: "baths", icon: <Bath size={16} /> },
                       { label: "Vagas", key: "garages", icon: <Car size={16} /> },
                       { label: "Área (m²)", key: "area", icon: <Square size={16} /> },

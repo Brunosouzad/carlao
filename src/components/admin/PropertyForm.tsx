@@ -103,6 +103,7 @@ export default function PropertyForm({ property, mode, onSuccess }: PropertyForm
     condominium: property?.condominium || "",
     iptu: property?.iptu || "",
     beds: property?.beds ?? 0,
+    suites: property?.suites ?? 0,
     baths: property?.baths ?? 0,
     garages: property?.garages ?? 0,
     area: property?.area ?? 0,
@@ -530,6 +531,10 @@ export default function PropertyForm({ property, mode, onSuccess }: PropertyForm
                 <div>
                   <label className={labelClass}><BedDouble size={12} className="inline mr-1" />Quartos</label>
                   <input className={inputClass} type="number" min={0} value={form.beds} onChange={e => set("beds", Number(e.target.value))} />
+                </div>
+                <div>
+                  <label className={labelClass}><Bath size={12} className="inline mr-1" />Suítes</label>
+                  <input className={inputClass} type="number" min={0} value={form.suites} onChange={e => set("suites", Number(e.target.value))} />
                 </div>
                 <div>
                   <label className={labelClass}><Bath size={12} className="inline mr-1" />Banheiros</label>

@@ -170,6 +170,7 @@ export default function PropertyDetailsPage() {
         <p class="code">CÓD: ${property.code}</p>
         <div class="specs">
           <div class="spec"><div class="spec-value">${property.beds}</div><div class="spec-label">Quartos</div></div>
+          ${property.suites ? `<div class="spec"><div class="spec-value">${property.suites}</div><div class="spec-label">Suítes</div></div>` : ''}
           <div class="spec"><div class="spec-value">${property.baths}</div><div class="spec-label">Banheiros</div></div>
           <div class="spec"><div class="spec-value">${property.garages}</div><div class="spec-label">Vagas</div></div>
           <div class="spec"><div class="spec-value">${property.area} m²</div><div class="spec-label">Área</div></div>
@@ -244,6 +245,7 @@ export default function PropertyDetailsPage() {
 
   const features = [
     { label: "Quartos", value: property.beds, icon: BedDouble },
+    { label: "Suítes", value: property.suites || 0, icon: Bath },
     { label: "Banheiros", value: property.baths, icon: Bath },
     { label: "Vagas", value: property.garages, icon: () => <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="3" width="22" height="18" rx="2" ry="2"></rect><path d="M7 21v-4"></path><path d="M17 21v-4"></path><path d="M1 8h22"></path></svg> },
     { label: "Área", value: `${property.area} m²`, icon: Square },
@@ -558,7 +560,7 @@ export default function PropertyDetailsPage() {
         </div>
 
         {/* Mobile quick specs */}
-        <div className="grid grid-cols-4 bg-slate-50 border-b border-slate-100">
+        <div className="grid grid-cols-5 bg-slate-50 border-b border-slate-100">
           {features.map(({ label, value, icon: Icon }) => (
             <div key={label} className="flex flex-col items-center py-3 gap-1">
               <Icon size={18} className="text-slate-400" />
@@ -742,7 +744,7 @@ export default function PropertyDetailsPage() {
                 
                 <h1 className="text-2xl md:text-4xl font-bold text-primary mb-6">{property.title}</h1>
                 
-                <div className="hidden md:grid md:grid-cols-4 gap-3 md:gap-4 py-6 border-y border-slate-100 mb-8">
+                <div className="hidden md:grid md:grid-cols-5 gap-3 md:gap-4 py-6 border-y border-slate-100 mb-8">
                   {features.map((feature, idx) => {
                     const Icon = feature.icon;
                     return (

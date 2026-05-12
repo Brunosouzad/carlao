@@ -69,6 +69,7 @@ export default function SearchWidget({ compact }: SearchWidgetProps) {
   // Advanced States
   const [beds, setBeds] = useState(searchParams.get("beds") || "Qualquer");
   const [baths, setBaths] = useState(searchParams.get("baths") || "Qualquer");
+  const [suites, setSuites] = useState(searchParams.get("suites") || "Qualquer");
   const [garages, setGarages] = useState(searchParams.get("garages") || "Qualquer");
   const [minPrice, setMinPrice] = useState(Number(searchParams.get("minPrice")) || 0);
   const [maxPrice, setMaxPrice] = useState(Number(searchParams.get("maxPrice")) || 5000000000);
@@ -109,6 +110,7 @@ export default function SearchWidget({ compact }: SearchWidgetProps) {
     if (isAdvanced) {
       if (beds !== "Qualquer") params.set("beds", beds);
       if (baths !== "Qualquer") params.set("baths", baths);
+      if (suites !== "Qualquer") params.set("suites", suites);
       if (garages !== "Qualquer") params.set("garages", garages);
       if (minArea.trim()) params.set("minArea", minArea.trim());
       if (maxArea.trim()) params.set("maxArea", maxArea.trim());
@@ -293,6 +295,7 @@ export default function SearchWidget({ compact }: SearchWidgetProps) {
                   <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
                     {[
                       { label: "Quartos", state: beds, setState: setBeds, options: ["Qualquer", "1", "2", "3", "4"] },
+                      { label: "Suítes", state: suites, setState: setSuites, options: ["Qualquer", "1", "2", "3"] },
                       { label: "Banheiros", state: baths, setState: setBaths, options: ["Qualquer", "1", "2", "3"] },
                       { label: "Garagens", state: garages, setState: setGarages, options: ["Qualquer", "1", "2", "3"] },
                     ].map((item, idx) => (

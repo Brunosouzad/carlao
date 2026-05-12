@@ -13,6 +13,7 @@ export interface Property {
   condominium?: string;
   iptu?: string;
   beds: number;
+  suites?: number;
   baths: number;
   garages: number;
   area: number;

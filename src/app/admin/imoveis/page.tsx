@@ -2,14 +2,15 @@
 
 import { useProperties } from "@/store/PropertiesContext";
 import Link from "next/link";
-import { Edit, Trash2, Plus } from "lucide-react";
+import { Edit, Trash2, Plus, Eye, EyeOff } from "lucide-react";
 import { formatPrice } from "@/utils/format";
 import ConfirmModal from "@/components/admin/ConfirmModal";
 import { useState } from "react";
 
 export default function AdminImoveis() {
-  const { properties, deleteProperty } = useProperties();
+  const { properties, deleteProperty, updateProperty } = useProperties();
   const [confirmModal, setConfirmModal] = useState<{isOpen: boolean, id: string | null}>({ isOpen: false, id: null });
+  const [toggling, setToggling] = useState<string | null>(null);
   
   // Estados dos filtros
   const [searchTerm, setSearchTerm] = useState("");
@@ -18,6 +19,20 @@ export default function AdminImoveis() {
 
   const handleDelete = (id: string) => {
     deleteProperty(id);
+  };
+
+  const handleToggleActive = async (property: any) => {
+    setToggling(property.id);
+    try {
+      await updateProperty({
+        ...property,
+        active: property.active === false ? true : false
+      });
+    } catch (error) {
+      console.error("Erro ao alternar status:", error);
+    } finally {
+      setToggling(null);
+    }
   };
 
   // Lógica de filtragem
@@ -129,11 +144,23 @@ export default function AdminImoveis() {
                   </span>
                 </td>
                 <td className="px-6 py-4 text-center">
-                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                    prop.active !== false ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
-                  }`}>
+                  <button
+                    onClick={() => handleToggleActive(prop)}
+                    disabled={toggling === prop.id}
+                    title={prop.active !== false ? "Desativar Imóvel" : "Ativar Imóvel"}
+                    className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all border cursor-pointer disabled:opacity-50 ${
+                      prop.active !== false 
+                        ? 'bg-green-50 border-green-200 text-green-700 hover:bg-green-100' 
+                        : 'bg-red-50 border-red-200 text-red-700 hover:bg-red-100'
+                    }`}
+                  >
+                    {toggling === prop.id ? (
+                      <div className="w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      prop.active !== false ? <Eye size={12} /> : <EyeOff size={12} />
+                    )}
                     {prop.active !== false ? 'Ativo' : 'Inativo'}
-                  </span>
+                  </button>
                 </td>
                 <td className="px-6 py-4 text-sm text-slate-600 font-medium">
                   {formatPrice(prop.price)}

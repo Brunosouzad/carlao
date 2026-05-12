@@ -71,7 +71,7 @@ export default function SearchWidget({ compact }: SearchWidgetProps) {
   const [baths, setBaths] = useState(searchParams.get("baths") || "Qualquer");
   const [garages, setGarages] = useState(searchParams.get("garages") || "Qualquer");
   const [minPrice, setMinPrice] = useState(Number(searchParams.get("minPrice")) || 0);
-  const [maxPrice, setMaxPrice] = useState(Number(searchParams.get("maxPrice")) || 10000000);
+  const [maxPrice, setMaxPrice] = useState(Number(searchParams.get("maxPrice")) || 5000000000);
   const [minArea, setMinArea] = useState(searchParams.get("minArea") || "");
   const [maxArea, setMaxArea] = useState(searchParams.get("maxArea") || "");
   const [propertyId, setPropertyId] = useState(searchParams.get("code") || "");
@@ -104,15 +104,16 @@ export default function SearchWidget({ compact }: SearchWidgetProps) {
     const locParts = [cidade, bairro].filter(Boolean);
     if (locParts.length > 0) params.set("location", locParts.join(", "));
     
+    if (propertyId.trim()) params.set("code", propertyId.trim());
+
     if (isAdvanced) {
       if (beds !== "Qualquer") params.set("beds", beds);
       if (baths !== "Qualquer") params.set("baths", baths);
       if (garages !== "Qualquer") params.set("garages", garages);
       if (minArea.trim()) params.set("minArea", minArea.trim());
       if (maxArea.trim()) params.set("maxArea", maxArea.trim());
-      if (propertyId.trim()) params.set("code", propertyId.trim());
-      params.set("minPrice", String(minPrice));
-      params.set("maxPrice", String(maxPrice));
+      if (minPrice > 0) params.set("minPrice", String(minPrice));
+      if (maxPrice < 5000000000) params.set("maxPrice", String(maxPrice));
     } else if (valorMax) {
       const numeric = valorMax.replace(/\D/g, "");
       params.set("maxPrice", numeric);
@@ -131,7 +132,7 @@ export default function SearchWidget({ compact }: SearchWidgetProps) {
             
             {/* Finalidade */}
             <div className="flex flex-col gap-1.5">
-              <label className="text-[9px] font-bold text-[#4C4D4F]/50 uppercase tracking-widest ml-1">Finalidade</label>
+              <label className="text-[9px] font-bold text-[#4C4D4F] uppercase tracking-widest ml-1">Finalidade</label>
               <div className="relative">
                 <select 
                   value={finalidade}
@@ -147,7 +148,7 @@ export default function SearchWidget({ compact }: SearchWidgetProps) {
 
             {/* Tipo */}
             <div className="flex flex-col gap-1.5">
-              <label className="text-[9px] font-bold text-[#4C4D4F]/50 uppercase tracking-widest ml-1">Tipo</label>
+              <label className="text-[9px] font-bold text-[#4C4D4F] uppercase tracking-widest ml-1">Tipo</label>
               <div className="relative">
                 <select 
                   value={tipo}
@@ -176,7 +177,7 @@ export default function SearchWidget({ compact }: SearchWidgetProps) {
 
             {/* Cidade */}
             <div className="flex flex-col gap-1.5">
-              <label className="text-[9px] font-bold text-[#4C4D4F]/50 uppercase tracking-widest ml-1">Cidade</label>
+              <label className="text-[9px] font-bold text-[#4C4D4F] uppercase tracking-widest ml-1">Cidade</label>
               <div className="relative">
                 <select 
                   value={cidade}
@@ -194,7 +195,7 @@ export default function SearchWidget({ compact }: SearchWidgetProps) {
 
             {/* Bairro */}
             <div className="flex flex-col gap-1.5">
-              <label className="text-[9px] font-bold text-[#4C4D4F]/50 uppercase tracking-widest ml-1">Bairro</label>
+              <label className="text-[9px] font-bold text-[#4C4D4F] uppercase tracking-widest ml-1">Bairro</label>
               <div className="relative">
                 <select 
                   value={bairro}
@@ -213,7 +214,7 @@ export default function SearchWidget({ compact }: SearchWidgetProps) {
 
             {/* Valor Máximo */}
             <div className="flex flex-col gap-1.5">
-              <label className="text-[9px] font-bold text-[#4C4D4F]/50 uppercase tracking-widest ml-1">Valor Máximo</label>
+              <label className="text-[9px] font-bold text-[#4C4D4F] uppercase tracking-widest ml-1">Valor Máximo</label>
               {isAdvanced ? (
                 <div className="h-11 flex items-center px-4 bg-slate-50 border border-slate-100 rounded-none text-[9px] font-bold text-secondary truncate">
                   {minPrice > 0 ? `R$ ${minPrice.toLocaleString()} - ` : ""} R$ {maxPrice.toLocaleString()}
@@ -256,7 +257,7 @@ export default function SearchWidget({ compact }: SearchWidgetProps) {
                 <div className="pt-6 border-t border-slate-100 mt-2 space-y-8">
                   <div className="space-y-3">
                     <div className="flex justify-between items-center">
-                      <span className="text-[9px] font-bold text-[#4C4D4F]/50 uppercase tracking-wider">Faixa de Preço</span>
+                      <span className="text-[9px] font-bold text-[#4C4D4F] uppercase tracking-wider">Faixa de Preço</span>
                       <span className="text-xs font-bold text-secondary">
                         R$ {minPrice.toLocaleString('pt-BR')} — R$ {maxPrice.toLocaleString('pt-BR')}
                       </span>
@@ -266,24 +267,24 @@ export default function SearchWidget({ compact }: SearchWidgetProps) {
                       <div 
                         className="absolute h-1 bg-secondary rounded-full" 
                         style={{ 
-                          left: `${(minPrice / 10000000) * 100}%`, 
-                          right: `${100 - (maxPrice / 10000000) * 100}%` 
+                          left: `${(minPrice / 5000000000) * 100}%`, 
+                          right: `${100 - (maxPrice / 5000000000) * 100}%` 
                         }} 
                       />
                       
                       {/* Min Slider */}
                       <input 
-                        type="range" min="0" max="10000000" step="50000" 
+                        type="range" min="0" max="5000000000" step="100000" 
                         value={minPrice} 
-                        onChange={e => setMinPrice(Math.min(Number(e.target.value), maxPrice - 50000))}
+                        onChange={e => setMinPrice(Math.min(Number(e.target.value), maxPrice - 100000))}
                         className="absolute w-full appearance-none bg-transparent pointer-events-none cursor-pointer z-20 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-secondary [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:pointer-events-auto" 
                       />
                       
                       {/* Max Slider */}
                       <input 
-                        type="range" min="0" max="10000000" step="50000" 
+                        type="range" min="0" max="5000000000" step="100000" 
                         value={maxPrice} 
-                        onChange={e => setMaxPrice(Math.max(Number(e.target.value), minPrice + 50000))}
+                        onChange={e => setMaxPrice(Math.max(Number(e.target.value), minPrice + 100000))}
                         className="absolute w-full appearance-none bg-transparent pointer-events-none cursor-pointer z-10 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-secondary [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:pointer-events-auto" 
                       />
                     </div>
@@ -296,7 +297,7 @@ export default function SearchWidget({ compact }: SearchWidgetProps) {
                       { label: "Garagens", state: garages, setState: setGarages, options: ["Qualquer", "1", "2", "3"] },
                     ].map((item, idx) => (
                       <div key={idx} className="flex flex-col gap-1.5">
-                        <label className="text-[9px] font-bold text-[#4C4D4F]/50 uppercase tracking-widest ml-1">{item.label}</label>
+                        <label className="text-[9px] font-bold text-[#4C4D4F] uppercase tracking-widest ml-1">{item.label}</label>
                         <div className="relative">
                           <select value={item.state} onChange={(e) => item.setState(e.target.value)} className="w-full h-10 bg-[#F8F9FA] border border-[#E9ECEF] rounded-none px-3 text-[11px] font-bold text-[#4C4D4F] focus:outline-none appearance-none cursor-pointer">
                             {item.options.map(opt => <option key={opt} value={opt}>{opt}{opt !== "Qualquer" ? "+" : ""}</option>)}
@@ -306,14 +307,14 @@ export default function SearchWidget({ compact }: SearchWidgetProps) {
                       </div>
                     ))}
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-[9px] font-bold text-[#4C4D4F]/50 uppercase tracking-widest ml-1">Área (m²)</label>
+                      <label className="text-[9px] font-bold text-[#4C4D4F] uppercase tracking-widest ml-1">Área (m²)</label>
                       <div className="flex gap-1.5">
                         <input type="number" placeholder="Min" value={minArea} onChange={e => setMinArea(e.target.value)} className="w-full h-10 bg-[#F8F9FA] border border-[#E9ECEF] rounded-none px-3 text-[11px] font-bold text-[#4C4D4F] focus:outline-none" />
                         <input type="number" placeholder="Max" value={maxArea} onChange={e => setMaxArea(e.target.value)} className="w-full h-10 bg-[#F8F9FA] border border-[#E9ECEF] rounded-none px-3 text-[11px] font-bold text-[#4C4D4F] focus:outline-none" />
                       </div>
                     </div>
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-[9px] font-bold text-[#4C4D4F]/50 uppercase tracking-widest ml-1">Código</label>
+                      <label className="text-[9px] font-bold text-[#4C4D4F] uppercase tracking-widest ml-1">Código</label>
                       <input type="text" placeholder="Ex: CV-123" value={propertyId} onChange={e => setPropertyId(e.target.value)} className="w-full h-10 bg-[#F8F9FA] border border-[#E9ECEF] rounded-none px-3 text-[11px] font-bold text-[#4C4D4F] focus:outline-none" />
                     </div>
                   </div>
@@ -327,7 +328,7 @@ export default function SearchWidget({ compact }: SearchWidgetProps) {
             <button 
               type="button"
               onClick={() => { setIsAdvanced(true); setTimeout(() => document.querySelector<HTMLInputElement>('input[placeholder="Ex: CV-123"]')?.focus(), 300); }}
-              className="text-[9px] font-bold text-[#4C4D4F]/40 hover:text-secondary uppercase tracking-[0.1em] flex items-center gap-1.5 transition-colors"
+              className="text-[9px] font-bold text-[#4C4D4F] hover:text-secondary uppercase tracking-[0.1em] flex items-center gap-1.5 transition-colors"
             >
               <Search size={10} strokeWidth={3} />
               Busca por código
@@ -336,7 +337,7 @@ export default function SearchWidget({ compact }: SearchWidgetProps) {
             <button 
               type="button"
               onClick={() => setIsAdvanced(!isAdvanced)}
-              className="text-[9px] font-bold text-[#4C4D4F]/40 hover:text-secondary uppercase tracking-[0.1em] transition-colors flex items-center gap-1.5"
+              className="text-[9px] font-bold text-[#4C4D4F] hover:text-secondary uppercase tracking-[0.1em] transition-colors flex items-center gap-1.5"
             >
               {isAdvanced ? <Minus size={10} strokeWidth={3} /> : <Plus size={10} strokeWidth={3} />}
               {isAdvanced ? "Menos filtros" : "Mais filtros"}

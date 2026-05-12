@@ -103,10 +103,10 @@ export default function RootLayout({
                   ],
                   "address": {
                     "@type": "PostalAddress",
-                    "streetAddress": "Rua Marechal Floriano, 600, Loja 05",
+                    "streetAddress": "Av. Brasil, 2890 - Centro",
                     "addressLocality": "Governador Valadares",
                     "addressRegion": "MG",
-                    "postalCode": "35010-140",
+                    "postalCode": "35020-070",
                     "addressCountry": "BR"
                   },
                   "openingHoursSpecification": {
@@ -118,7 +118,16 @@ export default function RootLayout({
                   "sameAs": [
                     "https://www.instagram.com/carlao_imoveis",
                     "https://facebook.com/carlaoimoveismg"
-                  ]
+                  ],
+                  "member": {
+                    "@type": "OrganizationRole",
+                    "member": {
+                      "@type": "Person",
+                      "name": "Carlos Roberto Lino de Menezes",
+                      "description": "Corretor Responsável - Creci 16.005"
+                    },
+                    "roleName": "Corretor Responsável"
+                  }
                 },
                 {
                   "@type": "WebSite",

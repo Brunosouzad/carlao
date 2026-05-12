@@ -60,20 +60,20 @@ export default function ContatoPage() {
     {
       nome: "Governador Valadares",
       tipo: "Unidade Matriz",
-      endereco: "Rua Marechal Floriano, 600, Loja 05 - Centro",
+      endereco: "Av. Brasil, 2890 - Centro, Gov. Valadares - MG, 35020-070",
       telefone: "(33) 8413-6800",
       telLink: "+553384136800",
       horario: "Seg a Sex: 08:00 às 18:00",
-      mapa: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3775.6948374781723!2d-41.9426083!3d-18.8562318!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xb1a70b9765658f%3A0x7dd69c9f71ebf77c!2sR.%20Mal.%20Floriano%2C%20600%20-%20Centro%2C%20Gov.%20Valadares%20-%20MG%2C%2035010-140!5e0!3m2!1spt-BR!2sbr",
+      mapa: "https://maps.google.com/maps?q=Av.%20Brasil%2C%202890%20-%20Centro%2C%20Governador%20Valadares%20-%20MG&t=&z=15&ie=UTF8&iwloc=&output=embed",
     },
     {
       nome: "Coronel Fabriciano",
       tipo: "Unidade Filial",
-      endereco: "Rua Pedro Nolasco, 510 - Centro",
+      endereco: "Av. Gov. José de Magalhães Pinto, Nº 2.026 - Melo Viana, Cel. Fabriciano - MG, 35170-097",
       telefone: "(31) 98895-6224",
       telLink: "+5531988956224",
       horario: "Seg a Sex: 08:00 às 18:00",
-      mapa: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3760.327180140302!2d-42.6219575!3d-19.527562100000004!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xa554228869f4d1%3A0xc732a0909ae4ee39!2sR.%20Pedro%20Nolasco%2C%20510%20-%20Centro%2C%20Cel.%20Fabriciano%20-%20MG%2C%2035170-300!5e0!3m2!1spt-BR!2sbr",
+      mapa: "https://maps.google.com/maps?q=Av.%20Gov.%20Jos%C3%A9%20de%20Magalh%C3%A3es%20Pinto%2C%202026%20-%20Melo%20Viana%2C%20Cel.%20Fabriciano%20-%20MG&t=&z=15&ie=UTF8&iwloc=&output=embed",
     }
   ];
 

@@ -68,7 +68,7 @@ export default function AboutPage() {
               <h2 className="text-3xl font-bold text-primary mb-6 font-oswald uppercase">Construindo um Novo Momento</h2>
               <div className="space-y-6 text-slate-500 leading-relaxed text-[15px]">
                 <p>
-                  <strong className="text-primary font-bold">Carlão Imóveis</strong> é uma empresa consolidada no mercado imobiliário, reconhecida pela seriedade, transparência e credibilidade na condução de negócios.
+                  A <strong className="text-primary font-bold">Carlão Imóveis</strong>, liderada por <strong className="text-primary font-bold">Carlos Roberto Lino de Menezes (Creci 16.005)</strong>, é uma empresa consolidada no mercado imobiliário, reconhecida pela seriedade, transparência e credibilidade na condução de negócios.
                 </p>
                 <p>
                   Com atuação estratégica em duas regiões, oferece aos seus clientes um atendimento qualificado e personalizado, por meio de uma equipe de consultores experientes e devidamente capacitados, aptos a compreender as necessidades específicas de cada cliente e de cada imóvel.

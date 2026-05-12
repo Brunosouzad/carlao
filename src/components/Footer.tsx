@@ -78,7 +78,7 @@ export default function Footer() {
         
         <div className="pt-12 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-6">
           <p className="text-white/80 text-xs uppercase tracking-[0.1em] font-medium">
-            © 2026 Carlão Imóveis MG. CRECI J-4123.
+            © 2026 Carlão Imóveis MG. Carlos Roberto Lino de Menezes – Creci 16.005
           </p>
           <div className="flex flex-col sm:flex-row items-center gap-6 sm:gap-8">
             <div className="flex gap-6">

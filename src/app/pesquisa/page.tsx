@@ -25,7 +25,7 @@ function PesquisaContent() {
   const bedsParam     = searchParams.get("beds") || "";
   const bathsParam    = searchParams.get("baths") || "";
   const garagesParam  = searchParams.get("garages") || "";
-  const codeParam     = searchParams.get("code") || "";
+  const codeParam     = (searchParams.get("code") || "").trim();
   const minAreaParam  = searchParams.get("minArea") || "";
   const maxAreaParam  = searchParams.get("maxArea") || "";
   const minPriceParam = searchParams.get("minPrice") || "";
@@ -44,20 +44,40 @@ function PesquisaContent() {
         const inFeature  = (p.features || []).some(f => f.toLowerCase() === q);
         const inTag      = (p.tag || "").toLowerCase() === q;
         const inType     = p.type.toLowerCase() === q;
-        if (!inTitle && !inLocation && !inDesc && !inFeature && !inTag && !inType) return false;
+        const cleanQ     = q.replace(/[^a-z0-9]/g, "");
+        const inCode     = (p.code || "").toLowerCase().replace(/[^a-z0-9]/g, "").includes(cleanQ);
+        if (!inTitle && !inLocation && !inDesc && !inFeature && !inTag && !inType && !inCode) return false;
       }
 
-      // Código exato
-      if (codeParam && !p.code.toLowerCase().includes(codeParam.toLowerCase())) return false;
+      // Se houver busca por código, ignoramos os outros filtros para garantir que o imóvel seja encontrado
+      if (codeParam) {
+        const cleanCodeParam = codeParam.toLowerCase().replace(/[^a-z0-9]/g, "");
+        const cleanPropertyCode = (p.code || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+        return cleanPropertyCode.includes(cleanCodeParam);
+      }
 
+      // Filtros normais (só executam se não houver busca por código)
+      
       // Tipo (Venda / Aluguel)
       if (typeParam && p.type !== typeParam) return false;
 
       // Categoria (Casa, Apartamento...)
       if (categoryParam && p.category !== categoryParam) return false;
 
-      // Localização (substring)
-      if (locationParam && !p.location.toLowerCase().includes(locationParam.toLowerCase())) return false;
+      // Localização flexível (Bairro e Cidade independentes da ordem)
+      if (locationParam) {
+        const parts = locationParam.toLowerCase().split(',').map(s => s.trim()).filter(Boolean);
+        const pLoc = (p.location || "").toLowerCase();
+        const pCity = (p.city || "").toLowerCase();
+        const pNb = (p.neighborhood || "").toLowerCase();
+        
+        // Cada parte do filtro deve estar presente em algum campo de localização do imóvel
+        const allPartsMatch = parts.every(part => 
+          pLoc.includes(part) || pCity.includes(part) || pNb.includes(part)
+        );
+        
+        if (!allPartsMatch) return false;
+      }
 
       // Quartos mínimos
       if (bedsParam) {

@@ -252,7 +252,7 @@ export default function PropertyForm({ property, mode, onSuccess }: PropertyForm
   };
 
   const getYoutubeEmbedId = (url: string) => {
-    const match = url.match(/(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/\s]{11})/);
+    const match = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|shorts\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
     return match ? match[1] : null;
   };
 
@@ -697,12 +697,12 @@ export default function PropertyForm({ property, mode, onSuccess }: PropertyForm
 
             <div className="bg-white border border-slate-200 rounded-2xl p-6">
               <h2 className="font-bold text-primary flex items-center gap-2 mb-2">
-                <Video size={18} /> Vídeo do YouTube
+                <Video size={18} /> Vídeo do YouTube / Shorts
               </h2>
-              <p className="text-xs text-slate-400 mb-4">Cole o link do vídeo do YouTube (ex: https://youtube.com/watch?v=XXXXXXXXXXX)</p>
+              <p className="text-xs text-slate-400 mb-4">Cole o link do vídeo (ex: https://youtube.com/watch?v=... ou https://youtube.com/shorts/...)</p>
               <input
                 className={inputClass}
-                placeholder="https://www.youtube.com/watch?v=..."
+                placeholder="https://www.youtube.com/shorts/..."
                 value={form.videoUrl || ""}
                 onChange={e => set("videoUrl", e.target.value)}
               />

@@ -200,7 +200,7 @@ export default function PropertyDetailsPage() {
   useEffect(() => {
     if (!property) return;
     const allImgs = Array.from(new Set([property.image, ...(property.images || [])])).filter(Boolean);
-    const vMatch = property.videoUrl?.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
+    const vMatch = property.videoUrl?.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|shorts\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
     const vId = vMatch ? vMatch[1] : null;
     const items = [
       ...allImgs.map(url => ({ type: 'image' as const, url })),
@@ -251,7 +251,7 @@ export default function PropertyDetailsPage() {
     { label: "Área", value: `${property.area} m²`, icon: Square },
   ];
 
-  const match = property.videoUrl?.match(/(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/\s]{11})/);
+  const match = property.videoUrl?.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|shorts\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
   const embedId = match ? match[1] : null;
 
   // Combine cover image with gallery images, removing duplicates

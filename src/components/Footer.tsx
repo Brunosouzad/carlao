@@ -20,7 +20,7 @@ export default function Footer() {
               />
             </div>
             <p className="text-white text-sm leading-relaxed max-w-xs">
-              Sua parceira de confiança em negócios imobiliários em Minas Gerais desde 2011. Excelência, tradição e os melhores imóveis da região.
+              Sua parceira de confiança em negócios imobiliários em Minas Gerais desde 2001. Excelência, tradição e os melhores imóveis da região.
             </p>
           </div>
           

@@ -87,7 +87,7 @@ export default function Hero() {
               {renderTitle(settings.heroTitle || "Encontre o seu **imóvel ideal**")}
             </h1>
             <p suppressHydrationWarning className="text-base md:text-lg text-white/80 max-w-2xl mx-auto lg:mx-0 drop-shadow-md">
-              {settings.heroSubtitle || "Mais de 15 anos de tradição em Governador Valadares e região. Sua segurança é nossa prioridade."}
+              {settings.heroSubtitle || "Mais de 25 anos de tradição em Governador Valadares e região. Sua segurança é nossa prioridade."}
             </p>
           </motion.div>
 

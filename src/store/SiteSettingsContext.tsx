@@ -39,7 +39,7 @@ const DEFAULT_SETTINGS: SiteSettings = {
     "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1600&auto=format&fit=crop",
   ],
   heroTitle: "Encontre o seu imóvel ideal",
-  heroSubtitle: "Mais de 15 anos de tradição em Governador Valadares e região. Sua segurança é nossa prioridade.",
+  heroSubtitle: "Mais de 25 anos de tradição em Governador Valadares e região. Sua segurança é nossa prioridade.",
   heroSlideInterval: 5,
   homeCardsPerRow: 4,
   homeVendaTitle: "Melhores Oportunidades",

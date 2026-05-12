@@ -55,7 +55,7 @@ const faqItems = [
   },
   {
     question: "É seguro comprar imóvel pela Carlão Imóveis?",
-    answer: "Absolutamente. A Carlão Imóveis é liderada por Carlos Roberto Lino de Menezes (Creci 16.005) e conta com mais de 15 anos de atuação no mercado. Todos os imóveis passam por análise documental rigorosa e oferecemos assessoria jurídica completa para garantir segurança em todas as etapas da negociação."
+    answer: "Absolutamente. A Carlão Imóveis é liderada por Carlos Roberto Lino de Menezes (Creci 16.005) e conta com mais de 25 anos de atuação no mercado. Todos os imóveis passam por análise documental rigorosa e oferecemos assessoria jurídica completa para garantir segurança em todas as etapas da negociação."
   },
 ];
 

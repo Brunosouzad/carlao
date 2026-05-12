@@ -91,7 +91,7 @@ export default function RootLayout({
                   "@type": "RealEstateAgent",
                   "name": "Carlão Imóveis",
                   "image": "https://www.carlaoimoveismg.com.br/logo-carlao.png",
-                  "description": "Sua parceira de confiança em negócios imobiliários em Minas Gerais desde 2011. Especialistas em venda, aluguel e administração de imóveis em Governador Valadares e Coronel Fabriciano.",
+                  "description": "Sua parceira de confiança em negócios imobiliários em Minas Gerais desde 2001. Especialistas em venda, aluguel e administração de imóveis em Governador Valadares e Coronel Fabriciano.",
                   "@id": "https://www.carlaoimoveismg.com.br/#organization",
                   "url": "https://www.carlaoimoveismg.com.br",
                   "telephone": "+553384136800",

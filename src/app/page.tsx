@@ -216,7 +216,7 @@ function HomeContent() {
                 </h2>
 
                 <p className="text-slate-500 text-lg mb-4 leading-relaxed">
-                  Com mais de 15 anos de atuação no mercado mineiro, a <strong className="text-primary">Carlão Imóveis</strong> consolidou-se como referência em segurança e transparência em negócios imobiliários.
+                  Com mais de 25 anos de atuação no mercado mineiro, a <strong className="text-primary">Carlão Imóveis</strong> consolidou-se como referência em segurança e transparência em negócios imobiliários.
                 </p>
                 <p className="text-slate-500 text-lg mb-10 leading-relaxed">
                   Nossa missão é transformar a busca pelo imóvel ideal em uma experiêncian <strong className="text-primary">fluida, moderna e personalizada</strong> para cada cliente.

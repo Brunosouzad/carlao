@@ -129,7 +129,9 @@ export default function AdminImoveis() {
               <tr key={prop.id} className="hover:bg-slate-50 transition-colors">
                 <td className="px-6 py-4">
                   <div className="w-16 h-12 rounded-lg overflow-hidden bg-slate-200">
-                    <img src={prop.image} alt={prop.title} className="w-full h-full object-cover" />
+                    {prop.image && (
+                      <img src={prop.image} alt={prop.title} className="w-full h-full object-cover" />
+                    )}
                   </div>
                 </td>
                 <td className="px-6 py-4">

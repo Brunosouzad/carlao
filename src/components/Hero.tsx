@@ -56,7 +56,7 @@ export default function Hero() {
             />
           </motion.div>
         </AnimatePresence>
-        <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/70 to-black/50" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent" />
 
         {/* Slide dots */}
         {slides.length > 1 && (

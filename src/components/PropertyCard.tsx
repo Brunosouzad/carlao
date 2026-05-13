@@ -3,7 +3,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { BedDouble, Bath, Square, MapPin, ArrowUpRight, X, Camera, ChevronLeft, ChevronRight, Heart, ArrowLeftRight } from "lucide-react";
 import Link from "next/link";
-import Image from "next/image";
 import { useState, useMemo } from "react";
 import { formatPrice } from "@/utils/format";
 import dynamic from "next/dynamic";
@@ -182,15 +181,12 @@ export default memo(function PropertyCard({ id, code, title, location, price, be
           {previewImages.map((src, idx) => {
             const isCurrent = idx === currentImageIndex;
             return (
-              <Image
+              <img
                 key={src}
                 src={getOptimizedImageUrl(src, 400, 50) || "https://images.unsplash.com/photo-1564013467402-9fef2662880e?q=80&w=1000&auto=format&fit=crop"} 
                 alt={`${title} - Foto ${idx + 1}`}
-                fill
-                sizes="(max-width: 768px) 100vw, 400px"
-                quality={50}
-                priority={isPriority && idx === 0}
                 className={`absolute inset-0 w-full h-full object-cover lg:group-hover:scale-110 transition-all duration-300 ease-in-out ${isCurrent ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
+                loading={idx === 0 ? "eager" : "lazy"}
               />
             );
           })}

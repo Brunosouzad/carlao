@@ -2,15 +2,16 @@
 
 import { useProperties } from "@/store/PropertiesContext";
 import Link from "next/link";
-import { Edit, Trash2, Plus, Eye, EyeOff } from "lucide-react";
+import { Edit, Trash2, Plus, Eye, EyeOff, Copy } from "lucide-react";
 import { formatPrice } from "@/utils/format";
 import ConfirmModal from "@/components/admin/ConfirmModal";
 import { useState } from "react";
 
 export default function AdminImoveis() {
-  const { properties, deleteProperty, updateProperty } = useProperties();
+  const { properties, deleteProperty, updateProperty, duplicateProperty } = useProperties();
   const [confirmModal, setConfirmModal] = useState<{isOpen: boolean, id: string | null}>({ isOpen: false, id: null });
   const [toggling, setToggling] = useState<string | null>(null);
+  const [duplicating, setDuplicating] = useState<string | null>(null);
   
   // Estados dos filtros
   const [searchTerm, setSearchTerm] = useState("");
@@ -32,6 +33,17 @@ export default function AdminImoveis() {
       console.error("Erro ao alternar status:", error);
     } finally {
       setToggling(null);
+    }
+  };
+
+  const handleDuplicate = async (id: string) => {
+    setDuplicating(id);
+    try {
+      await duplicateProperty(id);
+    } catch (error) {
+      console.error("Erro ao duplicar imóvel:", error);
+    } finally {
+      setDuplicating(null);
     }
   };
 
@@ -176,6 +188,18 @@ export default function AdminImoveis() {
                   >
                     <Edit size={18} />
                   </Link>
+                  <button 
+                    onClick={() => handleDuplicate(prop.id)}
+                    disabled={duplicating === prop.id}
+                    className="inline-flex p-2 text-slate-400 hover:text-green-500 hover:bg-green-50 rounded-lg transition-colors cursor-pointer disabled:opacity-50"
+                    title="Duplicar"
+                  >
+                    {duplicating === prop.id ? (
+                      <div className="w-[18px] h-[18px] border-2 border-current border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      <Copy size={18} />
+                    )}
+                  </button>
                   <button 
                     onClick={() => setConfirmModal({ isOpen: true, id: prop.id })}
                     className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"

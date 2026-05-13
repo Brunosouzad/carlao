@@ -13,6 +13,7 @@ interface PropertiesContextType {
   addProperty: (property: Omit<Property, "id">) => Promise<void>;
   updateProperty: (property: Property) => Promise<void>;
   deleteProperty: (id: string) => Promise<void>;
+  duplicateProperty: (id: string) => Promise<void>;
   refreshProperties: () => Promise<void>;
 }
 
@@ -23,6 +24,7 @@ const PropertiesContext = createContext<PropertiesContextType>({
   addProperty: async () => {},
   updateProperty: async () => {},
   deleteProperty: async () => {},
+  duplicateProperty: async () => {},
   refreshProperties: async () => {},
 });
 
@@ -244,6 +246,23 @@ export function PropertiesProvider({ children }: { children: React.ReactNode }) 
     }
   };
 
+  const duplicateProperty = async (id: string) => {
+    const propertyToDuplicate = properties.find(p => p.id === id);
+    if (!propertyToDuplicate) return;
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { id: _, slug: __, created_at: ___, ...propertyData } = propertyToDuplicate;
+    
+    const newPropertyData = {
+      ...propertyData,
+      title: `${propertyData.title} (Cópia)`,
+      active: false, // Começa inativo para revisão
+      code: propertyData.code ? `${propertyData.code}-C` : ""
+    };
+
+    await addProperty(newPropertyData);
+  };
+
   return (
     <PropertiesContext.Provider
       value={{ 
@@ -253,6 +272,7 @@ export function PropertiesProvider({ children }: { children: React.ReactNode }) 
         addProperty, 
         updateProperty, 
         deleteProperty,
+        duplicateProperty,
         refreshProperties: fetchProperties 
       }}
     >

@@ -1,4 +1,5 @@
 "use client";
+// Force redeploy to clear Vercel cache and update property images
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { Property, INITIAL_PROPERTIES } from "../data/properties";

@@ -17,6 +17,8 @@ export default function AdminImoveis() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("Todos");
   const [filterCategory, setFilterCategory] = useState("Todas");
+  const [filterOwner, setFilterOwner] = useState("Todos");
+  const [sortBy, setSortBy] = useState("padrao");
 
   const handleDelete = (id: string) => {
     deleteProperty(id);
@@ -56,12 +58,39 @@ export default function AdminImoveis() {
     
     const matchesType = filterType === "Todos" || prop.type === filterType;
     const matchesCategory = filterCategory === "Todas" || prop.category === filterCategory;
+    
+    const propOwner = prop.owner_name?.trim() || "Sem proprietário";
+    const matchesOwner = filterOwner === "Todos" || propOwner === filterOwner;
 
-    return matchesSearch && matchesType && matchesCategory;
+    return matchesSearch && matchesType && matchesCategory && matchesOwner;
   });
+
+  // Lógica de ordenação
+  if (sortBy === "data_antiga_desc") {
+    filteredProperties.sort((a, b) => {
+      const dateA = a.registered_at || "";
+      const dateB = b.registered_at || "";
+      return dateB.localeCompare(dateA);
+    });
+  } else if (sortBy === "data_antiga_asc") {
+    filteredProperties.sort((a, b) => {
+      const dateA = a.registered_at || "9999-99-99"; // Imóveis sem data vão pro final
+      const dateB = b.registered_at || "9999-99-99";
+      return dateA.localeCompare(dateB);
+    });
+  }
 
   // Lista de categorias únicas presentes nos imóveis
   const categories = ["Todas", ...Array.from(new Set(properties.map(p => p.category)))].sort();
+  
+  // Lista de proprietários únicos
+  const owners = ["Todos", ...Array.from(new Set(
+    properties.map(p => p.owner_name?.trim() || "Sem proprietário")
+  ))].sort((a, b) => {
+    if (a === "Sem proprietário") return 1;
+    if (b === "Sem proprietário") return -1;
+    return a.localeCompare(b);
+  });
 
   return (
     <div>
@@ -87,13 +116,13 @@ export default function AdminImoveis() {
       </div>
 
       {/* Barra de Filtros */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8 bg-white p-4 border border-slate-100 shadow-sm">
-        <div className="md:col-span-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-8 bg-white p-4 border border-slate-100 shadow-sm rounded-xl">
+        <div className="lg:col-span-2">
           <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 block">Buscar por Título, Código ou Local</label>
           <input 
             type="text" 
             placeholder="Ex: IMOV 123 ou Centro..."
-            className="w-full border border-slate-200 px-4 py-2 text-sm outline-none focus:border-primary transition-colors"
+            className="w-full border border-slate-200 px-4 py-2 text-sm outline-none focus:border-primary transition-colors rounded-lg"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -101,7 +130,7 @@ export default function AdminImoveis() {
         <div>
           <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 block">Tipo</label>
           <select 
-            className="w-full border border-slate-200 px-3 py-2 text-sm outline-none focus:border-primary transition-colors cursor-pointer"
+            className="w-full border border-slate-200 px-3 py-2 text-sm outline-none focus:border-primary transition-colors cursor-pointer rounded-lg"
             value={filterType}
             onChange={(e) => setFilterType(e.target.value)}
           >
@@ -113,13 +142,37 @@ export default function AdminImoveis() {
         <div>
           <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 block">Categoria</label>
           <select 
-            className="w-full border border-slate-200 px-3 py-2 text-sm outline-none focus:border-primary transition-colors cursor-pointer"
+            className="w-full border border-slate-200 px-3 py-2 text-sm outline-none focus:border-primary transition-colors cursor-pointer rounded-lg"
             value={filterCategory}
             onChange={(e) => setFilterCategory(e.target.value)}
           >
             {categories.map(cat => (
               <option key={cat} value={cat}>{cat === "Todas" ? "Todas categorias" : cat}</option>
             ))}
+          </select>
+        </div>
+        <div className="lg:col-span-2">
+          <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 block">Proprietário</label>
+          <select 
+            className="w-full border border-slate-200 px-3 py-2 text-sm outline-none focus:border-primary transition-colors cursor-pointer rounded-lg"
+            value={filterOwner}
+            onChange={(e) => setFilterOwner(e.target.value)}
+          >
+            {owners.map(owner => (
+              <option key={owner} value={owner}>{owner === "Todos" ? "Todos os proprietários" : owner}</option>
+            ))}
+          </select>
+        </div>
+        <div className="lg:col-span-1">
+          <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 block">Ordenar por</label>
+          <select 
+            className="w-full border border-slate-200 px-3 py-2 text-sm outline-none focus:border-primary transition-colors cursor-pointer rounded-lg"
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+          >
+            <option value="padrao">Padrão</option>
+            <option value="data_antiga_desc">Cadastro Antigo (Mais Recentes)</option>
+            <option value="data_antiga_asc">Cadastro Antigo (Mais Antigos)</option>
           </select>
         </div>
       </div>
@@ -130,6 +183,7 @@ export default function AdminImoveis() {
             <tr>
               <th className="px-6 py-4 text-sm font-semibold text-slate-600">Foto</th>
               <th className="px-6 py-4 text-sm font-semibold text-slate-600">Código / Título</th>
+              <th className="px-6 py-4 text-sm font-semibold text-slate-600">Proprietário / Data</th>
               <th className="px-6 py-4 text-sm font-semibold text-slate-600">Tipo</th>
               <th className="px-6 py-4 text-sm font-semibold text-slate-600 text-center">Status</th>
               <th className="px-6 py-4 text-sm font-semibold text-slate-600">Preço</th>
@@ -149,6 +203,14 @@ export default function AdminImoveis() {
                 <td className="px-6 py-4">
                   <p className="text-sm font-bold text-primary">{prop.title}</p>
                   <p className="text-xs text-slate-500 font-medium">{prop.code} • {prop.location}</p>
+                </td>
+                <td className="px-6 py-4">
+                  <p className="text-xs font-bold text-slate-700 truncate max-w-[150px]" title={prop.owner_name || "Não informado"}>
+                    {prop.owner_name || <span className="text-slate-400 italic font-normal">Não informado</span>}
+                  </p>
+                  <p className="text-[10px] text-slate-500 mt-0.5">
+                    {prop.registered_at ? prop.registered_at.split(' ')[0] : <span className="italic">Data não informada</span>}
+                  </p>
                 </td>
                 <td className="px-6 py-4">
                   <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
@@ -212,12 +274,12 @@ export default function AdminImoveis() {
             ))}
             {filteredProperties.length === 0 && (
               <tr>
-                <td colSpan={5} className="px-6 py-20 text-center">
+                <td colSpan={7} className="px-6 py-20 text-center">
                   <div className="text-4xl mb-3">🔍</div>
                   <p className="text-slate-500 font-medium">Nenhum imóvel encontrado para os filtros aplicados.</p>
-                  {(searchTerm || filterType !== "Todos" || filterCategory !== "Todas") && (
+                  {(searchTerm || filterType !== "Todos" || filterCategory !== "Todas" || filterOwner !== "Todos" || sortBy !== "padrao") && (
                     <button 
-                      onClick={() => { setSearchTerm(""); setFilterType("Todos"); setFilterCategory("Todas"); }}
+                      onClick={() => { setSearchTerm(""); setFilterType("Todos"); setFilterCategory("Todas"); setFilterOwner("Todos"); setSortBy("padrao"); }}
                       className="text-secondary font-bold text-xs uppercase tracking-widest mt-4 hover:underline"
                     >
                       Limpar Filtros

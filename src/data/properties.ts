@@ -28,6 +28,17 @@ export interface Property {
   active?: boolean;
   slug?: string;
   created_at?: string;
+  // Dados do proprietário (legado)
+  owner_name?: string;
+  owner_email?: string;
+  owner_phone?: string;
+  owner_cell?: string;
+  // Dados do inquilino (legado)
+  tenant_name?: string;
+  tenant_phone?: string;
+  tenant_cell?: string;
+  // Data de cadastro do sistema antigo
+  registered_at?: string;
 }
 
 export const INITIAL_PROPERTIES: Property[] = [

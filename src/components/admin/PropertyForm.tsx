@@ -9,7 +9,7 @@ import { useToast } from "@/store/ToastContext";
 import {
   Save, X, Plus, Trash2, Image as ImageIcon, Video, Tag,
   BedDouble, Bath, Square, Home, DollarSign, MapPin, FileText, CheckSquare,
-  GripVertical, ArrowUp, ArrowDown
+  GripVertical, ArrowUp, ArrowDown, User, Phone, Mail, Calendar
 } from "lucide-react";
 import { compressAndConvertToWebP } from "@/utils/image";
 
@@ -116,11 +116,19 @@ export default function PropertyForm({ property, mode, onSuccess }: PropertyForm
     description: property?.description || "",
     videoUrl: property?.videoUrl || "",
     active: property?.active ?? true,
+    owner_name: property?.owner_name || "",
+    owner_email: property?.owner_email || "",
+    owner_phone: property?.owner_phone || "",
+    owner_cell: property?.owner_cell || "",
+    tenant_name: property?.tenant_name || "",
+    tenant_phone: property?.tenant_phone || "",
+    tenant_cell: property?.tenant_cell || "",
+    registered_at: property?.registered_at || "",
   });
 
   const [newImageUrl, setNewImageUrl] = useState("");
   const [customFeature, setCustomFeature] = useState("");
-  const [activeTab, setActiveTab] = useState<"basico" | "midia" | "caracteristicas">("basico");
+  const [activeTab, setActiveTab] = useState<"basico" | "midia" | "caracteristicas" | "proprietario">("basico");
   const dragIdx = useRef<number | null>(null);
   const dragOverIdx = useRef<number | null>(null);
 
@@ -285,6 +293,7 @@ export default function PropertyForm({ property, mode, onSuccess }: PropertyForm
     { key: "basico", label: "Dados Básicos", icon: Home },
     { key: "midia", label: "Fotos & Vídeo", icon: ImageIcon },
     { key: "caracteristicas", label: "Características", icon: CheckSquare },
+    { key: "proprietario", label: "Proprietário", icon: User },
   ] as const;
 
   const inputClass = "w-full border border-slate-200 rounded-xl px-4 py-3 text-slate-700 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all bg-white";
@@ -806,6 +815,86 @@ export default function PropertyForm({ property, mode, onSuccess }: PropertyForm
                   ))}
                 </div>
               )}
+            </div>
+          </div>
+        )}
+
+        {/* ── ABA: PROPRIETÁRIO ── */}
+        {activeTab === "proprietario" && (
+          <div className="space-y-6">
+            {/* Data de cadastro */}
+            <div className="bg-white border border-slate-200 rounded-2xl p-6">
+              <h2 className="font-bold text-primary flex items-center gap-2 mb-6">
+                <Calendar size={18} /> Data de Cadastro
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className={labelClass}>Cadastrado em (Sistema Antigo)</label>
+                  <input 
+                    className={`${inputClass} bg-slate-50`} 
+                    value={form.registered_at || "Não informado"}
+                    onChange={e => set("registered_at", e.target.value)}
+                  />
+                </div>
+                {property?.created_at && (
+                  <div>
+                    <label className={labelClass}>Cadastrado em (Sistema Novo)</label>
+                    <input 
+                      className={`${inputClass} bg-slate-50`} 
+                      value={new Date(property.created_at).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })} 
+                      readOnly 
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Proprietário */}
+            <div className="bg-white border border-slate-200 rounded-2xl p-6">
+              <h2 className="font-bold text-primary flex items-center gap-2 mb-2">
+                <User size={18} /> Dados do Proprietário
+              </h2>
+              <p className="text-xs text-slate-400 mb-6">Informações do proprietário do imóvel. Estes dados são internos e não aparecem no site.</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="md:col-span-2">
+                  <label className={labelClass}><User size={12} className="inline mr-1" />Nome do Proprietário</label>
+                  <input className={inputClass} placeholder="Nome do proprietário" value={form.owner_name || ""} onChange={e => set("owner_name", e.target.value)} />
+                </div>
+                <div className="md:col-span-2">
+                  <label className={labelClass}><Mail size={12} className="inline mr-1" />E-mail do Proprietário</label>
+                  <input className={inputClass} type="email" placeholder="email@exemplo.com" value={form.owner_email || ""} onChange={e => set("owner_email", e.target.value)} />
+                </div>
+                <div>
+                  <label className={labelClass}><Phone size={12} className="inline mr-1" />Telefone</label>
+                  <input className={inputClass} placeholder="(00) 0000-0000" value={form.owner_phone || ""} onChange={e => set("owner_phone", e.target.value)} />
+                </div>
+                <div>
+                  <label className={labelClass}><Phone size={12} className="inline mr-1" />Celular</label>
+                  <input className={inputClass} placeholder="(00) 00000-0000" value={form.owner_cell || ""} onChange={e => set("owner_cell", e.target.value)} />
+                </div>
+              </div>
+            </div>
+
+            {/* Inquilino */}
+            <div className="bg-white border border-slate-200 rounded-2xl p-6">
+              <h2 className="font-bold text-primary flex items-center gap-2 mb-2">
+                <User size={18} /> Dados do Inquilino
+              </h2>
+              <p className="text-xs text-slate-400 mb-6">Se o imóvel estiver alugado, insira os dados do inquilino. Estes dados são internos.</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="md:col-span-2">
+                  <label className={labelClass}><User size={12} className="inline mr-1" />Nome do Inquilino</label>
+                  <input className={inputClass} placeholder="Nome do inquilino" value={form.tenant_name || ""} onChange={e => set("tenant_name", e.target.value)} />
+                </div>
+                <div>
+                  <label className={labelClass}><Phone size={12} className="inline mr-1" />Telefone</label>
+                  <input className={inputClass} placeholder="(00) 0000-0000" value={form.tenant_phone || ""} onChange={e => set("tenant_phone", e.target.value)} />
+                </div>
+                <div>
+                  <label className={labelClass}><Phone size={12} className="inline mr-1" />Celular</label>
+                  <input className={inputClass} placeholder="(00) 00000-0000" value={form.tenant_cell || ""} onChange={e => set("tenant_cell", e.target.value)} />
+                </div>
+              </div>
             </div>
           </div>
         )}

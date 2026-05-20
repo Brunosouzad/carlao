@@ -14,7 +14,7 @@ function PesquisaContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { activeProperties: properties, loading } = useProperties();
-  const [sortBy, setSortBy] = useState<SortOption>("newest");
+  const [sortBy, setSortBy] = useState<SortOption>("price_asc");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 12;
 

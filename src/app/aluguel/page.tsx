@@ -11,7 +11,7 @@ import { useProperties } from "@/store/PropertiesContext";
 
 export default function AluguelPage() {
   const { activeProperties: properties, loading } = useProperties();
-  const [sortBy, setSortBy] = useState<SortOption>("newest");
+  const [sortBy, setSortBy] = useState<SortOption>("price_asc");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 12;
   

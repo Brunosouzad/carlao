@@ -36,7 +36,7 @@ export default function PropertyForm({ property, mode, onSuccess }: PropertyForm
   const [states, setStates] = useState<{ sigla: string, nome: string }[]>([]);
   const [cities, setCities] = useState<string[]>([]);
   const [loadingCities, setLoadingCities] = useState(false);
-  const [state, setStateSigla] = useState("");
+  const [state, setStateSigla] = useState(property?.state || "");
 
   // Fetch States from IBGE
   useEffect(() => {
@@ -80,6 +80,7 @@ export default function PropertyForm({ property, mode, onSuccess }: PropertyForm
           street: data.logradouro || prev.street,
           neighborhood: data.bairro || prev.neighborhood,
           city: data.localidade || prev.city,
+          state: data.uf || prev.state,
           zipCode: cep
         }));
         setStateSigla(data.uf);
@@ -89,11 +90,20 @@ export default function PropertyForm({ property, mode, onSuccess }: PropertyForm
     }
   };
 
+  // Sync local state variable whenever property changes (e.g. on mount)
+  useEffect(() => {
+    if (property?.state) {
+      setStateSigla(property.state);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [property?.id]);
+
   const [form, setForm] = useState<Omit<Property, "id">>({
     code: property?.code || "",
     title: property?.title || "",
     location: property?.location || "",
     city: property?.city || "",
+    state: property?.state || "",
     neighborhood: property?.neighborhood || "",
     street: property?.street || "",
     number: property?.number || "",
@@ -415,7 +425,11 @@ export default function PropertyForm({ property, mode, onSuccess }: PropertyForm
                     <select 
                       className={inputClass} 
                       value={state} 
-                      onChange={e => setStateSigla(e.target.value)}
+                      onChange={e => {
+                        setStateSigla(e.target.value);
+                        set("state", e.target.value);
+                        set("city", "");
+                      }}
                       required
                     >
                       <option value="">Selecione...</option>
@@ -430,7 +444,7 @@ export default function PropertyForm({ property, mode, onSuccess }: PropertyForm
                       className={inputClass} 
                       value={form.city} 
                       onChange={e => set("city", e.target.value)}
-                      disabled={!state || loadingCities}
+                      disabled={(!state && !form.city) || loadingCities}
                       required
                     >
                       <option value="">{loadingCities ? "Carregando..." : "Selecione..."}</option>

@@ -82,6 +82,7 @@ export async function generateMetadata(
     }
   }
 
+  const BASE_URL = 'https://www.carlaoimoveismg.com.br';
   const pSlug = generateSlug(property);
   const priceFormatted = formatPriceSEO(property.price);
   const suffix = property.type === 'Aluguel' ? '/mês' : '';
@@ -94,32 +95,47 @@ export async function generateMetadata(
   const title = `${property.title} - ${property.code}`;
   const description = property.description
     || `${property.category} ${property.type === 'Aluguel' ? 'para alugar' : 'à venda'} em ${property.location}. ${specs}. ${priceFormatted}${suffix}.`;
+  const shortDescription = `${description.slice(0, 140)}... Confira fotos e detalhes na Carlão Imóveis.`;
+
+  // Garante URL absoluta para og:image — obrigatório para WhatsApp, Telegram, iMessage etc.
+  const rawImage = property.image || '';
+  const ogImageUrl = rawImage.startsWith('http')
+    ? rawImage
+    : rawImage.startsWith('/')
+      ? `${BASE_URL}${rawImage}`
+      : rawImage;
+
+  const ogTitle = `${property.title} | ${priceFormatted}${suffix}`;
+  const ogDescription = `${property.category} em ${property.location}. ${specs}. Veja fotos e agende uma visita.`;
 
   return {
     title,
-    description: `${description.slice(0, 140)}... Confira fotos e detalhes na Carlão Imóveis.`,
+    description: shortDescription,
     alternates: {
-      canonical: `/imovel/${pSlug}`,
+      canonical: `${BASE_URL}/imovel/${pSlug}`,
     },
     openGraph: {
-      title: `${property.title} | ${priceFormatted}${suffix}`,
-      description: `${property.category} em ${property.location}. ${specs}. Veja fotos e agende uma visita.`,
+      title: ogTitle,
+      description: ogDescription,
+      siteName: 'Carlão Imóveis',
+      locale: 'pt_BR',
+      type: 'website',
+      url: `${BASE_URL}/imovel/${pSlug}`,
       images: [
         {
-          url: property.image,
-          width: 800,
-          height: 600,
+          url: ogImageUrl,
+          width: 1200,
+          height: 630,
           alt: property.title,
+          type: 'image/jpeg',
         }
       ],
-      type: 'website',
-      url: `/imovel/${pSlug}`,
     },
     twitter: {
       card: 'summary_large_image',
-      title: `${property.title} | ${priceFormatted}${suffix}`,
-      description: `${property.category} em ${property.location}. ${specs}.`,
-      images: [property.image],
+      title: ogTitle,
+      description: ogDescription,
+      images: [ogImageUrl],
     },
   }
 }

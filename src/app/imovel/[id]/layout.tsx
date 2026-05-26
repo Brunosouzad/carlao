@@ -29,49 +29,70 @@ export async function generateMetadata(
     );
   })
 
-  // Se não encontrou nas estáticas, tenta no Supabase (para SEO dinâmico)
-  if (!property) {
+  // Função auxiliar para mapear dados do Supabase
+  const mapSupabaseProperty = (p: any): Property => ({
+    ...p,
+    videoUrl: p.video_url,
+    zipCode: p.zip_code,
+    images: Array.isArray(p.images) ? p.images : (typeof p.images === 'string' ? JSON.parse(p.images || '[]') : [])
+  } as Property);
+
+  // Busca no Supabase por id numérico
+  if (!property && /^\d+$/.test(decodedId)) {
     try {
-      const { data } = await supabase
-        .from('properties')
-        .select('*')
-        .or(`code.ilike.${decodedId},id.eq.${decodedId}`);
-      
-      if (data && data.length > 0) {
-        const p = data[0];
-        property = {
-          ...p,
-          videoUrl: p.video_url,
-          zipCode: p.zip_code,
-          images: Array.isArray(p.images) ? p.images : (typeof p.images === 'string' ? JSON.parse(p.images) : [])
-        } as Property;
-      }
-    } catch (e) {
-      console.error("Erro ao buscar metadados dinâmicos:", e);
-    }
+      const { data } = await supabase.from('properties').select('*').eq('id', decodedId).single();
+      if (data) property = mapSupabaseProperty(data);
+    } catch (e) {}
   }
 
-  // Se ainda não encontrou, tenta extrair o código do slug
+  // Busca no Supabase pelo código exato (via slug no final: "-CV-001" → "CV-001")
   if (!property) {
-    const slugCodeMatch = decodedId.match(/-([a-zA-Z0-9-]+)$/);
-    if (slugCodeMatch) {
-      const extractedCode = slugCodeMatch[1];
+    // O slug tem formato: tipo-categoria-titulo-CODIGO
+    // Extrai o código que pode ter hifens: último segmento após padrão de código
+    const codePatterns = [
+      // Padrão "LETRAS-NUMEROS" no final do slug (ex: cv-001, al-002, imov-3700)
+      decodedId.match(/([a-z]+-\d+)$/i)?.[1],
+      // Padrão com prefixo mais longo (ex: imov-3700)
+      decodedId.match(/-([a-z]+-[a-z0-9]+)$/i)?.[1],
+    ].filter(Boolean);
+
+    for (const code of codePatterns) {
+      if (!code) continue;
       try {
         const { data } = await supabase
           .from('properties')
           .select('*')
-          .ilike('code', extractedCode);
-        
+          .ilike('code', code)
+          .limit(1);
         if (data && data.length > 0) {
-          const p = data[0];
-          property = {
-            ...p,
-            videoUrl: p.video_url,
-            zipCode: p.zip_code,
-            images: Array.isArray(p.images) ? p.images : (typeof p.images === 'string' ? JSON.parse(p.images) : [])
-          } as Property;
+          property = mapSupabaseProperty(data[0]);
+          break;
         }
       } catch (e) {}
+    }
+  }
+
+  // Última tentativa: buscar todos e comparar slug
+  if (!property) {
+    try {
+      const { data } = await supabase
+        .from('properties')
+        .select('id, title, type, category, code, image, description, location, beds, baths, area, price, active')
+        .eq('active', true)
+        .limit(500);
+      if (data) {
+        const match = data.find((p: any) => {
+          const slug = generateSlug({ ...p, videoUrl: '', zipCode: '' } as Property);
+          return slug.toLowerCase() === decodedId.toLowerCase();
+        });
+        if (match) {
+          // Busca completo pelo id encontrado
+          const { data: full } = await supabase.from('properties').select('*').eq('id', match.id).single();
+          if (full) property = mapSupabaseProperty(full);
+        }
+      }
+    } catch (e) {
+      console.error('Erro ao buscar por slug completo:', e);
     }
   }
 
@@ -108,11 +129,13 @@ export async function generateMetadata(
   const ogTitle = `${property.title} | ${priceFormatted}${suffix}`;
   const ogDescription = `${property.category} em ${property.location}. ${specs}. Veja fotos e agende uma visita.`;
 
+  // Usa URL relativa para canonical/url — o metadataBase do root layout faz o prefixo
+  // Mas og:image precisa ser ABSOLUTA (scrapers não seguem metadataBase)
   return {
     title,
     description: shortDescription,
     alternates: {
-      canonical: `${BASE_URL}/imovel/${pSlug}`,
+      canonical: `/imovel/${pSlug}`,
     },
     openGraph: {
       title: ogTitle,
@@ -120,14 +143,15 @@ export async function generateMetadata(
       siteName: 'Carlão Imóveis',
       locale: 'pt_BR',
       type: 'website',
-      url: `${BASE_URL}/imovel/${pSlug}`,
+      url: `/imovel/${pSlug}`,
       images: [
         {
+          // URL absoluta é obrigatória para WhatsApp/Telegram/iMessage
           url: ogImageUrl,
+          secureUrl: ogImageUrl,
           width: 1200,
           height: 630,
           alt: property.title,
-          type: 'image/jpeg',
         }
       ],
     },

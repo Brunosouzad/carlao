@@ -2,15 +2,10 @@ import { Metadata, ResolvingMetadata } from 'next'
 import { INITIAL_PROPERTIES, Property } from '@/data/properties'
 import { generateSlug } from '@/utils/slug'
 import { supabase } from '@/lib/supabase'
+import { formatPrice } from '@/utils/format'
 
 type Props = {
   params: Promise<{ id: string }>
-}
-
-function formatPriceSEO(price: string): string {
-  const num = parseFloat(price);
-  if (isNaN(num)) return price;
-  return num.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 });
 }
 
 export async function generateMetadata(
@@ -37,36 +32,28 @@ export async function generateMetadata(
     images: Array.isArray(p.images) ? p.images : (typeof p.images === 'string' ? JSON.parse(p.images || '[]') : [])
   } as Property);
 
-  // Busca no Supabase por id numérico
-  if (!property && /^\d+$/.test(decodedId)) {
-    try {
-      const { data } = await supabase.from('properties').select('*').eq('id', decodedId).single();
-      if (data) property = mapSupabaseProperty(data);
-    } catch (e) {}
-  }
-
-  // Busca no Supabase pelo código exato (via slug no final: "-CV-001" → "CV-001")
   if (!property) {
-    // O slug tem formato: tipo-categoria-titulo-CODIGO
-    // Extrai o código que pode ter hifens: último segmento após padrão de código
-    const codePatterns = [
-      // Padrão "LETRAS-NUMEROS" no final do slug (ex: cv-001, al-002, imov-3700)
-      decodedId.match(/([a-z]+-\d+)$/i)?.[1],
-      // Padrão com prefixo mais longo (ex: imov-3700)
-      decodedId.match(/-([a-z]+-[a-z0-9]+)$/i)?.[1],
-    ].filter(Boolean);
-
-    for (const code of codePatterns) {
-      if (!code) continue;
+    if (/^\d+$/.test(decodedId)) {
       try {
-        const { data } = await supabase
-          .from('properties')
-          .select('*')
-          .ilike('code', code)
-          .limit(1);
+        const { data } = await supabase.from('properties').select('*').eq('id', decodedId).single();
+        if (data) property = mapSupabaseProperty(data);
+      } catch (e) {}
+    } else {
+      const possibleCode = decodedId.match(/([a-z0-9]+-[a-z0-9]+)$/i)?.[1] || decodedId;
+      const possibleNumeric = decodedId.match(/-(\d+)$/)?.[1];
+      
+      let query = supabase.from('properties').select('*').limit(1);
+      
+      if (possibleNumeric) {
+        query = query.or(`id.eq.${possibleNumeric},code.ilike.%${possibleNumeric}%,code.ilike.%${possibleCode}%`);
+      } else {
+        query = query.ilike('code', `%${possibleCode}%`);
+      }
+      
+      try {
+        const { data } = await query;
         if (data && data.length > 0) {
           property = mapSupabaseProperty(data[0]);
-          break;
         }
       } catch (e) {}
     }
@@ -105,7 +92,7 @@ export async function generateMetadata(
 
   const BASE_URL = 'https://www.carlaoimoveismg.com.br';
   const pSlug = generateSlug(property);
-  const priceFormatted = formatPriceSEO(property.price);
+  const priceFormatted = formatPrice(property.price);
   const suffix = property.type === 'Aluguel' ? '/mês' : '';
   const specs = [
     property.beds > 0 ? `${property.beds} quartos` : null,

@@ -65,8 +65,15 @@ function mapImovelToDb(imovel: Record<string, any>) {
 
   // Endereço
   const bairro = str(imovel.Bairro);
-  const cidade = str(imovel.Cidade);
-  const logradouro = str(imovel.Logradouro);
+  const rawCity = str(imovel.Cidade);
+  
+  // Normaliza cidade para Title Case para bater com IBGE
+  const cidade = rawCity.toLowerCase().split(' ').map(word => 
+    word.length > 2 ? word.charAt(0).toUpperCase() + word.slice(1) : word
+  ).join(' ');
+
+  const estado = str(imovel.UF) || "MG"; // Fallback para MG se não tiver
+  const logradouro = str(imovel.Logradouro) || str(imovel.Endereco);
   const numero = str(imovel.Numero);
   const complemento = str(imovel.Complemento);
 
@@ -98,6 +105,7 @@ function mapImovelToDb(imovel: Record<string, any>) {
     complement: complemento,
     neighborhood: bairro,
     city: cidade,
+    state: estado,
     location: locationParts,
     image: coverImage,
     images: images.slice(1), // resto vai para galeria

@@ -51,6 +51,11 @@ export default function PropertyDetailsPage() {
       if (slugCodeMatch && p.code) {
         const extractedCode = slugCodeMatch[1].toLowerCase();
         if (p.code.toLowerCase() === extractedCode) return true;
+        
+        // Match ignorando espaços e hifens
+        const rawCode = p.code.toLowerCase().replace(/[\s-]/g, '');
+        const rawExtracted = extractedCode.replace(/[\s-]/g, '');
+        if (rawCode === rawExtracted) return true;
       }
 
       return false;
@@ -497,7 +502,9 @@ export default function PropertyDetailsPage() {
                     <img
                       key={idx}
                       src={getOptimizedImageUrl(item.url, 800, 75) || ""}
-                      decoding="async"
+                      decoding={idx === 0 ? "sync" : "async"}
+                      loading={idx === 0 ? "eager" : "lazy"}
+                      fetchPriority={idx === 0 ? "high" : "auto"}
                       className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ease-in-out ${isCurrent ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
                       alt={`${property.title} - Foto ${idx + 1}`}
                     />
@@ -625,8 +632,9 @@ export default function PropertyDetailsPage() {
                         <img
                           key={idx}
                           src={getOptimizedImageUrl(item.url, 1200, 80) || ""}
-                          decoding="async"
-                          loading="lazy"
+                          decoding={idx === 0 ? "sync" : "async"}
+                          loading={idx === 0 ? "eager" : "lazy"}
+                          fetchPriority={idx === 0 ? "high" : "auto"}
                           className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ease-in-out ${isCurrent ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
                           alt={`${property.title} - Foto ${idx + 1}`}
                         />

@@ -33,53 +33,49 @@ export async function generateMetadata(
   } as Property);
 
   if (!property) {
-    if (/^\d+$/.test(decodedId)) {
+    const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(decodedId);
+    
+    if (isUUID) {
       try {
         const { data } = await supabase.from('properties').select('*').eq('id', decodedId).single();
         if (data) property = mapSupabaseProperty(data);
       } catch (e) {}
     } else {
-      const possibleCode = decodedId.match(/([a-z0-9]+-[a-z0-9]+)$/i)?.[1] || decodedId;
-      const possibleNumeric = decodedId.match(/-(\d+)$/)?.[1];
-      
       let query = supabase.from('properties').select('*').limit(1);
-      
-      if (possibleNumeric) {
-        query = query.or(`id.eq.${possibleNumeric},code.ilike.%${possibleNumeric}%,code.ilike.%${possibleCode}%`);
-      } else {
-        query = query.ilike('code', `%${possibleCode}%`);
-      }
-      
-      try {
-        const { data } = await query;
-        if (data && data.length > 0) {
-          property = mapSupabaseProperty(data[0]);
-        }
-      } catch (e) {}
-    }
-  }
+      const orConditions = [];
 
-  // Última tentativa: buscar todos e comparar slug
-  if (!property) {
-    try {
-      const { data } = await supabase
-        .from('properties')
-        .select('id, title, type, category, code, image, description, location, beds, baths, area, price, active')
-        .eq('active', true)
-        .limit(500);
-      if (data) {
-        const match = data.find((p: any) => {
-          const slug = generateSlug({ ...p, videoUrl: '', zipCode: '' } as Property);
-          return slug.toLowerCase() === decodedId.toLowerCase();
-        });
-        if (match) {
-          // Busca completo pelo id encontrado
-          const { data: full } = await supabase.from('properties').select('*').eq('id', match.id).single();
-          if (full) property = mapSupabaseProperty(full);
-        }
+      // Tentar extrair possíveis códigos do final do slug (último segmento, ou dois últimos, ou três últimos)
+      // Ex: ...-imov-3695 -> testa 'imov-3695', '3695'
+      // Ex: ...-im3656 -> testa 'im3656'
+      const segments = decodedId.split('-');
+      const possibleCodes = [];
+      if (segments.length >= 1) possibleCodes.push(segments[segments.length - 1]);
+      if (segments.length >= 2) possibleCodes.push(segments.slice(-2).join('-'));
+      if (segments.length >= 3) possibleCodes.push(segments.slice(-3).join('-'));
+
+      for (const code of possibleCodes) {
+        if (!code || code.length < 2) continue;
+        const spaceCode = code.replace(/-/g, ' ');
+        const noSpaceCode = code.replace(/-/g, '');
+        orConditions.push(`code.ilike.${code}`, `code.ilike.${spaceCode}`, `code.ilike.${noSpaceCode}`);
       }
-    } catch (e) {
-      console.error('Erro ao buscar por slug completo:', e);
+
+      // Se só tem número no final, tenta buscar códigos genéricos também (ex: LIKE %3695)
+      const possibleNumeric = decodedId.match(/-(\d+)$/)?.[1];
+      if (possibleNumeric) {
+        orConditions.push(`code.ilike.%${possibleNumeric}%`);
+      }
+
+      if (orConditions.length > 0) {
+        try {
+          // Remove duplicatas para a query não ficar gigante
+          const uniqueConditions = Array.from(new Set(orConditions));
+          const { data } = await query.or(uniqueConditions.join(','));
+          if (data && data.length > 0) {
+            property = mapSupabaseProperty(data[0]);
+          }
+        } catch(e) {}
+      }
     }
   }
 
@@ -106,7 +102,7 @@ export async function generateMetadata(
   const shortDescription = `${description.slice(0, 140)}... Confira fotos e detalhes na Carlão Imóveis.`;
 
   // Garante URL absoluta para og:image — obrigatório para WhatsApp, Telegram, iMessage etc.
-  const rawImage = property.image || '';
+  const rawImage = property.image || (property.images && property.images.length > 0 ? property.images[0] : '') || '';
   const ogImageUrl = rawImage.startsWith('http')
     ? rawImage
     : rawImage.startsWith('/')

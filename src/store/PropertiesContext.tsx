@@ -69,6 +69,7 @@ export function PropertiesProvider({ children }: { children: React.ReactNode }) 
           setActiveProperties(mappedData.filter((p: Property) => p.active !== false) as Property[]);
           // Salva no localStorage para o próximo carregamento ser instantâneo
           localStorage.setItem("@carlao-imoveis:properties", JSON.stringify(mappedData));
+          localStorage.setItem("@carlao-imoveis:lastFetch", Date.now().toString());
         }
       } else {
         loadLocalData();
@@ -102,14 +103,22 @@ export function PropertiesProvider({ children }: { children: React.ReactNode }) 
   useEffect(() => {
     // 1. Tenta carregar local imediatamente (instantâneo)
     const stored = typeof window !== 'undefined' ? localStorage.getItem("@carlao-imoveis:properties") : null;
+    const lastFetch = typeof window !== 'undefined' ? localStorage.getItem("@carlao-imoveis:lastFetch") : null;
+    
+    // Verifica se os dados foram buscados há menos de 15 minutos (900.000 ms)
+    const isCacheFresh = lastFetch && (Date.now() - parseInt(lastFetch)) < 900000;
+
     if (stored) {
       try {
         const parsed = JSON.parse(stored);
         setProperties(parsed);
         setActiveProperties(parsed.filter((p: Property) => p.active !== false));
         setLoading(false); // Já temos dados para mostrar
-        // Busca novos dados em silêncio
-        fetchProperties(true);
+        
+        // Busca novos dados em silêncio APENAS se o cache não estiver fresco
+        if (!isCacheFresh) {
+          fetchProperties(true);
+        }
       } catch (e) {
         fetchProperties();
       }

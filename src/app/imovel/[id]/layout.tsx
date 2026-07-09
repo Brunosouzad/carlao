@@ -4,6 +4,8 @@ import { generateSlug } from '@/utils/slug'
 import { supabase } from '@/lib/supabase'
 import { formatPrice } from '@/utils/format'
 
+export const revalidate = 60;
+
 type Props = {
   params: Promise<{ id: string }>
 }

@@ -167,7 +167,11 @@ export function PropertiesProvider({ children }: { children: React.ReactNode }) 
           } as Property;
 
           const newPropWithSlug = { ...mappedProp, slug: generateSlug(mappedProp) };
-          setProperties(prev => [newPropWithSlug, ...prev]);
+          setProperties(prev => {
+            const newList = [newPropWithSlug, ...prev];
+            localStorage.setItem("@carlao-imoveis:properties", JSON.stringify(newList));
+            return newList;
+          });
           if (newPropWithSlug.active !== false) {
             setActiveProperties(prev => [newPropWithSlug, ...prev]);
           }
@@ -215,9 +219,11 @@ export function PropertiesProvider({ children }: { children: React.ReactNode }) 
           throw new Error(error.message);
         }
         
-        const updatedList = properties.map(p => p.id === updatedProperty.id ? updatedProperty : p);
+        const updatedWithSlug = { ...updatedProperty, slug: generateSlug(updatedProperty) };
+        const updatedList = properties.map(p => p.id === updatedProperty.id ? updatedWithSlug : p);
         setProperties(updatedList);
         setActiveProperties(updatedList.filter(p => p.active !== false));
+        localStorage.setItem("@carlao-imoveis:properties", JSON.stringify(updatedList));
         toast.success("Sucesso", "Imóvel atualizado com sucesso!");
       } else {
         const updatedWithSlug = { ...updatedProperty, slug: generateSlug(updatedProperty) };
@@ -245,6 +251,7 @@ export function PropertiesProvider({ children }: { children: React.ReactNode }) 
         const filtered = properties.filter(p => p.id !== id);
         setProperties(filtered);
         setActiveProperties(filtered.filter(p => p.active !== false));
+        localStorage.setItem("@carlao-imoveis:properties", JSON.stringify(filtered));
       } else {
         const newProperties = properties.filter((p) => (p.id !== id));
         setProperties(newProperties);
